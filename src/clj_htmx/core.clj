@@ -1,5 +1,6 @@
 (ns clj-htmx.core
   (:require
+    [clj-htmx.form :as form]
     [clj-htmx.render :as render]
     [clojure.string :as string]
     [clojure.walk :as walk]))
@@ -58,12 +59,14 @@
 
 (defn set-id [req]
   (if-let [target (get-in req [:headers "hx-target"])]
-    (str target (string/join (rest *stack*)))
-    (string/join *stack*)))
+    (str target "_" (string/join "_" (rest *stack*)))
+    (string/join "_" *stack*)))
 
 (defn with-stack [n [req] body]
   `(binding [*stack* (conj *stack* ~(name n))]
-     (let [~'id (set-id ~req)]
+     (let [~'id (set-id ~req)
+           {:keys [~'params]} ~req
+           ~'params-json (form/json-params ~'params)]
        ~@body)))
 
 (defn map-indexed-stack [f s]
