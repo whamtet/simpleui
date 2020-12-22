@@ -2,8 +2,7 @@
   (:require
     [clj-htmx.form :as form]
     [clj-htmx.render :as render]
-    [clojure.string :as string]
-    [clojure.walk :as walk]))
+    [clojure.string :as string]))
 
 (def parsers
   {:int #(list 'Integer/parseInt %)
@@ -45,7 +44,9 @@
 (defn with-stack [n [req] body]
   `(binding [*stack* (conj *stack* ~(name n))]
      (let [~'id (set-id ~req)
+           ~'path (fn [x#] (str ~'id "_" x#))
            {:keys [~'params]} ~req
+           ~'value (fn [x#] (-> x# ~'path keyword ~'params))
            ~'params-json (form/json-params ~'params)]
        ~@body)))
 
@@ -77,7 +78,7 @@
   ([ns sym exclusions]
    (when-let [v (ns-resolve ns sym)]
      (let [{:keys [name endpoint? syms ns]} (meta v)]
-       (when (not (exclusions name))
+       (when-not (exclusions name)
          (let [exclusions (conj exclusions name)
                mappings (mapmerge #(extract-endpoints ns % exclusions) syms)]
            (if endpoint?
@@ -90,9 +91,6 @@
        (filter symbol?)
        distinct
        (mapmerge extract-endpoints)))
-
-(defendpoint a [req])
-(defendpoint b [req] a)
 
 (defn extract-endpoints-all [f]
   (for [[sym v] (extract-endpoints-root f)
