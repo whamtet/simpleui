@@ -5,29 +5,6 @@
     [clojure.string :as string]
     [clojure.walk :as walk]))
 
-(defn- component-macro? [x]
-  (and
-    (symbol? x)
-    (resolve x)
-    (let [evaluated (-> x resolve var-get)]
-      (and
-        (map? evaluated)
-        (contains? evaluated :fn)
-        (contains? evaluated :endpoints)))))
-
-(defn expand-components [x]
-  (if (component-macro? x)
-    `(:fn ~x)
-    x))
-
-(defn- mapmerge [f s]
-  (apply merge (map f s)))
-
-(defn extract-endpoints [m]
-  (cond
-    (coll? m) (mapmerge extract-endpoints m)
-    (component-macro? m) (-> m eval :endpoints)))
-
 (def parsers
   {:int #(list 'Integer/parseInt %)
    :lower #(list 'some-> % '.trim '.toLowerCase)
@@ -76,28 +53,54 @@
   (doall
     (map-indexed #(binding [*stack* (conj *stack* %1)] (f %1 %2)) s)))
 
-(defmacro defcomponent [name args & body]
-  (let [expanded (with-stack name args (walk/postwalk expand-components body))
-        f (gensym)]
-    `(def ~name
-       (let [~f ~(make-f args expanded)]
-         {:fn ~f
-          :endpoints ~(extract-endpoints body)}))))
+(defn get-syms [body]
+  (->> body
+       flatten
+       (filter symbol?)
+       distinct
+       (mapv #(list 'quote %))))
 
+(defn defcomp [name args body endpoint?]
+  `(def ~(vary-meta name assoc :endpoint? endpoint? :syms (get-syms body))
+     ~(make-f args (with-stack name args body))))
+
+(defmacro defcomponent [name args & body]
+  (defcomp name args body false))
 (defmacro defendpoint [name args & body]
-  (let [expanded (with-stack name args (walk/postwalk expand-components body))
-        f (gensym)]
-    `(def ~name
-       (let [~f ~(make-f args expanded)]
-         {:fn ~f
-          :endpoints ~(assoc (extract-endpoints body) (keyword name) f)}))))
+  (defcomp name args body true))
+
+(defn- mapmerge [f s]
+  (apply merge (map f s)))
+
+(defn extract-endpoints
+  ([sym] (extract-endpoints *ns* sym #{}))
+  ([ns sym exclusions]
+   (when-let [v (ns-resolve ns sym)]
+     (let [{:keys [name endpoint? syms ns]} (meta v)]
+       (when (not (exclusions name))
+         (let [exclusions (conj exclusions name)
+               mappings (mapmerge #(extract-endpoints ns % exclusions) syms)]
+           (if endpoint?
+             (assoc mappings name v)
+             mappings)))))))
+
+(defn extract-endpoints-root [f]
+  (->> f
+       flatten
+       (filter symbol?)
+       distinct
+       (mapmerge extract-endpoints)))
+
+(defendpoint a [req])
+(defendpoint b [req] a)
 
 (defn extract-endpoints-all [f]
-  (for [[k f] (extract-endpoints f)]
-    [(str "/" (name k)) `(fn [x#] (-> x# ~f render/snippet-response))]))
+  (for [[sym v] (extract-endpoints-root f)
+        :let [full-symbol (symbol (-> v .ns ns-name str) (str sym))]]
+    [(str "/" sym) `(fn [x#] (-> x# ~full-symbol render/snippet-response))]))
 
 (defmacro make-routes [root f]
-  `[[~root {:get ~(walk/postwalk expand-components f)}]
+  `[[~root {:get ~f}]
     ~@(extract-endpoints-all f)])
 
 (defmacro with-req [req & body]

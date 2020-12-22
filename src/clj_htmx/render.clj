@@ -1,7 +1,8 @@
 (ns clj-htmx.render
   (:require
-    [hiccup.core :as hiccup]
-    [ring.util.http-response :refer [no-content]]))
+    [hiccup.core :as hiccup]))
+
+(def no-content {:status 204, :headers {}, :body ""})
 
 (defn html-response [body]
   {:status 200
@@ -11,4 +12,4 @@
 (defn snippet-response [body]
   (if body
     (-> body hiccup/html html-response)
-    (no-content)))
+    no-content))
