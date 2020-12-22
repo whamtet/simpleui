@@ -49,18 +49,21 @@
     1 `(fn ~args ~expanded)
     `(fn this#
        (~(subvec args 0 1)
-         (this#
-           ~(args 0)
-           ~@(for [arg (rest args)]
-               ((sym->f arg) `(-> ~(args 0) :params ~(keyword arg))))))
+         (let [~'params (-> ~(args 0) :params form/trim-keys)]
+           (this#
+             ~(args 0)
+             ~@(for [arg (rest args)]
+                 ((sym->f arg) `(~(keyword arg) ~'params))))))
        (~args ~expanded))))
 
 (def ^:dynamic *stack* [])
 
 (defn set-id [req]
-  (if-let [target (get-in req [:headers "hx-target"])]
-    (str target "_" (string/join "_" (rest *stack*)))
-    (string/join "_" *stack*)))
+  (string/join
+    "_"
+    (if-let [target (get-in req [:headers "hx-target"])]
+      (assoc *stack* 0 target)
+      *stack*)))
 
 (defn with-stack [n [req] body]
   `(binding [*stack* (conj *stack* ~(name n))]
