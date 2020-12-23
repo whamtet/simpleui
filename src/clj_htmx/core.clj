@@ -1,4 +1,5 @@
 (ns clj-htmx.core
+  (:refer-clojure :exclude [map-indexed])
   (:require
     [clj-htmx.form :as form]
     [clj-htmx.render :as render]
@@ -56,13 +57,16 @@
      (let [~'id (set-id ~req)
            ~'path (fn [x#] (str ~'id "_" x#))
            {:keys [~'params]} ~req
-           ~'value (fn [x#] (-> x# ~'path keyword ~'params))
-           ~'params-json (form/json-params ~'params)]
+           ~'value (fn [x#] (-> x# ~'path keyword ~'params))]
        ~@body)))
 
-(defn map-indexed-stack [f s]
+(defn map-indexed [f s]
   (doall
-    (map-indexed #(binding [*stack* (conj *stack* %1)] (f %1 %2)) s)))
+    (clojure.core/map-indexed #(binding [*stack* (conj *stack* %1)] (f %1 %2)) s)))
+
+(defn map-range [f i]
+  (doall
+    (map #(binding [*stack* (conj *stack* %)] (f %)) (range i))))
 
 (defn get-syms [body]
   (->> body

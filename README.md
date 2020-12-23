@@ -53,9 +53,11 @@ Here the only active element is the text input.  On the input's default action (
 
 **The first argument to defendpoint is always the req object**
 
-### nil Responses
+### Responses
 
 If `defendpoint` returns `nil` it will be wrapped in **204 - No Content** and htmx will not update the dom.
+
+towrite other response examples
 
 ### Casting
 
@@ -76,22 +78,9 @@ Supported casts include
 
 Nested calls to `defendpoint` must also be `defendpoint` to macroexpand correctly.  If you do not wish to expose intermediate functions as endpoints use `defcomponent` instead.
 
-### Automagic ids
+### handling nested data
 
-In the simple example above we only update a single `#hello` element.  To handle multiple elements from the same `defendpoint`, `id` is set to a unique value based on the call path of nested `defendpoint`.
-
-```clojure
-(defendpoint row [req datum]
-  [:tr {:id id} ...])
-```
-
-So that `id` is set correctly do not call `clojure.core/map`.  Instead use `clj-htmx.core/map-indexed-stack`
-
-```clojure
-(defendpoint table [req]
-  [:table
-    (map-indexed-stack (fn [_ datum] (row req datum)) table-data)])
-```
+towrite
 
 ## License
 
