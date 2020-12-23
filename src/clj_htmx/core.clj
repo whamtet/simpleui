@@ -75,14 +75,9 @@
        distinct
        (mapv #(list 'quote %))))
 
-(defn defcomp [name args body endpoint?]
-  `(def ~(vary-meta name assoc :endpoint? endpoint? :syms (get-syms body))
-     ~(make-f args (with-stack name args body))))
-
 (defmacro defcomponent [name args & body]
-  (defcomp name args body false))
-(defmacro defendpoint [name args & body]
-  (defcomp name args body true))
+  `(def ~(vary-meta name assoc :syms (get-syms body))
+     ~(make-f args (with-stack name args body))))
 
 (defn- mapmerge [f s]
   (apply merge (map f s)))
@@ -91,12 +86,12 @@
   ([sym] (extract-endpoints *ns* sym #{}))
   ([ns sym exclusions]
    (when-let [v (ns-resolve ns sym)]
-     (let [{:keys [name endpoint? syms ns]} (meta v)
+     (let [{:keys [name endpoint syms ns]} (meta v)
            exclusions (conj exclusions name)
            mappings (->> syms
                          (remove exclusions)
                          (mapmerge #(extract-endpoints ns % exclusions)))]
-       (if endpoint?
+       (if endpoint
          (assoc mappings name v)
          mappings)))))
 

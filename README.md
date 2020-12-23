@@ -20,10 +20,10 @@ First require the library
 (require '[clj-htmx.core :refer :all])
 ```
 
-The core of clj-htmx is the `defendpoint` macro.
+The core of clj-htmx is the `defcomponent` macro.
 
 ```clojure
-(defendpoint hello [req my-name]
+(defcomponent ^:endpoint hello [req my-name]
   [:div#hello "Hello " my-name])
 ```
 
@@ -51,20 +51,20 @@ To use our endpoint we call `make-routes`
 
 Here the only active element is the text input.  On the input's default action (blur) it will request to `/hello` and replace `#hello` with the server response.  We are using `hello` both as a function and an endpoint.  When called as an endpoint arguments are set based on the html `name` attribute.
 
-**The first argument to defendpoint is always the req object**
+**The first argument to defcomponent is always the req object**
 
 ### Responses
 
-If `defendpoint` returns `nil` it will be wrapped in **204 - No Content** and htmx will not update the dom.
+If `defcomponent` returns `nil` it will be wrapped in **204 - No Content** and htmx will not update the dom.
 
 towrite other response examples
 
 ### Casting
 
-Because htmx submits parameters as strings it can be convenient to cast `defendpoint` arguments e.g.
+Because htmx submits parameters as strings it can be convenient to cast `defcomponent` arguments e.g.
 
 ```clojure
-(defendpoint my-endpoint [req ^:int integer-argument ^:boolean boolean-argument])
+(defcomponent my-endpoint [req ^:int integer-argument ^:boolean boolean-argument])
 ```
 
 Supported casts include
@@ -73,10 +73,6 @@ Supported casts include
 * `^:lower` Lower-case string
 * `^:trim` Trimmed string
 * `^:boolean` True when argument = "true" or "on" (for checkboxes).
-
-### defcomponent
-
-Nested calls to `defendpoint` must also be `defendpoint` to macroexpand correctly.  If you do not wish to expose intermediate functions as endpoints use `defcomponent` instead.
 
 ### handling nested data
 
