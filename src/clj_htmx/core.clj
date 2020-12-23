@@ -4,20 +4,24 @@
     [clj-htmx.render :as render]
     [clojure.string :as string]))
 
+(def parse-int #(if (string? %) (Integer/parseInt %) %))
+(def parse-lower #(some-> % .trim .toLowerCase))
+(def parse-trim #(some-> % .trim))
+(def parse-string #(or % ""))
+(def parse-boolean #(if (boolean? %) % (contains? #{"true" "on"} %)))
+
 (def parsers
-  {:int #(list 'Integer/parseInt %)
-   :lower #(list 'some-> % '.trim '.toLowerCase)
-   :trim #(list 'some-> % '.trim)
-   :string #(list 'or % "")
-   :boolean #(list 'contains? #{"true" "on"} %)})
+  {:int `parse-int
+   :lower `parse-lower
+   :trim `parse-trim
+   :string `parse-string
+   :boolean `parse-boolean})
 
 (defn sym->f [sym]
-  (or
-    (some (fn [[k f]]
-            (when (-> sym meta k)
-              f))
-          parsers)
-    identity))
+  (some (fn [[k f]]
+          (when (-> sym meta k)
+            f))
+        parsers))
 
 (defn- make-f [args expanded]
   (case (count args)
@@ -29,8 +33,14 @@
            (this#
              ~(args 0)
              ~@(for [arg (rest args)]
-                 ((sym->f arg) `(~(keyword arg) ~'params))))))
-       (~args ~expanded))))
+                 `(~(keyword arg) ~'params)))))
+       (~args
+         (let [~@(for [sym (rest args)
+                       :let [f (sym->f sym)]
+                       :when f
+                       x [sym `(~f ~sym)]]
+                   x)]
+           ~expanded)))))
 
 (def ^:dynamic *stack* [])
 
@@ -77,13 +87,14 @@
   ([sym] (extract-endpoints *ns* sym #{}))
   ([ns sym exclusions]
    (when-let [v (ns-resolve ns sym)]
-     (let [{:keys [name endpoint? syms ns]} (meta v)]
-       (when-not (exclusions name)
-         (let [exclusions (conj exclusions name)
-               mappings (mapmerge #(extract-endpoints ns % exclusions) syms)]
-           (if endpoint?
-             (assoc mappings name v)
-             mappings)))))))
+     (let [{:keys [name endpoint? syms ns]} (meta v)
+           exclusions (conj exclusions name)
+           mappings (->> syms
+                         (remove exclusions)
+                         (mapmerge #(extract-endpoints ns % exclusions)))]
+       (if endpoint?
+         (assoc mappings name v)
+         mappings)))))
 
 (defn extract-endpoints-root [f]
   (->> f
