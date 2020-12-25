@@ -4,7 +4,7 @@ Backend helpers for [htmx](https://htmx.org/).
 
 ## Rationale
 
-[htmx](https://htmx.org/) enables web developers to create powerful webapps without writing any javascript.  Whenever `hx-*` attributes are included on the webpage the library will update the dom in response to user events.  The architecture is simpler and pages load more quickly than in javascript oriented webapps.
+[htmx](https://htmx.org/) enables web developers to create powerful webapps without writing any javascript.  Whenever `hx-*` attributes are included in html the library will update the dom in response to user events.  The architecture is simpler and pages load more quickly than in javascript oriented webapps.
 
 clj-htmx is a backend accompaniment which makes htmx even easier to use.  It works in conjunction with [hiccup](https://weavejester.github.io/hiccup/) for rendering and [reitit](https://cljdoc.org/d/metosin/reitit/0.5.10/doc/introduction) for routing.
 

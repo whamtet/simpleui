@@ -64,9 +64,12 @@
   (doall
     (clojure.core/map-indexed #(binding [*stack* (conj *stack* %1)] (f %1 %2)) s)))
 
-(defn map-range [f i]
-  (doall
-    (map #(binding [*stack* (conj *stack* %)] (f %)) (range i))))
+(defn map-range [f req i]
+  (->> i
+       parse-int
+       range
+       (map #(binding [*stack* (conj *stack* %)] (f req %)))
+       doall))
 
 (defn get-syms [body]
   (->> body

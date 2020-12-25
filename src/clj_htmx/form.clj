@@ -1,5 +1,6 @@
 (ns clj-htmx.form
   (:require
+    [clojure.string :as string]
     [clojure.walk :as walk]))
 
 (defn nest-params [params]
@@ -11,9 +12,12 @@
 
 (defn prune-params [m]
   (if (= 1 (count m))
-    (if (-> m first second map?)
+    (cond
+      (and (vector? m) (-> m peek coll?))
+      (-> m peek recur)
+      (and (map? m) (-> m first second coll?))
       (-> m first second recur)
-      m)
+      :else m)
     m))
 
 (defn vectorize-map [m]
@@ -27,9 +31,26 @@
 (defn json-params [params]
   (->> params
        nest-params
-       prune-params
        (walk/postwalk vectorize-map)
        walk/keywordize-keys))
+
+(defn json-params-pruned [params]
+  (-> params json-params prune-params))
+
+(defn flatten-json
+  ([m] (flatten-json [] {} m))
+  ([stack done m]
+   (reduce
+     (fn [done [k v]]
+       (let [stack (conj stack (name k))]
+         (if (coll? v)
+           (flatten-json stack done v)
+           (assoc done
+             (->> stack (string/join "_") keyword) v))))
+     done
+     (if (map? m)
+       m
+       (map-indexed #(list (str %1) %2) m)))))
 
 (defn- key-map [f m]
   (zipmap (map f (keys m)) (vals m)))
