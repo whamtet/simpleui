@@ -9,14 +9,24 @@
 (def parse-lower #(some-> % .trim .toLowerCase))
 (def parse-trim #(some-> % .trim))
 (def parse-string #(or % ""))
-(def parse-boolean #(if (boolean? %) % (contains? #{"true" "on"} %)))
+(def parse-boolean
+  #(case %
+     true true
+     false false
+     (contains? #{"true" "on"} %)))
+(def parse-boolean-true
+  #(case %
+     true true
+     false false
+     (not= "false" %)))
 
 (def parsers
   {:int `parse-int
    :lower `parse-lower
    :trim `parse-trim
    :string `parse-string
-   :boolean `parse-boolean})
+   :boolean `parse-boolean
+   :boolean-true `parse-boolean-true})
 
 (defn sym->f [sym]
   (some (fn [[k f]]
@@ -62,11 +72,14 @@
 
 (defn path [& args]
   (->> args concat-stack (string/join "_")))
+(defn path-hash [& args]
+  (str "#" (->> args concat-stack (string/join "_"))))
 
 (defn with-stack [n [req] body]
   `(binding [*stack* (conj-stack ~(name n) ~req)]
      (let [~'id (path)
            ~'path path
+           ~'hash path-hash
            {:keys [~'params]} ~req
            ~'value (fn [x#] (-> x# ~'path keyword ~'params))]
        ~@body)))
@@ -81,6 +94,9 @@
        range
        (map #(binding [*stack* (conj *stack* %)] (f req %)))
        doall))
+
+(defmacro forall [& args]
+  `(doall (for ~@args)))
 
 (defn get-syms [body]
   (->> body
