@@ -45,17 +45,28 @@
 
 (def ^:dynamic *stack* [])
 
-(defn set-id [req]
-  (string/join
-    "_"
-    (if-let [target (get-in req [:headers "hx-target"])]
-      (assoc *stack* 0 target)
-      *stack*)))
+(defn concat-stack [concat]
+  (reduce
+    (fn [stack x]
+      (if (= ".." x)
+        (pop stack)
+        (conj stack x)))
+    *stack*
+    concat))
+
+(defn conj-stack [n req]
+  (let [target (get-in req [:headers "hx-target"])]
+    (if (and (empty? *stack*) target)
+      (-> target (.split "_") vec)
+      (conj *stack* n))))
+
+(defn path [& args]
+  (->> args concat-stack (string/join "_")))
 
 (defn with-stack [n [req] body]
-  `(binding [*stack* (conj *stack* ~(name n))]
-     (let [~'id (set-id ~req)
-           ~'path (fn [x#] (str ~'id "_" x#))
+  `(binding [*stack* (conj-stack ~(name n) ~req)]
+     (let [~'id (path)
+           ~'path path
            {:keys [~'params]} ~req
            ~'value (fn [x#] (-> x# ~'path keyword ~'params))]
        ~@body)))
