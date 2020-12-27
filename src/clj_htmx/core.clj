@@ -3,7 +3,8 @@
   (:require
     [clj-htmx.form :as form]
     [clj-htmx.render :as render]
-    [clojure.string :as string]))
+    [clojure.string :as string]
+    [clojure.walk :as walk]))
 
 (def parse-int #(if (string? %) (Integer/parseInt %) %))
 (def parse-lower #(some-> % .trim .toLowerCase))
@@ -29,10 +30,14 @@
    :boolean-true `parse-boolean-true})
 
 (defn sym->f [sym]
-  (some (fn [[k f]]
-          (when (-> sym meta k)
-            f))
-        parsers))
+  (when-let [meta (meta sym)]
+    (some (fn [[k f]]
+            (when (meta k)
+              f))
+          parsers)))
+
+(defn dissoc-parsers [m]
+  (apply vary-meta m dissoc (keys parsers)))
 
 (defn- make-f [args expanded]
   (case (count args)
@@ -75,6 +80,13 @@
 (defn path-hash [& args]
   (str "#" (->> args concat-stack (string/join "_"))))
 
+(defn expand-value [x]
+  (if-let [parser (sym->f x)]
+    `(~parser ~(dissoc-parsers x))
+    x))
+(defn expand-values [x]
+  (walk/prewalk expand-value x))
+
 (defn with-stack [n [req] body]
   `(binding [*stack* (conj-stack ~(name n) ~req)]
      (let [~'id (path)
@@ -82,7 +94,7 @@
            ~'hash path-hash
            {:keys [~'params]} ~req
            ~'value (fn [x#] (-> x# ~'path keyword ~'params))]
-       ~@body)))
+       ~@(expand-values body))))
 
 (defn map-indexed [f s]
   (doall
