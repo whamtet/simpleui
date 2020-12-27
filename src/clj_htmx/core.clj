@@ -39,17 +39,33 @@
 (defn dissoc-parsers [m]
   (apply vary-meta m dissoc (keys parsers)))
 
-(defn- make-f [args expanded]
+(def ^:dynamic *stack* [])
+
+(defn conj-stack [n req]
+  (let [target (get-in req [:headers "hx-target"])]
+    (if (and (empty? *stack*) target)
+      (-> target (.split "_") vec)
+      (conj *stack* n))))
+
+(defn get-value [params stack value]
+  (->> value
+       (conj stack)
+       (string/join "_")
+       keyword
+       params))
+
+(defn- make-f [n args expanded]
   (case (count args)
     0 (throw (Exception. "zero args not supported"))
     1 `(fn ~args ~expanded)
     `(fn this#
        (~(subvec args 0 1)
-         (let [~'params (-> ~(args 0) :params form/trim-keys)]
+         (let [{:keys [~'params]} ~(args 0)
+               ~'stack (conj-stack ~(name n) ~(args 0))]
            (this#
              ~(args 0)
              ~@(for [arg (rest args)]
-                 `(~(keyword arg) ~'params)))))
+                 `(get-value ~'params ~'stack ~(str arg))))))
        (~args
          (let [~@(for [sym (rest args)
                        :let [f (sym->f sym)]
@@ -57,8 +73,6 @@
                        x [sym `(~f ~sym)]]
                    x)]
            ~expanded)))))
-
-(def ^:dynamic *stack* [])
 
 (defn concat-stack [concat]
   (reduce
@@ -69,23 +83,16 @@
     *stack*
     concat))
 
-(defn conj-stack [n req]
-  (let [target (get-in req [:headers "hx-target"])]
-    (if (and (empty? *stack*) target)
-      (-> target (.split "_") vec)
-      (conj *stack* n))))
-
-(defn path [& args]
+(defn path1 [args]
   (->> args concat-stack (string/join "_")))
+(defn path [& args] (path1 args))
 (defn path-hash [& args]
-  (str "#" (->> args concat-stack (string/join "_"))))
+  (str "#" (path1 args)))
 
-(defn expand-value [x]
+(defn expand-parser-hint [x]
   (if-let [parser (sym->f x)]
     `(~parser ~(dissoc-parsers x))
     x))
-(defn expand-values [x]
-  (walk/prewalk expand-value x))
 
 (defn with-stack [n [req] body]
   `(binding [*stack* (conj-stack ~(name n) ~req)]
@@ -93,8 +100,8 @@
            ~'path path
            ~'hash path-hash
            {:keys [~'params]} ~req
-           ~'value (fn [x#] (-> x# ~'path keyword ~'params))]
-       ~@(expand-values body))))
+           ~'value (fn [~'& args#] (-> args# path1 keyword ~'params))]
+       ~@(walk/prewalk expand-parser-hint body))))
 
 (defn map-indexed [f s]
   (doall
@@ -119,7 +126,7 @@
 
 (defmacro defcomponent [name args & body]
   `(def ~(vary-meta name assoc :syms (get-syms body))
-     ~(make-f args (with-stack name args body))))
+     ~(make-f name args (with-stack name args body))))
 
 (defn- mapmerge [f s]
   (apply merge (map f s)))

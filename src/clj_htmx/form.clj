@@ -51,9 +51,3 @@
      (if (map? m)
        m
        (map-indexed #(list (str %1) %2) m)))))
-
-(defn- key-map [f m]
-  (zipmap (map f (keys m)) (vals m)))
-
-(defn trim-keys [m]
-  (key-map #(-> % name (.split "_") last keyword) m))
