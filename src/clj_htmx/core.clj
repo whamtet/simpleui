@@ -107,15 +107,16 @@
      (let [~'id (path ".")
            ~'path path
            ~'hash path-hash
-           ~'value (fn [p#] (-> p# path keyword *params*))]
+           ~'value (fn [p#] (-> p# path keyword *params*))
+           ~'hx-request? (= "true" (get-in ~req [:headers "hx-request"]))]
        ~@(walk/prewalk expand-parser-hint body))))
 
 (defmacro update-params [f & body]
   `(binding [*params* (~f *params*)] ~@body))
 
-(defn map-indexed [f s]
+(defn map-indexed [f req s]
   (doall
-    (clojure.core/map-indexed #(binding [*stack* (conj *stack* %1)] (f %1 %2)) s)))
+    (clojure.core/map-indexed #(binding [*stack* (conj *stack* %1)] (f req %1 %2)) s)))
 
 (defn map-range [f req i]
   (->> i
