@@ -7,9 +7,10 @@
     [clojure.walk :as walk]))
 
 (def parse-int #(if (string? %) (Integer/parseInt %) %))
-(def parse-lower #(some-> % .trim .toLowerCase))
-(def parse-trim #(some-> % .trim))
-(def parse-string #(or % ""))
+(def read-strings
+  #(if (string? %)
+     (list (read-string %))
+     (map read-string %)))
 (def parse-boolean
   #(case %
      true true
@@ -23,9 +24,7 @@
 
 (def parsers
   {:int `parse-int
-   :lower `parse-lower
-   :trim `parse-trim
-   :string `parse-string
+   :read `read-strings
    :boolean `parse-boolean
    :boolean-true `parse-boolean-true})
 
@@ -40,6 +39,10 @@
   (apply vary-meta m dissoc (keys parsers)))
 
 (def ^:dynamic *stack* [])
+(def ^:dynamic *params* nil)
+
+(defn get-params [req]
+  (or *params* (:params req)))
 
 (defn conj-stack [n req]
   (let [target (get-in req [:headers "hx-target"])]
@@ -77,17 +80,21 @@
 (defn concat-stack [concat]
   (reduce
     (fn [stack x]
-      (if (= ".." x)
-        (pop stack)
+      (case x
+        ".." (pop stack)
+        "." stack
         (conj stack x)))
     *stack*
     concat))
 
-(defn path1 [args]
-  (->> args concat-stack (string/join "_")))
-(defn path [& args] (path1 args))
-(defn path-hash [& args]
-  (str "#" (path1 args)))
+(defn path [p]
+  (string/join
+    "_"
+    (if (.startsWith p "/")
+      (-> p (.split "/") rest)
+      (-> p (.split "/") concat-stack))))
+(defn path-hash [p]
+  (str "#" (path p)))
 
 (defn expand-parser-hint [x]
   (if-let [parser (sym->f x)]
@@ -95,13 +102,16 @@
     x))
 
 (defn with-stack [n [req] body]
-  `(binding [*stack* (conj-stack ~(name n) ~req)]
-     (let [~'id (path)
+  `(binding [*stack* (conj-stack ~(name n) ~req)
+             *params* (get-params ~req)]
+     (let [~'id (path ".")
            ~'path path
            ~'hash path-hash
-           {:keys [~'params]} ~req
-           ~'value (fn [~'& args#] (-> args# path1 keyword ~'params))]
+           ~'value (fn [p#] (-> p# path keyword *params*))]
        ~@(walk/prewalk expand-parser-hint body))))
+
+(defmacro update-params [f & body]
+  `(binding [*params* (~f *params*)] ~@body))
 
 (defn map-indexed [f s]
   (doall
