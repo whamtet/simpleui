@@ -158,7 +158,7 @@ You may also cast within the body of `defcomponent`
 
 ### Transforming parameters to JSON
 
-htmx submits all parameters as a flat map, however we can use the above naming scheme to transform it into nested json for database access etc.  Simply call `ctmx.form/json-params`
+htmx submits all parameters as a flat map, however we can use the above `path` scheme to transform it into nested json for database access etc.  Simply call `ctmx.form/json-params`
 
 
 ```clojure
@@ -174,7 +174,7 @@ htmx submits all parameters as a flat map, however we can use the above naming s
 ;;              {:customer {:first-name "Jane" :last-name "Doe"}}]}
 ```
 
-`ctmx.form/flatten-json` reflattens the above structure.
+`ctmx.form/flatten-json` reflattens the nested structure.
 
 ### Updating Parameters
 
@@ -183,8 +183,12 @@ A typical use case is that we wish to retrieve parameters from storage on a `GET
 ```clojure
 (defcomponent my-component [req]
   (update-params
-    #(if (-> req :request-method (= :get)) (get-from-db %) %)
+    (fn [params]
+      (if (-> req :request-method (= :get))
+        (get-from-db params)
+        params))
     [:div ...]))
+```
 
 ### Additional Parameters
 
@@ -217,7 +221,9 @@ Be very careful to only include `hx-swap-oob` elements when `hx-request?` is tru
 ### Responses
 
 By default ctmx expects components to return hiccup vectors which are rendered into html.
+
 `nil` returns http **204 - No Content** and htmx will not update the dom.
+
 You may also return an explicit ring map if you wish.  A common use case is to refresh the page after an operation is complete
 
 ```clojure
