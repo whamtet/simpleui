@@ -1,8 +1,8 @@
-(ns clj-htmx.core
+(ns ctmx.core
   (:refer-clojure :exclude [map-indexed])
   (:require
-    [clj-htmx.form :as form]
-    [clj-htmx.render :as render]
+    [ctmx.form :as form]
+    [ctmx.render :as render]
     [clojure.string :as string]
     [clojure.walk :as walk]))
 

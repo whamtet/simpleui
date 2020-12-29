@@ -1,6 +1,6 @@
-(ns clj-htmx.render
+(ns ctmx.render
   (:require
-    [clj-htmx.response :as response]
+    [ctmx.response :as response]
     [hiccup.core :as hiccup]))
 
 (defn snippet-response [body]
