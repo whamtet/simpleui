@@ -102,14 +102,14 @@
     x))
 
 (defn with-stack [n [req] body]
-  `(binding [*stack* (conj-stack ~(name n) ~req)
-             *params* (get-params ~req)]
-     (let [~'id (path ".")
-           ~'path path
-           ~'hash path-hash
-           ~'value (fn [p#] (-> p# path keyword *params*))
-           ~'hx-request? (= "true" (get-in ~req [:headers "hx-request"]))]
-       ~@(walk/prewalk expand-parser-hint body))))
+  `(let [~'top-level? (empty? *stack*)]
+     (binding [*stack* (conj-stack ~(name n) ~req)
+               *params* (get-params ~req)]
+       (let [~'id (path ".")
+             ~'path path
+             ~'hash path-hash
+             ~'value (fn [p#] (-> p# path keyword *params*))]
+         ~@(walk/prewalk expand-parser-hint body)))))
 
 (defmacro update-params [f & body]
   `(binding [*params* (~f *params*)] ~@body))

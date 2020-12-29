@@ -208,7 +208,7 @@ Best to avoid, but sometimes too convenient to resist.  htmx provides the `hx-sw
 ```clojure
 (defcomponent my-component [req]
   (list
-    (when hx-request?
+    (when top-level?
       [:div.side-element
        {:id (path "path/to/side-element)
         :hx-swap-oob "true"}
@@ -216,7 +216,7 @@ Best to avoid, but sometimes too convenient to resist.  htmx provides the `hx-sw
     [:div.main-element {:id id} ...]))
 ```
 
-Be very careful to only include `hx-swap-oob` elements when `hx-request?` is true.
+Be very careful to only include `hx-swap-oob` elements when `top-level?` is true.
 
 ### Responses
 
