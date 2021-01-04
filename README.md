@@ -210,7 +210,7 @@ Best to avoid, but sometimes too convenient to resist.  htmx provides the `hx-sw
   (list
     (when top-level?
       [:div.side-element
-       {:id (path "path/to/side-element)
+       {:id (path "path/to/side-element")
         :hx-swap-oob "true"}
         ...])
     [:div.main-element {:id id} ...]))
