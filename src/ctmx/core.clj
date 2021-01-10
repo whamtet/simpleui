@@ -1,16 +1,13 @@
 (ns ctmx.core
-  (:refer-clojure :exclude [map-indexed])
+  (:refer-clojure :exclude [map-indexed ns-resolve])
   (:require
-    [ctmx.form :as form]
-    [ctmx.render :as render]
     [clojure.string :as string]
-    [clojure.walk :as walk]))
+    [clojure.walk :as walk]
+    [cljs.env :as env]
+    cljs.analyzer.api
+    [ctmx.render :as render]))
 
 (def parse-int #(if (string? %) (Integer/parseInt %) %))
-(def read-strings
-  #(if (string? %)
-     (list (read-string %))
-     (map read-string %)))
 (def parse-boolean
   #(case %
      true true
@@ -24,7 +21,6 @@
 
 (def parsers
   {:int `parse-int
-   :read `read-strings
    :boolean `parse-boolean
    :boolean-true `parse-boolean-true})
 
@@ -147,17 +143,37 @@
 (defn- mapmerge [f s]
   (apply merge (map f s)))
 
+(defn ns-resolve-clj [ns sym]
+  (when-let [v (clojure.core/ns-resolve ns sym)]
+    (as-> (meta v) m
+          (assoc m :ns-name (-> m :ns ns-name)))))
+
+(defn ns-resolve-cljs [ns sym]
+  (when-let [{:keys [name syms] :as m} (cljs.analyzer.api/ns-resolve ns sym)]
+    (let [[ns name] (-> name str (.split "/"))]
+      (assoc m
+        :name (symbol name)
+        :syms (map second syms) ;;confusing
+        :ns (symbol ns)
+        :ns-name (symbol ns)))))
+
+(defn ns-resolve [ns sym]
+  ((if env/*compiler* ns-resolve-cljs ns-resolve-clj) ns sym))
+
 (defn extract-endpoints
-  ([sym] (extract-endpoints *ns* sym #{}))
+  ([sym]
+   (extract-endpoints
+     (if env/*compiler* (ns-name *ns*) *ns*)
+     sym
+     #{}))
   ([ns sym exclusions]
-   (when-let [v (ns-resolve ns sym)]
-     (let [{:keys [name endpoint syms ns]} (meta v)
-           exclusions (conj exclusions name)
+   (when-let [{:keys [ns ns-name name syms endpoint]} (ns-resolve ns sym)]
+     (let [exclusions (conj exclusions name)
            mappings (->> syms
                          (remove exclusions)
                          (mapmerge #(extract-endpoints ns % exclusions)))]
        (if endpoint
-         (assoc mappings name v)
+         (assoc mappings name ns-name)
          mappings)))))
 
 (defn extract-endpoints-root [f]
@@ -168,9 +184,9 @@
        (mapmerge extract-endpoints)))
 
 (defn extract-endpoints-all [f]
-  (for [[sym v] (extract-endpoints-root f)
-        :let [full-symbol (symbol (-> v .ns ns-name str) (str sym))]]
-    [(str "/" sym) `(fn [x#] (-> x# ~full-symbol render/snippet-response))]))
+  (for [[name ns-name] (extract-endpoints-root f)
+        :let [full-symbol (symbol (str ns-name) (str name))]]
+    [(str "/" name) `(fn [x#] (-> x# ~full-symbol render/snippet-response))]))
 
 (defmacro make-routes [root f]
   `[[~root {:get ~f}]

@@ -53,7 +53,7 @@
        (map-indexed #(list (str %1) %2) m)))))
 
 (defn apply-params [params f & args]
-  (-> params
-      json-params
-      (#(apply f % args))
-      flatten-json))
+  (as-> params $
+        (json-params $)
+        (apply f $ args)
+        (flatten-json $)))
