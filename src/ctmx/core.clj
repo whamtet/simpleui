@@ -96,11 +96,6 @@
 (defn path-hash [p]
   (str "#" (path p)))
 
-(defn expand-parser-hint [x]
-  (if-let [parser (sym->f x)]
-    `(~parser ~(dissoc-parsers x))
-    x))
-
 (defn with-stack [n [req] body]
   `(let [~'top-level? (empty? *stack*)]
      (binding [*stack* (conj-stack ~(name n) ~req)
@@ -109,7 +104,14 @@
              ~'path path
              ~'hash path-hash
              ~'value (fn [p#] (-> p# path keyword *params*))]
-         ~@(walk/prewalk expand-parser-hint body)))))
+         ~@body))))
+
+(defn expand-parser-hint [x]
+  (if-let [parser (sym->f x)]
+    `(~parser ~(dissoc-parsers x))
+    x))
+(defn expand-parser-hints [x]
+  (walk/prewalk expand-parser-hint x))
 
 (defmacro update-params [f & body]
   `(binding [*params* (~f *params*)] ~@body))
@@ -137,7 +139,10 @@
 
 (defmacro defcomponent [name args & body]
   `(def ~(vary-meta name assoc :syms (get-syms body))
-     ~(make-f name args (with-stack name args body))))
+     ~(->> body
+           expand-parser-hints
+           (with-stack name args)
+           (make-f name args))))
 
 (defn- mapmerge [f s]
   (apply merge (map f s)))
