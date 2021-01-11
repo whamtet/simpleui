@@ -1,9 +1,11 @@
-(ns ctmx.core
+(ns ctmx.rt
   (:refer-clojure :exclude [map-indexed])
   (:require
     [clojure.string :as string]))
 
-(def parse-int #(if (string? %) (js/Number %) %))
+(def parse-int #(if (string? %)
+                  (#?(:clj Integer/parseInt :cljs js/Number) %)
+                  %))
 (def parse-boolean
   #(case %
      true true

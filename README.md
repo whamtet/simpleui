@@ -94,7 +94,7 @@ ctmx uses the id of the component being updated to set `path` consistently.
 
 ### Component Arrays
 
-`path` also includes array indices.  Instead of using `clojure.core/map` use `ctmx.core/map-indexed`.
+`path` also includes array indices.  Instead of using `clojure.core/map` use `ctmx.rt/map-indexed`.
 
 
 ```clojure
@@ -104,7 +104,7 @@ ctmx uses the id of the component being updated to set `path` consistently.
 ...
 
 [:table
-  (map-indexed table-row req table-data)]
+  (rt/map-indexed table-row req table-data)]
 ```
 
 ### Lazy Evaluation
@@ -125,7 +125,7 @@ Another `path` related issue.  It is important to expand all arrays in place, no
 (value "../sibling-component/parameter")
 ````
 
-Be careful when using `ctmx.core/map-indexed`
+Be careful when using `ctmx.rt/map-indexed`
 
 ```clojure
 ;; called from within array component

@@ -5,24 +5,13 @@
     [clojure.walk :as walk]
     [cljs.env :as env]
     cljs.analyzer.api
-    [ctmx.render :as render]))
-
-(def parse-int #(if (string? %) (Integer/parseInt %) %))
-(def parse-boolean
-  #(case %
-     true true
-     false false
-     (contains? #{"true" "on"} %)))
-(def parse-boolean-true
-  #(case %
-     true true
-     false false
-     (not= "false" %)))
+    [ctmx.render :as render]
+    [ctmx.rt :as rt]))
 
 (def parsers
-  {:int `parse-int
-   :boolean `parse-boolean
-   :boolean-true `parse-boolean-true})
+  {:int `rt/parse-int
+   :boolean `rt/parse-boolean
+   :boolean-true `rt/parse-boolean-true})
 
 (defn sym->f [sym]
   (when-let [meta (meta sym)]
@@ -34,25 +23,6 @@
 (defn dissoc-parsers [m]
   (apply vary-meta m dissoc (keys parsers)))
 
-(def ^:dynamic *stack* [])
-(def ^:dynamic *params* nil)
-
-(defn get-params [req]
-  (or *params* (:params req)))
-
-(defn conj-stack [n req]
-  (let [target (get-in req [:headers "hx-target"])]
-    (if (and (empty? *stack*) target)
-      (-> target (.split "_") vec)
-      (conj *stack* n))))
-
-(defn get-value [params stack value]
-  (->> value
-       (conj stack)
-       (string/join "_")
-       keyword
-       params))
-
 (defn- make-f [n args expanded]
   (case (count args)
     0 (throw (Exception. "zero args not supported"))
@@ -60,11 +30,11 @@
     `(fn this#
        (~(subvec args 0 1)
          (let [{:keys [~'params]} ~(args 0)
-               ~'stack (conj-stack ~(name n) ~(args 0))]
+               ~'stack (rt/conj-stack ~(name n) ~(args 0))]
            (this#
              ~(args 0)
              ~@(for [arg (rest args)]
-                 `(get-value ~'params ~'stack ~(str arg))))))
+                 `(rt/get-value ~'params ~'stack ~(str arg))))))
        (~args
          (let [~@(for [sym (rest args)
                        :let [f (sym->f sym)]
@@ -73,33 +43,14 @@
                    x)]
            ~expanded)))))
 
-(defn concat-stack [concat]
-  (reduce
-    (fn [stack x]
-      (case x
-        ".." (pop stack)
-        "." stack
-        (conj stack x)))
-    *stack*
-    concat))
-
-(defn path [p]
-  (string/join
-    "_"
-    (if (.startsWith p "/")
-      (-> p (.split "/") rest)
-      (-> p (.split "/") concat-stack))))
-(defn path-hash [p]
-  (str "#" (path p)))
-
 (defn with-stack [n [req] body]
-  `(let [~'top-level? (empty? *stack*)]
-     (binding [*stack* (conj-stack ~(name n) ~req)
-               *params* (get-params ~req)]
-       (let [~'id (path ".")
-             ~'path path
-             ~'hash path-hash
-             ~'value (fn [p#] (-> p# path keyword *params*))]
+  `(let [~'top-level? (empty? rt/*stack*)]
+     (binding [rt/*stack* (rt/conj-stack ~(name n) ~req)
+               rt/*params* (rt/get-params ~req)]
+       (let [~'id (rt/path ".")
+             ~'path rt/path
+             ~'hash rt/path-hash
+             ~'value (fn [p#] (-> p# rt/path keyword rt/*params*))]
          ~@body))))
 
 (defn expand-parser-hint [x]
@@ -110,18 +61,7 @@
   (walk/prewalk expand-parser-hint x))
 
 (defmacro update-params [f & body]
-  `(binding [*params* (~f *params*)] ~@body))
-
-(defn map-indexed [f req s]
-  (doall
-    (clojure.core/map-indexed #(binding [*stack* (conj *stack* %1)] (f req %1 %2)) s)))
-
-(defn map-range [f req i]
-  (->> i
-       parse-int
-       range
-       (map #(binding [*stack* (conj *stack* %)] (f req %)))
-       doall))
+  `(binding [rt/*params* (~f rt/*params*)] ~@body))
 
 (defmacro forall [& args]
   `(doall (for ~@args)))
