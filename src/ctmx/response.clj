@@ -12,3 +12,6 @@
   {:status 200
    :headers {"HX-Redirect" redirect}
    :body ""})
+
+(defn redirect [location]
+  {:status 302, :headers {"Location" location}, :body ""})

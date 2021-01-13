@@ -14,3 +14,9 @@
     {:statusCode 200
      :headers {"HX-Redirect" redirect}
      :body ""}))
+
+(defn redirect [location]
+  (clj->js
+    {:statusCode 302,
+     :headers {"Location" location},
+     :body ""}))

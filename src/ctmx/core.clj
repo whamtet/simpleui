@@ -6,6 +6,7 @@
     [cljs.env :as env]
     cljs.analyzer.api
     [ctmx.render :as render]
+    [ctmx.response :as response]
     [ctmx.rt :as rt]))
 
 (def parsers
@@ -34,7 +35,9 @@
            (this#
              ~(args 0)
              ~@(for [arg (rest args)]
-                 `(rt/get-value ~'params ~'stack ~(str arg))))))
+                 (if (-> arg meta :simple)
+                   `(~(keyword arg) ~'params)
+                   `(rt/get-value ~'params ~'stack ~(str arg)))))))
        (~args
          (let [~@(for [sym (rest args)
                        :let [f (sym->f sym)]
@@ -128,9 +131,17 @@
         :let [full-symbol (symbol (str ns-name) (str name))]]
     [(str "/" name) `(fn [x#] (-> x# ~full-symbol render/snippet-response))]))
 
+(defn strip-slash [root]
+  (if (.endsWith root "/")
+    [(.substring root 0 (dec (count root))) root]
+    [root (str root "/")]))
+
 (defmacro make-routes [root f]
-  `[[~root {:get ~f}]
-    ~@(extract-endpoints-all f)])
+  (let [[short full] (strip-slash root)]
+    `[~short
+      ["" {:get (fn [req#] (response/redirect ~full))}]
+      ["/" {:get ~f}]
+      ~@(extract-endpoints-all f)]))
 
 (defmacro with-req [req & body]
   `(let [{:keys [~'request-method]} ~req

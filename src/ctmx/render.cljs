@@ -1,21 +1,8 @@
 (ns ctmx.render
   (:require
-    [clojure.walk :as walk]
     [ctmx.response :as response]
     [hiccups.runtime :as hiccupsrt])
   (:require-macros [hiccups.core :as hiccups]))
-
-(defn write-str [s]
-  (-> s clj->js js/JSON.stringify))
-
-(defn expand-hx-val [v]
-  (if (and
-        (vector? v)
-        (-> v first (= :hx-vals)))
-    (update v 1 write-str)
-    v))
-(defn expand-hx-vals [body]
-  (walk/postwalk expand-hx-val body))
 
 (defn snippet-response [body]
   (cond
