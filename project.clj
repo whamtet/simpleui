@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [hiccup "1.0.5"]
                  [org.clojure/clojurescript "1.10.773"]
-                 [hiccups "0.4.0-SNAPSHOT"]
+                 [macchiato/hiccups "0.4.1"]
                  ;; TODO reitit-ring
                  [metosin/reitit "0.5.11"]]
   :repl-options {:init-ns ctmx.core}

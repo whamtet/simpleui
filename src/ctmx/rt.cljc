@@ -1,7 +1,8 @@
 (ns ctmx.rt
   (:refer-clojure :exclude [map-indexed])
   (:require
-    [clojure.string :as string]))
+    [clojure.string :as string]
+    [ctmx.response :as response]))
 
 (def parse-int #(if (string? %)
                   (#?(:clj Integer/parseInt :cljs js/Number) %)
@@ -65,3 +66,10 @@
        range
        (map #(binding [*stack* (conj *stack* %)] (f req %)))
        doall))
+
+(defn redirect [path]
+  (fn [req]
+    (->> req
+         :query-string
+         (str path "?")
+         response/redirect)))

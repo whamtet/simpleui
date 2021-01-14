@@ -6,7 +6,6 @@
     [cljs.env :as env]
     cljs.analyzer.api
     [ctmx.render :as render]
-    [ctmx.response :as response]
     [ctmx.rt :as rt]))
 
 (def parsers
@@ -139,7 +138,7 @@
 (defmacro make-routes [root f]
   (let [[short full] (strip-slash root)]
     `[~short
-      ["" {:get (fn [req#] (response/redirect ~full))}]
+      ["" {:get (rt/redirect ~full)}]
       ["/" {:get ~f}]
       ~@(extract-endpoints-all f)]))
 
