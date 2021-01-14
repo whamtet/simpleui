@@ -7,6 +7,9 @@
 (def parse-int #(if (string? %)
                   (#?(:clj Integer/parseInt :cljs js/Number) %)
                   %))
+(def parse-float #(if (string? %)
+                    (#?(:clj Float/parseFloat :cljs js/Number) %)
+                    %))
 (def parse-boolean
   #(case %
      true true

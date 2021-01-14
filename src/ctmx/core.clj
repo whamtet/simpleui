@@ -10,6 +10,7 @@
 
 (def parsers
   {:int `rt/parse-int
+   :float `rt/parse-float
    :boolean `rt/parse-boolean
    :boolean-true `rt/parse-boolean-true})
 
@@ -143,7 +144,7 @@
       ~@(extract-endpoints-all f)]))
 
 (defmacro with-req [req & body]
-  `(let [{:keys [~'request-method]} ~req
+  `(let [{:keys [~'request-method ~'session]} ~req
          ~'get? (= :get ~'request-method)
          ~'post? (= :post ~'request-method)
          ~'put? (= :put ~'request-method)
