@@ -12,6 +12,8 @@ ctmx is a backend accompaniment which makes htmx even easier to use.  It works i
 
 [ctmx-demo.herokuapp.com](https://ctmx-demo.herokuapp.com/), source [here](https://github.com/whamtet/ctmx-demo).  First request wakes up Heroku so a bit slow, after that you get an accurate idea of performance.
 
+[Auction](https://whamtet-auction.herokuapp.com/), source [here](https://github.com/whamtet/auction) is a more fleshed out auction app.
+
 ## Usage
 
 First require the library
