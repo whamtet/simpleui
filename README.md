@@ -240,6 +240,16 @@ You may also return an explicit ring map if you wish.  A common use case is to r
 
 `ctmx.response/hx-refresh` sets the "HX-Refresh" header to "true" and htmx will refresh the page.
 
+### Extra hints
+
+htmx does not include disabled fields when submitting requests.  If you wish to retain state in this case use the following pattern.
+
+```clojure
+[:input {:type "text" :name (path "input") :value (value "input") :disabled disabled?}]
+(when disabled?
+  [:input {:type "hidden" :name (path "input") :value (value "input")}])
+```
+
 ## License
 
 Copyright © 2020 Matthew Molloy
