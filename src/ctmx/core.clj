@@ -24,20 +24,30 @@
 (defn dissoc-parsers [m]
   (apply vary-meta m dissoc (keys parsers)))
 
+(defn- get-symbol [s]
+  (if (symbol? s)
+    s
+    (do
+      (-> s :as symbol? assert)
+      (:as s))))
+
+(defn- expand-params [arg]
+  (let [symbol (get-symbol arg)]
+    (if (-> arg meta :simple)
+      `(~(keyword symbol) ~'params)
+      `(rt/get-value ~'params ~'stack ~(str symbol)))))
+
 (defn- make-f [n args expanded]
   (case (count args)
     0 (throw (Exception. "zero args not supported"))
     1 `(fn ~args ~expanded)
     `(fn this#
-       (~(subvec args 0 1)
-         (let [{:keys [~'params]} ~(args 0)
-               ~'stack (rt/conj-stack ~(name n) ~(args 0))]
+       ([req#]
+         (let [{:keys [~'params]} req#
+               ~'stack (rt/conj-stack ~(name n) req#)]
            (this#
-             ~(args 0)
-             ~@(for [arg (rest args)]
-                 (if (-> arg meta :simple)
-                   `(~(keyword arg) ~'params)
-                   `(rt/get-value ~'params ~'stack ~(str arg)))))))
+             req#
+             ~@(map expand-params (rest args)))))
        (~args
          (let [~@(for [sym (rest args)
                        :let [f (sym->f sym)]
@@ -46,10 +56,10 @@
                    x)]
            ~expanded)))))
 
-(defn with-stack [n [req] body]
+(defn- with-stack [n [req] body]
   `(let [~'top-level? (empty? rt/*stack*)]
-     (binding [rt/*stack* (rt/conj-stack ~(name n) ~req)
-               rt/*params* (rt/get-params ~req)]
+     (binding [rt/*stack* (rt/conj-stack ~(name n) ~(get-symbol req))
+               rt/*params* (rt/get-params ~(get-symbol req))]
        (let [~'id (rt/path ".")
              ~'path rt/path
              ~'hash rt/path-hash
