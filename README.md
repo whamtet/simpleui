@@ -14,6 +14,8 @@ ctmx is a backend accompaniment which makes htmx even easier to use.  It works i
 
 [Auction](https://whamtet-auction.herokuapp.com/), source [here](https://github.com/whamtet/auction) is a more fleshed out auction app.
 
+[ctmx-static](https://ctmx.netlify.app), source [here](https://github.com/whamtet/ctmx-static) demonstrates how to use ctmx on a frontend-only website.
+
 ## Usage
 
 First require the library
