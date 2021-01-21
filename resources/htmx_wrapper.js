@@ -9,8 +9,7 @@ document.body.addEventListener('htmx:beforeRequest', function(info) {
 });
 
 document.body.addEventListener('htmx:beforeSwap', function(info) {
-  const xhr = info.detail.xhr;
-  toSwap = eval(xhr.response)(params);
+  toSwap = eval(info.detail.xhr.response + '_static')(params);
   if (toSwap === undefined) {
     info.preventDefault();
   }
