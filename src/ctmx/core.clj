@@ -133,22 +133,32 @@
        flatten
        (filter symbol?)
        distinct
-       (mapmerge extract-endpoints)
-       (map (fn [[name ns-name]]
-              (symbol (str ns-name) (str name))))))
+       (mapmerge extract-endpoints)))
+
+(defn join-symbols [name ns-name]
+  (symbol (str ns-name) (str name)))
+
+(defn stringify-symbol [[name ns-name]]
+  (->
+    (str ns-name "/" name)
+    (.replace "-" "_")))
+(defn extract-endpoints-str [f]
+  (->> f
+       extract-endpoints-root
+       (mapv stringify-symbol)))
 
 (defn extract-endpoints-all [f]
-  (for [full-symbol (extract-endpoints-root f)]
-    [(str "/" name) `(fn [x#] (-> x# ~full-symbol render/snippet-response))]))
+  (for [[name ns-name] (extract-endpoints-root f)]
+    [(str "/" name) `(fn [x#] (-> x# ~(join-symbols name ns-name) render/snippet-response))]))
 
 (defn wrap-endpoints-all [f]
-  (for [full-symbol (extract-endpoints-root f)]
+  (for [[name ns-name] (extract-endpoints-root f)]
     `(def
-       ~(-> full-symbol
+       ~(-> name
             (str "-static")
             symbol
             (with-meta {:export true}))
-       (render/wrap-response ~full-symbol))))
+       (render/wrap-response ~(join-symbols name ns-name)))))
 
 (defn strip-slash [root]
   (if (.endsWith root "/")
@@ -163,16 +173,12 @@
       ~@(extract-endpoints-all f)]))
 
 (defmacro defstatic [name args & children]
-  (doseq [s (extract-endpoints-root children)
-          :let [s (str s)
-                u (-> s (.replace "-" "_") (.replace "/" "."))
-                [_ name] (.split s "/")]]
-    (spit name (str u "_static")))
   (if env/*compiler*
     `(do
        ~@(wrap-endpoints-all children))
     `(defn ~name ~args
-       (render/html5 ~@children))))
+       {:text (render/html5 ~@children)
+        :endpoints ~(extract-endpoints-str children)})))
 
 (defmacro with-req [req & body]
   `(let [{:keys [~'request-method ~'session]} ~req

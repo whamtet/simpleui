@@ -39,7 +39,7 @@
        (conj stack)
        (string/join "_")
        keyword
-       params))
+       (get params)))
 
 (defn concat-stack [concat]
   (reduce
