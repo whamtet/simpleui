@@ -10,5 +10,6 @@
                  ;; TODO reitit-ring
                  [metosin/reitit "0.5.11"]]
   :repl-options {:init-ns ctmx.core}
+  :resource-paths ["resources"]
   :repositories [["snapshots" {:url "https://repo.clojars.org" :creds :gpg}
                   "releases" {:url "https://repo.clojars.org" :creds :gpg}]])

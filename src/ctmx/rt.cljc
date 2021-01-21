@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [map-indexed])
   (:require
     [clojure.string :as string]
+    #?(:cljs [ctmx.render :as render])
     [ctmx.response :as response]))
 
 (def parse-int #(if (string? %)

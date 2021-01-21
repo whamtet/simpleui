@@ -12,7 +12,7 @@
 (defn keywordize-lower [m]
   (key-map #(-> % .toLowerCase keyword) m))
 
-(defn e->ring [event]
+(defn lambda->ring [event]
   (let [{:keys [headers rawPath rawQueryString requestContext body]} (-> event js->clj keywordize)
         headers-kw (keywordize-lower headers)]
     {:server-port (some-> headers-kw :x-forwarded-port js/Number)
@@ -28,5 +28,5 @@
 
 (defn lambda-handler [router]
   (let [handler (-> router ring/router ring/ring-handler)]
-    (fn [event]
-      (-> event e->ring handler))))
+    #(-> % lambda->ring handler)))
+

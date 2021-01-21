@@ -10,8 +10,9 @@
     (map? body) body
     :else (-> body expand-hx-vals hiccups/html response/html-response)))
 
-(defn html5 [& body]
-  (hiccups/html5
-    body
-    [:script {:src "https://unpkg.com/htmx.org@1.1.0"}]
-    [:script {:src "https://unpkg.com/htmx.org@1.1.0/dist/ext/json-enc.js"}]))
+(defn wrap-response [f]
+  #(->> %
+        js->clj
+        (array-map :params)
+        f
+        hiccups/html))

@@ -1,7 +1,6 @@
 (ns ctmx.core
   (:refer-clojure :exclude [map-indexed ns-resolve])
   (:require
-    [clojure.string :as string]
     [clojure.walk :as walk]
     [cljs.env :as env]
     cljs.analyzer.api
@@ -43,11 +42,11 @@
     1 `(fn ~args ~expanded)
     `(fn this#
        ([req#]
-         (let [{:keys [~'params]} req#
-               ~'stack (rt/conj-stack ~(name n) req#)]
-           (this#
-             req#
-             ~@(map expand-params (rest args)))))
+        (let [{:keys [~'params]} req#
+              ~'stack (rt/conj-stack ~(name n) req#)]
+          (this#
+            req#
+            ~@(map expand-params (rest args)))))
        (~args
          (let [~@(for [sym (rest args)
                        :let [f (sym->f sym)]
@@ -134,12 +133,22 @@
        flatten
        (filter symbol?)
        distinct
-       (mapmerge extract-endpoints)))
+       (mapmerge extract-endpoints)
+       (map (fn [[name ns-name]]
+              (symbol (str ns-name) (str name))))))
 
 (defn extract-endpoints-all [f]
-  (for [[name ns-name] (extract-endpoints-root f)
-        :let [full-symbol (symbol (str ns-name) (str name))]]
+  (for [full-symbol (extract-endpoints-root f)]
     [(str "/" name) `(fn [x#] (-> x# ~full-symbol render/snippet-response))]))
+
+(defn wrap-endpoints-all [f]
+  (for [full-symbol (extract-endpoints-root f)]
+    `(def
+       ~(-> full-symbol
+            (str "-static")
+            symbol
+            (with-meta {:export true}))
+       (render/wrap-response ~full-symbol))))
 
 (defn strip-slash [root]
   (if (.endsWith root "/")
@@ -152,6 +161,18 @@
       ["" {:get (rt/redirect ~full)}]
       ["/" {:get ~f}]
       ~@(extract-endpoints-all f)]))
+
+(defmacro defstatic [name args & children]
+  (doseq [s (extract-endpoints-root children)
+          :let [s (str s)
+                u (-> s (.replace "-" "_") (.replace "/" "."))
+                [_ name] (.split s "/")]]
+    (spit name (str u "_static")))
+  (if env/*compiler*
+    `(do
+       ~@(wrap-endpoints-all children))
+    `(defn ~name ~args
+       (render/html5 ~@children))))
 
 (defmacro with-req [req & body]
   `(let [{:keys [~'request-method ~'session]} ~req
