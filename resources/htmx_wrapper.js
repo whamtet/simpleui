@@ -16,7 +16,7 @@ document.body.addEventListener('htmx:beforeSwap', function(info) {
   }
 });
 
-htmx.defineExtension('my-ext', {
+htmx.defineExtension('static', {
   transformResponse: function(text, xhr, elt) {
     return toSwap;
   }
