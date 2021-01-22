@@ -1,6 +1,7 @@
 (ns ctmx.render
   (:require
     [clojure.walk :as walk]
+    [ctmx.handler :as handler]
     [ctmx.response :as response]
     [hiccups.runtime :as hiccupsrt])
   (:require-macros [hiccups.core :as hiccups]))
@@ -15,6 +16,6 @@
   #(->> %
         js->clj
         walk/keywordize-keys
-        (array-map :params)
+        handler/coerce-static
         f
         hiccups/html))

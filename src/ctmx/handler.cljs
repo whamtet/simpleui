@@ -6,7 +6,7 @@
   (zipmap (map f (keys m)) (vals m)))
 
 (defn lowercaseize [m]
-  (key-map #(.toLowerCase %) m))
+  (key-map #(-> % name .toLowerCase) m))
 (defn keywordize [m]
   (key-map keyword m))
 (defn keywordize-lower [m]
@@ -29,4 +29,11 @@
 (defn lambda-handler [router]
   (let [handler (-> router ring/router ring/ring-handler)]
     #(-> % lambda->ring handler)))
+
+(defn coerce-static [{:keys [headers
+                             parameters
+                             verb]}]
+  {:headers (lowercaseize headers)
+   :params parameters
+   :request-method (keyword verb)})
 

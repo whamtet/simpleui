@@ -1,12 +1,12 @@
-var params;
+var requestConfig;
 var toSwap;
 
 document.body.addEventListener('htmx:beforeRequest', function(info) {
-  params = info.detail.requestConfig.parameters;
+  requestConfig = info.detail.requestConfig;
 });
 
 document.body.addEventListener('htmx:beforeSwap', function(info) {
-  toSwap = eval(info.detail.xhr.response + '_static')(params);
+  toSwap = eval(info.detail.xhr.response + '_static')(requestConfig);
   if (toSwap === undefined) {
     info.preventDefault();
   }

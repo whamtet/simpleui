@@ -177,6 +177,7 @@
 (defmacro defstatic [name args & children]
   (if env/*compiler*
     `(do
+       (defn ~name ~args) ;;place holder
        ~@(wrap-endpoints-all children))
     `(defn ~name ~args
        {:text (render/html5 ~@children)
