@@ -1,6 +1,3 @@
-htmx.config.defaultSettleDelay = 0;
-htmx.config.defaultSwapStyle = 'outerHTML';
-
 var params;
 var toSwap;
 

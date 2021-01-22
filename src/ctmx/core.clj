@@ -5,7 +5,9 @@
     [cljs.env :as env]
     cljs.analyzer.api
     [ctmx.render :as render]
-    [ctmx.rt :as rt]))
+    [ctmx.rt :as rt])
+  (:import
+    java.io.File))
 
 (def parsers
   {:int `rt/parse-int
@@ -179,6 +181,15 @@
     `(defn ~name ~args
        {:text (render/html5 ~@children)
         :endpoints ~(extract-endpoints-str children)})))
+
+(defn spit-static [prefix to-spit]
+  (doseq [[endpoint {:keys [text endpoints]}] to-spit]
+    (let [subdir (File. (str prefix endpoint))]
+      (.mkdirs subdir)
+      (spit (File. subdir "index.html") text)
+      (doseq [endpoint endpoints
+              :let [[_ name] (.split endpoint "/")]]
+        (spit (File. subdir name) (.replace endpoint "/" "."))))))
 
 (defmacro with-req [req & body]
   `(let [{:keys [~'request-method ~'session]} ~req
