@@ -20,12 +20,15 @@
       :else m)
     m))
 
+(defn first-val [[s]]
+  (#?(:clj Integer/parseInt :cljs js/Number) s))
+
 (defn vectorize-map [m]
   (if (and
         (map? m)
         (not-empty m)
         (every? #(re-find #"^\d+$" %) (keys m)))
-    (->> m (sort-by #(-> % first Integer/parseInt)) (mapv second))
+    (->> m (sort-by first-val) (mapv second))
     m))
 
 (defn json-params [params]
