@@ -50,30 +50,31 @@
       :else
       `(rt/get-value ~'params ~'stack ~(str symbol)))))
 
-(defn- make-f [n pre-f args expanded]
-  (case (count args)
-    0 (throw (Exception. "zero args not supported"))
-    1
-    (if pre-f
-      `(fn ~args
-         (let [~(args 0) (update ~(args 0) :params ~pre-f)] ~expanded))
-      `(fn ~args ~expanded))
-    `(fn this#
-       ([~'req]
-        (let [req# ~(if pre-f `(update ~'req :params ~pre-f) 'req)
-              {:keys [~'params ~'stack]} (rt/conj-stack ~(name n) req#)
-              ~'params ~(if pre-f `(~pre-f ~'params) 'params)
-              ~'json ~(when (some json? args) `(form/json-params ~'params ~'stack))]
-          (this#
-            req#
-            ~@(map expand-params (rest args)))))
-       (~args
-         (let [~@(for [sym (rest args)
-                       :let [f (sym->f sym)]
-                       :when f
-                       x [sym `(~f ~sym)]]
-                   x)]
-           ~expanded)))))
+(defn- make-f [n args expanded]
+  (let [pre-f (-> n meta :params)]
+    (case (count args)
+      0 (throw (Exception. "zero args not supported"))
+      1
+      (if pre-f
+        `(fn ~args
+           (let [~(args 0) (update ~(args 0) :params form/apply-params ~pre-f)] ~expanded))
+        `(fn ~args ~expanded))
+      `(fn this#
+         ([~'req]
+          (let [req# ~(if pre-f `(update ~'req :params form/apply-params ~pre-f) 'req)
+                {:keys [~'params ~'stack]} (rt/conj-stack ~(name n) req#)
+                ~'params ~(if pre-f `(~pre-f ~'params) 'params)
+                ~'json ~(when (some json? args) `(form/json-params ~'params ~'stack))]
+            (this#
+              req#
+              ~@(map expand-params (rest args)))))
+         (~args
+           (let [~@(for [sym (rest args)
+                         :let [f (sym->f sym)]
+                         :when f
+                         x [sym `(~f ~sym)]]
+                     x)]
+             ~expanded))))))
 
 (defn- with-stack [n [req] body]
   (let [req (get-symbol req)]
@@ -100,15 +101,11 @@
        (mapv #(list 'quote %))))
 
 (defmacro defcomponent [name args & body]
-  (let [[pre-f args body]
-        (if (vector? args)
-          [nil args body]
-          [args (first body) (rest body)])]
-    `(def ~(vary-meta name assoc :syms (get-syms body))
-       ~(->> body
-             expand-parser-hints
-             (with-stack name args)
-             (make-f name pre-f args)))))
+  `(def ~(vary-meta name assoc :syms (get-syms body))
+     ~(->> body
+           expand-parser-hints
+           (with-stack name args)
+           (make-f name args))))
 
 (defn- mapmerge [f s]
   (apply merge (map f s)))
