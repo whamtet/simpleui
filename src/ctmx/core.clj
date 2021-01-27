@@ -5,6 +5,7 @@
     [clojure.walk :as walk]
     [cljs.env :as env]
     cljs.analyzer.api
+    [ctmx.form :as form]
     [ctmx.render :as render]
     [ctmx.rt :as rt]))
 
@@ -30,20 +31,39 @@
     (do
       (-> s :as symbol? assert)
       (:as s))))
+(defn- get-symbol-safe [s]
+  (if (symbol? s)
+    s
+    (:as s)))
 
+(def ^:private simple? #(-> % meta :simple))
+(def ^:private json? #(-> % meta :json))
 (defn- expand-params [arg]
-  (let [symbol (get-symbol arg)]
-    (if (-> arg meta :simple)
+  (let [symbol (get-symbol-safe arg)]
+    (cond
+      (not symbol)
+      nil
+      (simple? arg)
       `(~(keyword symbol) ~'params)
+      (json? arg)
+      `(~(keyword symbol) ~'json)
+      :else
       `(rt/get-value ~'params ~'stack ~(str symbol)))))
 
-(defn- make-f [n args expanded]
+(defn- make-f [n pre-f args expanded]
   (case (count args)
     0 (throw (Exception. "zero args not supported"))
-    1 `(fn ~args ~expanded)
+    1
+    (if pre-f
+      `(fn ~args
+         (let [~(args 0) (update ~(args 0) :params ~pre-f)] ~expanded))
+      `(fn ~args ~expanded))
     `(fn this#
-       ([req#]
-        (let [{:keys [~'params ~'stack]} (rt/conj-stack ~(name n) req#)]
+       ([~'req]
+        (let [req# ~(if pre-f `(update ~'req :params ~pre-f) 'req)
+              {:keys [~'params ~'stack]} (rt/conj-stack ~(name n) req#)
+              ~'params ~(if pre-f `(~pre-f ~'params) 'params)
+              ~'json ~(when (some json? args) `(form/json-params ~'params ~'stack))]
           (this#
             req#
             ~@(map expand-params (rest args)))))
@@ -80,11 +100,15 @@
        (mapv #(list 'quote %))))
 
 (defmacro defcomponent [name args & body]
-  `(def ~(vary-meta name assoc :syms (get-syms body))
-     ~(->> body
-           expand-parser-hints
-           (with-stack name args)
-           (make-f name args))))
+  (let [[pre-f args body]
+        (if (vector? args)
+          [nil args body]
+          [args (first body) (rest body)])]
+    `(def ~(vary-meta name assoc :syms (get-syms body))
+       ~(->> body
+             expand-parser-hints
+             (with-stack name args)
+             (make-f name pre-f args)))))
 
 (defn- mapmerge [f s]
   (apply merge (map f s)))
