@@ -109,15 +109,6 @@ ctmx uses the id of the component being updated to set `path` consistently.
   (rt/map-indexed table-row req table-data)]
 ```
 
-### Lazy Evaluation
-
-Another `path` related issue.  It is important to expand all arrays in place, no lazy evaluation.  Instead of `clojure.core/for` use `ctmx.core/forall`.
-
-```clojure
-(forall [customer customers]
-  [:div.customer ...])
-```
-
 ### relative paths
 
 `path` and `value` are set based on the call path to each component.  To reference paths and values of other components use relative paths.
@@ -166,31 +157,17 @@ htmx submits all parameters as a flat map, however we can use the above `path` s
 ```clojure
 (json-params
   {:store-name "My Store"
-   :customers_0_customer_first-name "Joe"
-   :customers_0_customer_last-name "Smith"
-   :customers_1_customer_first-name "Jane"
-   :customers_1_customer_last-name "Doe"})
+   :customers_0_first-name "Joe"
+   :customers_0_last-name "Smith"
+   :customers_1_first-name "Jane"
+   :customers_1_last-name "Doe"})
 
 ;; {:store-name "My Store"
-;;  :customers [{:customer {:first-name "Joe" :last-name "Smith"}}
-;;              {:customer {:first-name "Jane" :last-name "Doe"}}]}
+;;  :customers [{:first-name "Joe" :last-name "Smith"}
+;;              {:first-name "Jane" :last-name "Doe"}]}
 ```
 
 `ctmx.form/flatten-json` reflattens the nested structure.
-
-### Updating Parameters
-
-A typical use case is that we wish to retrieve parameters from storage on a `GET` request and use client parameters on subsequent `PATCH` or `POST` requests.  Parameters are dynamically bound, to update them use the `ctmx.core/update-params` macro
-
-```clojure
-(defcomponent my-component [req]
-  (update-params
-    (fn [params]
-      (if (-> req :request-method (= :get))
-        (get-from-db params)
-        params))
-    [:div ...]))
-```
 
 ### Additional Parameters
 

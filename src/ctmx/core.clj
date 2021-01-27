@@ -1,5 +1,5 @@
 (ns ctmx.core
-  (:refer-clojure :exclude [map-indexed ns-resolve])
+  (:refer-clojure :exclude [ns-resolve])
   (:require
     [clojure.string :as string]
     [clojure.walk :as walk]
@@ -43,11 +43,10 @@
     1 `(fn ~args ~expanded)
     `(fn this#
        ([req#]
-         (let [{:keys [~'params]} req#
-               ~'stack (rt/conj-stack ~(name n) req#)]
-           (this#
-             req#
-             ~@(map expand-params (rest args)))))
+        (let [{:keys [~'params ~'stack]} (rt/conj-stack ~(name n) req#)]
+          (this#
+            req#
+            ~@(map expand-params (rest args)))))
        (~args
          (let [~@(for [sym (rest args)
                        :let [f (sym->f sym)]
@@ -57,14 +56,14 @@
            ~expanded)))))
 
 (defn- with-stack [n [req] body]
-  `(let [~'top-level? (empty? rt/*stack*)]
-     (binding [rt/*stack* (rt/conj-stack ~(name n) ~(get-symbol req))
-               rt/*params* (rt/get-params ~(get-symbol req))]
-       (let [~'id (rt/path ".")
-             ~'path rt/path
-             ~'hash rt/path-hash
-             ~'value (fn [p#] (-> p# rt/path keyword rt/*params*))]
-         ~@body))))
+  (let [req (get-symbol req)]
+    `(let [~'top-level? (-> ~req :stack empty?)
+           {:keys [~'params ~'stack] :as ~req} (rt/conj-stack ~(name n) ~req)
+           ~'id (rt/path ~'stack ".")
+           ~'path (partial rt/path ~'stack)
+           ~'hash (partial rt/path-hash ~'stack)
+           ~'value (fn [p#] (-> p# ~'path keyword ~'params))]
+       ~@body)))
 
 (defn expand-parser-hint [x]
   (if-let [parser (sym->f x)]
@@ -72,12 +71,6 @@
     x))
 (defn expand-parser-hints [x]
   (walk/prewalk expand-parser-hint x))
-
-(defmacro update-params [f & body]
-  `(binding [rt/*params* (~f rt/*params*)] ~@body))
-
-(defmacro forall [& args]
-  `(doall (for ~@args)))
 
 (defn get-syms [body]
   (->> body

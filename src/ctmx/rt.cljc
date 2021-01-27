@@ -21,17 +21,14 @@
      false false
      (not= "false" %)))
 
-(def ^:dynamic *stack* [])
-(def ^:dynamic *params* nil)
-
-(defn get-params [req]
-  (or *params* (:params req)))
-
-(defn conj-stack [n req]
-  (let [target (get-in req [:headers "hx-target"])]
-    (if (and (empty? *stack*) target)
+(defn conj-stack [n {:keys [headers stack] :as req}]
+  (assoc req
+    :stack
+    (if-let [target (and (empty? stack) (get headers "hx-target"))]
       (-> target (.split "_") vec)
-      (conj *stack* n))))
+      (if (-> stack peek number?)
+        (-> stack pop (conj n (peek stack)))
+        (conj (or stack []) n)))))
 
 (defn get-value [params stack value]
   (->> value
@@ -40,35 +37,35 @@
        keyword
        params))
 
-(defn concat-stack [concat]
+(defn concat-stack [concat stack]
   (reduce
     (fn [stack x]
       (case x
         ".." (pop stack)
         "." stack
         (conj stack x)))
-    *stack*
+    stack
     concat))
 
-(defn path [p]
+(defn path [stack p]
   (string/join
     "_"
     (if (.startsWith p "/")
       (-> p (.split "/") rest)
-      (-> p (.split "/") concat-stack))))
-(defn path-hash [p]
-  (str "#" (path p)))
+      (-> p (.split "/") (concat-stack stack)))))
+(defn path-hash [stack p]
+  (str "#" (path stack p)))
 
 (defn map-indexed [f req s]
-  (doall
-    (clojure.core/map-indexed #(binding [*stack* (conj *stack* %1)] (f req %1 %2)) s)))
+  (clojure.core/map-indexed
+    (fn [i x]
+      (f (conj-stack i req) i x)) s))
 
 (defn map-range [f req i]
   (->> i
        parse-int
        range
-       (map #(binding [*stack* (conj *stack* %)] (f req %)))
-       doall))
+       (map #(f (conj-stack % req) %))))
 
 (defn redirect [path]
   (fn [req]
