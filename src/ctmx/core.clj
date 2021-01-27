@@ -63,7 +63,6 @@
          ([~'req]
           (let [req# ~(if pre-f `(update ~'req :params form/apply-params ~pre-f) 'req)
                 {:keys [~'params ~'stack]} (rt/conj-stack ~(name n) req#)
-                ~'params ~(if pre-f `(~pre-f ~'params) 'params)
                 ~'json ~(when (some json? args) `(form/json-params ~'params ~'stack))]
             (this#
               req#
