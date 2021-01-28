@@ -51,17 +51,18 @@
        ~(some-annotation arg))))
 
 (defn- make-f [n args expanded]
-  (let [pre-f (-> n meta :params)]
+  (let [pre-f (-> n meta :params)
+        r (-> args (get 0) get-symbol)]
     (case (count args)
       0 (throw (Exception. "zero args not supported"))
       1
       (if pre-f
         `(fn ~args
-           (let [~(args 0) (update ~(args 0) :params form/apply-params ~pre-f)] ~expanded))
+           (let [~r (update ~r :params form/apply-params ~pre-f ~r)] ~expanded))
         `(fn ~args ~expanded))
       `(fn this#
          ([~'req]
-          (let [req# ~(if pre-f `(update ~'req :params form/apply-params ~pre-f) 'req)
+          (let [req# ~(if pre-f `(update ~'req :params form/apply-params ~pre-f ~'req) 'req)
                 {:keys [~'params ~'stack]} (rt/conj-stack ~(name n) req#)
                 ~'json ~(when (some json? args) `(form/json-params ~'params ~'stack))]
             (this#
@@ -74,6 +75,11 @@
                          x [sym `(~f ~sym)]]
                      x)]
              ~expanded))))))
+
+(defmacro update-params [req f & body]
+  `(let [~req (update ~req :params ~f ~req)
+         {:keys [~'params]} ~req
+         ~'value (fn [p#] (-> p# ~'path keyword ~'params))] ~@body))
 
 (defn- with-stack [n [req] body]
   (let [req (get-symbol req)]
