@@ -30,12 +30,21 @@
         (-> stack pop (conj n (peek stack)))
         (conj (or stack []) n)))))
 
-(defn get-value [params stack value]
-  (->> value
-       (conj stack)
-       (string/join "_")
-       keyword
-       params))
+(def default-method :simple)
+(defn set-param-method! [method]
+  {:pre [(contains? #{:simple :path} method)]}
+  #?(:clj (alter-var-root #'default-method (constantly method))
+     :cljs (set! default-method method)))
+
+(defn get-value [params json stack value method]
+  (let [method (or method default-method)
+        stack (if (= :path method) stack [])
+        source (if (= :json method) json params)]
+    (->> value
+         (conj stack)
+         (string/join "_")
+         keyword
+         source)))
 
 (defn concat-stack [concat stack]
   (reduce

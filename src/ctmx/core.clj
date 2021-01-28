@@ -36,19 +36,19 @@
     s
     (:as s)))
 
-(def ^:private simple? #(-> % meta :simple))
 (def ^:private json? #(-> % meta :json))
+(def ^:private annotations #{:simple :json :path})
+(defn- some-annotation [arg]
+  (->> arg meta keys (some annotations)))
+
 (defn- expand-params [arg]
-  (let [symbol (get-symbol-safe arg)]
-    (cond
-      (not symbol)
-      nil
-      (simple? arg)
-      `(~(keyword symbol) ~'params)
-      (json? arg)
-      `(~(keyword symbol) ~'json)
-      :else
-      `(rt/get-value ~'params ~'stack ~(str symbol)))))
+  (when-let [symbol (get-symbol-safe arg)]
+    `(rt/get-value
+       ~'params
+       ~'json
+       ~'stack
+       ~(str symbol)
+       ~(some-annotation arg))))
 
 (defn- make-f [n args expanded]
   (let [pre-f (-> n meta :params)]
