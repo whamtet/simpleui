@@ -158,8 +158,8 @@ Casts available include the following
 - **^:ints** Casts to array of integers
 - **^:floats** Casts to array of floating point numbers
 - **^:array** Puts into an array
-- **^:boolean** True when (= argument "true")
-- **^:boolean-true** True when (not= argument "false")
+- **^:boolean** True when `(= argument "true")`
+- **^:boolean-true** True when `(not= argument "false")`
 
 ### Transforming parameters to JSON
 
