@@ -35,6 +35,10 @@
   (if (symbol? s)
     s
     (:as s)))
+(defn- assoc-as [m]
+  (if (and (map? m) (-> m :as not))
+    (assoc m :as (gensym))
+    m))
 
 (def ^:private json? #(-> % meta :json))
 (def ^:private annotations #{:simple :json :path})
@@ -106,11 +110,14 @@
        (mapv #(list 'quote %))))
 
 (defmacro defcomponent [name args & body]
-  `(def ~(vary-meta name assoc :syms (get-syms body))
-     ~(->> body
-           expand-parser-hints
-           (with-stack name args)
-           (make-f name args))))
+  (let [args (if (not-empty args)
+               (update args 0 assoc-as)
+               args)]
+    `(def ~(vary-meta name assoc :syms (get-syms body))
+       ~(->> body
+             expand-parser-hints
+             (with-stack name args)
+             (make-f name args)))))
 
 (defn- mapmerge [f s]
   (apply merge (map f s)))
