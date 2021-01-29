@@ -1,3 +1,5 @@
+[Official Website](https://ctmx.info)
+
 # ctmx
 
 Clojure backend for for [htmx](https://htmx.org/).
@@ -25,7 +27,7 @@ First require the library
 The core of ctmx is the `defcomponent` macro.
 
 ```clojure
-(defcomponent ^:endpoint hello [req ^:simple my-name]
+(defcomponent ^:endpoint hello [req my-name]
   [:div#hello "Hello " my-name])
 ```
 
