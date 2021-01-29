@@ -151,6 +151,16 @@ You may also cast within the body of `defcomponent`
     "How are you?")]
 ```
 
+Casts available include the following
+
+- **^:int** Casts to integer
+- **^:float** Casts to floating point number
+- **^:ints** Casts to array of integers
+- **^:floats** Casts to array of floating point numbers
+- **^:array** Puts into an array
+- **^:boolean** True when (= argument "true")
+- **^:boolean-true** True when (not= argument "false")
+
 ### Transforming parameters to JSON
 
 htmx submits all parameters as a flat map, however we can use the above `path` scheme to transform it into nested json for database access etc.  Simply call `ctmx.form/json-params`

@@ -10,6 +10,13 @@
 (def parse-float #(if (string? %)
                     (#?(:clj Float/parseFloat :cljs js/Number) %)
                     %))
+(def parse-ints #(if (string? %)
+                   [(parse-int %)]
+                   (map parse-int %)))
+(def parse-floats #(if (string? %)
+                     [(parse-float %)]
+                     (map parse-float %)))
+(def parse-array #(if (string? %) [%] %))
 (def parse-boolean
   #(case %
      true true
