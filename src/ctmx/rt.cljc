@@ -77,11 +77,12 @@
     (fn [i x]
       (f (conj-stack i req) i x)) s))
 
-(defn map-range [f req i]
-  (->> i
-       parse-int
-       range
-       (map #(f (conj-stack % req) %))))
+(defn map-range
+  ([f req i] (map-range f req 0 i))
+  ([f req i j]
+   (map #(f (conj-stack % req))
+        (range
+          (parse-int i) (parse-int j)))))
 
 (defn redirect [path]
   (fn [req]

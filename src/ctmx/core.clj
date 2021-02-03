@@ -59,7 +59,7 @@
 
 (defn- make-f [n args expanded]
   (let [pre-f (-> n meta :params)
-        r (-> args (get 0) get-symbol)]
+        r (-> args (get 0) get-symbol-safe)]
     (case (count args)
       0 (throw (Exception. "zero args not supported"))
       1
