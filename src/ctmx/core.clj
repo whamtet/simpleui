@@ -208,3 +208,6 @@
          ~'patch? (= :patch ~'request-method)
          ~'delete? (= :delete ~'request-method)]
      ~@body))
+
+(defmacro metas [& syms]
+  (mapv #(list '-> % var meta) syms))
