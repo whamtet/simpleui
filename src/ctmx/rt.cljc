@@ -1,6 +1,8 @@
 (ns ctmx.rt
   (:refer-clojure :exclude [map-indexed])
   (:require
+    #?(:cljs ctmx.form) ;; to ensure deps are pulled
+    #?(:cljs ctmx.render)
     [clojure.string :as string]
     [ctmx.response :as response]))
 

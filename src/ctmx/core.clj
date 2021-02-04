@@ -165,10 +165,18 @@
        distinct
        (mapmerge extract-endpoints)))
 
+(defn- compiled-str [s]
+  (-> s name
+      (.replace "-" "_")
+      (.replace "?" "_QMARK_")
+      (.replace "!" "_BANG_")))
+
+(defn- full-symbol [ns-name name]
+  (symbol (str ns-name) (str name)))
+
 (defn extract-endpoints-all [f]
-  (for [[name ns-name] (extract-endpoints-root f)
-        :let [full-symbol (symbol (str ns-name) (str name))]]
-    [(str "/" name) `(fn [x#] (-> x# ~full-symbol render/snippet-response))]))
+  (for [[name ns-name] (extract-endpoints-root f)]
+    [(str "/" name) `(fn [x#] (-> x# ~(full-symbol ns-name name) render/snippet-response))]))
 
 (defn strip-slash [root]
   (if (.endsWith root "/")
@@ -181,6 +189,16 @@
       ["" {:get (rt/redirect ~full)}]
       ["/" {:get ~f}]
       ~@(extract-endpoints-all f)]))
+
+(defmacro defstatic [sym args & body]
+  `(defn
+     ~(vary-meta sym assoc
+                 :export true
+                 :deps (into {}
+                             (for [[name ns-name] (extract-endpoints-root body)]
+                               [(str name)
+                                (str (compiled-str ns-name) "." (compiled-str name))])))
+     ~args ~@body))
 
 (defmacro with-req [req & body]
   `(let [{:keys [~'request-method ~'session]} ~req
