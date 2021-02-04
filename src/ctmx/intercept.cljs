@@ -31,10 +31,13 @@
   (zipmap
     (map #(-> % name .toLowerCase) (keys headers))
     (vals headers)))
+
+(defn get-in-js [s]
+  (reduce (fn [o s] (aget o s)) js/window (.split s ".")))
 (defn- eval-map [m]
   (zipmap
     (keys m)
-    (map js/eval (vals m))))
+    (map get-in-js (vals m))))
 
 (defn coerce-static [{:keys [headers
                              parameters

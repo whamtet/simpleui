@@ -210,4 +210,4 @@
      ~@body))
 
 (defmacro metas [& syms]
-  (mapv #(list '-> % var meta) syms))
+  (mapv (fn [sym] `(meta (var ~sym))) syms))
