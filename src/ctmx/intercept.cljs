@@ -2,8 +2,7 @@
   (:require
     [clojure.string :as string]
     [clojure.walk :as walk]
-    hiccups.runtime
-    htmx)
+    hiccups.runtime)
   (:require-macros
     [hiccups.core :as hiccups]))
 
@@ -63,21 +62,21 @@
        eval-map
        (set! responses))
 
-  (htmx/defineExtension
+  (js/htmx.defineExtension
     "intercept"
     #js {:onEvent (fn [name evt]
-                     (case name
-                       "htmx:beforeRequest"
-                       (let [xhr (-> evt .-detail .-xhr)]
-                         (set! (-> evt .-detail .-xhr) mock-xhr)
-                         (set! request-config (-> evt .-detail .-requestConfig))
-                         (log-request)
-                         (set! (.-send xhr) (.-onload xhr)))
-                       "htmx:beforeSwap"
-                       (if-let [f (-> request-config .-path responses)]
-                         (if-let [swap (wrap-response request-config f)]
-                           (set! to-swap swap)
-                           false)
-                         false)
-                       nil))
+                    (case name
+                      "htmx:beforeRequest"
+                      (let [xhr (-> evt .-detail .-xhr)]
+                        (set! (-> evt .-detail .-xhr) mock-xhr)
+                        (set! request-config (-> evt .-detail .-requestConfig))
+                        (log-request)
+                        (set! (.-send xhr) (.-onload xhr)))
+                      "htmx:beforeSwap"
+                      (if-let [f (-> request-config .-path responses)]
+                        (if-let [swap (wrap-response request-config f)]
+                          (set! to-swap swap)
+                          false)
+                        false)
+                      nil))
          :transformResponse (fn [_ _ _] to-swap)}))
