@@ -4,6 +4,7 @@
     [clojure.walk :as walk]
     hiccups.runtime)
   (:require-macros
+    [ctmx.util :as util]
     [hiccups.core :as hiccups]))
 
 (defn query-string [args]
@@ -14,14 +15,11 @@
          (str "?"))
     ""))
 
-(def request-config)
-(def to-swap)
-
 (def mock-xhr
   #js {:status 200
        :getAllResponseHeaders (fn [] "")})
 
-(defn log-request []
+(defn log-request [request-config]
   (js/console.log
     (-> request-config .-verb .toUpperCase)
     (str "/" (.-path request-config) (-> request-config .-parameters js->clj query-string))))
@@ -38,22 +36,24 @@
     (keys m)
     (map get-in-js (vals m))))
 
-(defn coerce-static [{:keys [headers
-                             parameters
-                             verb]}]
-  {:headers (lowercaseize headers)
-   :params parameters
-   :request-method (keyword verb)})
+(defn coerce-static [m]
+  (-> m
+      (update :headers lowercaseize)
+      (assoc :params (:parameters m) :request-method (-> m :verb keyword))))
 
 (defn wrap-response [req f]
-  (some->> (or req {})
-           js->clj
-           walk/keywordize-keys
-           coerce-static
-           f
-           hiccups/html))
+  (util/thread->>
+    (or req {})
+    js->clj
+    walk/keywordize-keys
+    coerce-static
+    f
+    hiccups/html))
 
 (def responses)
+
+(def to-swap)
+(def log? false)
 
 (defn set-responses! [metas]
   (->> metas
@@ -65,18 +65,25 @@
   (js/htmx.defineExtension
     "intercept"
     #js {:onEvent (fn [name evt]
+                    (when log?
+                      (js/console.log name evt))
                     (case name
                       "htmx:beforeRequest"
-                      (let [xhr (-> evt .-detail .-xhr)]
+                      (let [xhr (-> evt .-detail .-xhr)
+                            request-config (-> evt .-detail .-requestConfig)
+                            swap (fn [swap]
+                                   (set! to-swap swap)
+                                   (.onload xhr))]
                         (set! (-> evt .-detail .-xhr) mock-xhr)
-                        (set! request-config (-> evt .-detail .-requestConfig))
-                        (log-request)
-                        (set! (.-send xhr) (.-onload xhr)))
+                        (set! (.-send xhr)
+                              (fn [] ;;now we're in async land
+                                (if-let [f (-> request-config .-path responses)]
+                                  (let [r (wrap-response request-config f)]
+                                    (if (.-next r)
+                                      (.next r swap)
+                                      (swap r)))
+                                  (swap nil)))))
                       "htmx:beforeSwap"
-                      (if-let [f (-> request-config .-path responses)]
-                        (if-let [swap (wrap-response request-config f)]
-                          (set! to-swap swap)
-                          false)
-                        false)
+                      (boolean to-swap)
                       nil))
          :transformResponse (fn [_ _ _] to-swap)}))

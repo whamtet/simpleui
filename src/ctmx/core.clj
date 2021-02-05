@@ -4,7 +4,6 @@
     [clojure.string :as string]
     [clojure.walk :as walk]
     [cljs.env :as env]
-    cljs.analyzer.api
     [ctmx.form :as form]
     [ctmx.render :as render]
     [ctmx.rt :as rt]))
@@ -92,9 +91,9 @@
   (let [req (get-symbol req)]
     `(let [~'top-level? (-> ~req :stack empty?)
            {:keys [~'params ~'stack] :as ~req} (rt/conj-stack ~(name n) ~req)
-           ~'id (rt/path ~'stack ".")
-           ~'path (partial rt/path ~'stack)
-           ~'hash (partial rt/path-hash ~'stack)
+           ~'id (rt/path "" ~'stack ".")
+           ~'path (partial rt/path "" ~'stack)
+           ~'hash (partial rt/path "#" ~'stack)
            ~'value (fn [p#] (-> p# ~'path keyword ~'params))]
        ~@body)))
 
@@ -105,12 +104,14 @@
 (defn expand-parser-hints [x]
   (walk/prewalk expand-parser-hint x))
 
+(defn- cljs-quote [sym]
+  (if env/*compiler* sym `(quote ~sym)))
 (defn get-syms [body]
   (->> body
        flatten
        (filter symbol?)
        distinct
-       (mapv #(list 'quote %))))
+       (mapv cljs-quote)))
 
 (defmacro defcomponent [name args & body]
   (let [args (if (not-empty args)
@@ -131,13 +132,20 @@
           (assoc m :ns-name (-> m :ns ns-name)))))
 
 (defn ns-resolve-cljs [ns sym]
-  (when-let [{:keys [name syms] :as m} (cljs.analyzer.api/ns-resolve ns sym)]
-    (let [[ns name] (-> name str (.split "/"))]
+  ;; very, very hacky
+  (let [all-info (:cljs.analyzer/namespaces @env/*compiler*)
+        [prefix suffix] (.split (str sym) "/")
+        sym-short (symbol (or suffix prefix))
+        ns (if suffix
+             (get-in all-info [ns :requires (symbol prefix)])
+             (or
+               (get-in all-info [ns :uses sym-short])
+               ns))]
+    (when-let [m (and ns (get-in all-info [ns :defs sym-short]))]
       (assoc m
-        :name (symbol name)
-        :syms (map second syms) ;;confusing
-        :ns (symbol ns)
-        :ns-name (symbol ns)))))
+        :name sym-short
+        :ns ns
+        :ns-name ns))))
 
 (defn ns-resolve [ns sym]
   ((if env/*compiler* ns-resolve-cljs ns-resolve-clj) ns sym))

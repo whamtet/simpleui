@@ -8,7 +8,7 @@
   (cond
     (not body) response/no-content
     (map? body) body
-    :else (-> body expand-hx-vals hiccups/html response/html-response)))
+    :else (-> body hiccups/html response/html-response)))
 
 (defn html5 [& body]
   (hiccups/html5

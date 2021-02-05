@@ -65,14 +65,14 @@
     stack
     concat))
 
-(defn path [stack p]
-  (string/join
-    "_"
-    (if (.startsWith p "/")
-      (-> p (.split "/") rest)
-      (-> p (.split "/") (concat-stack stack)))))
-(defn path-hash [stack p]
-  (str "#" (path stack p)))
+(defn path [prefix stack p]
+  (str
+    prefix
+    (string/join
+      "_"
+      (if (.startsWith p "/")
+        (-> p (.split "/") rest)
+        (-> p (.split "/") (concat-stack stack))))))
 
 (defn map-indexed [f req s]
   (clojure.core/map-indexed
