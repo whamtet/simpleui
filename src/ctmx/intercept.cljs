@@ -79,7 +79,7 @@
                               (fn [] ;;now we're in async land
                                 (if-let [f (-> request-config .-path responses)]
                                   (let [r (wrap-response request-config f)]
-                                    (if (.-next r)
+                                    (if (some-> r .-next)
                                       (.next r swap)
                                       (swap r)))
                                   (swap nil)))))
