@@ -44,7 +44,7 @@
   (let [f-result (-> req js->clj walk/keywordize-keys coerce-static f)]
     (cond
       (nil? f-result) nil
-      (.-then f-result) (.then f-result hiccups/html)
+      (.-then f-result) (.then f-result #(hiccups/html %))
       :else (hiccups/html f-result))))
 
 (def responses)
