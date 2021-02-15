@@ -4,7 +4,6 @@
     [clojure.walk :as walk]
     hiccups.runtime)
   (:require-macros
-    [ctmx.util :as util]
     [hiccups.core :as hiccups]))
 
 (defn query-string [args]
@@ -42,13 +41,11 @@
       (assoc :params (:parameters m) :request-method (-> m :verb keyword))))
 
 (defn wrap-response [req f]
-  (util/thread->>
-    (or req {})
-    js->clj
-    walk/keywordize-keys
-    coerce-static
-    f
-    hiccups/html))
+  (let [f-result (-> req js->clj walk/keywordize-keys coerce-static f)]
+    (cond
+      (nil? f-result) nil
+      (.-then f-result) (.then f-result hiccups/html)
+      :else (hiccups/html f-result))))
 
 (def responses)
 
