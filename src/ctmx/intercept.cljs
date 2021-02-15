@@ -79,8 +79,8 @@
                               (fn [] ;;now we're in async land
                                 (if-let [f (-> request-config .-path responses)]
                                   (let [r (wrap-response request-config f)]
-                                    (if (some-> r .-next)
-                                      (.next r swap)
+                                    (if (some-> r .-then)
+                                      (.then r swap)
                                       (swap r)))
                                   (swap nil)))))
                       "htmx:beforeSwap"
