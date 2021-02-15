@@ -15,7 +15,8 @@
    :floats `rt/parse-floats
    :array `rt/parse-array
    :boolean `rt/parse-boolean
-   :boolean-true `rt/parse-boolean-true})
+   :boolean-true `rt/parse-boolean-true
+   :edn `rt/parse-edn})
 
 (defn sym->f [sym]
   (when-let [meta (meta sym)]

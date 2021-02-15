@@ -160,6 +160,7 @@ Casts available include the following
 - **^:array** Puts into an array
 - **^:boolean** True when `(= argument "true")`
 - **^:boolean-true** True when `(not= argument "false")`
+- **^:edn** Reads string into edn
 
 ### Transforming parameters to JSON
 

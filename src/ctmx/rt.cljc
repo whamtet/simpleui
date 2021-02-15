@@ -30,6 +30,10 @@
      false false
      (not= "false" %)))
 
+(defn parse-edn #(if (string? %)
+                   (#?(:clj read-string :cljs cljs.reader/read-string) %)
+                   %))
+
 (defn conj-stack [n {:keys [headers stack] :as req}]
   (assoc req
     :stack
