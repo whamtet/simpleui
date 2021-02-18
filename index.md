@@ -131,5 +131,4 @@ We may also cast within the body of `defcomponent`.
 
 Please see the (examples)[examples].
 
-
-{% include footer.html %}
+{% include footer_dev.html %}
