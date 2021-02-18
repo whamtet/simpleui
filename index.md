@@ -57,7 +57,7 @@ ctmx maintains a call stack of nested components.  This makes it easy to label d
 
 ## Transforming parameters to JSON
 
-The UI provides a natural structure to nest our data.  This corresponds closely to the database schema and provides a natural connection between the two.
+The UI provides a natural structure to nest our data.  This corresponds closely to the database schema and provides a natural connection between the two.  Try adding customers using the form below.
 
 {% include serverless/functions/core/transforming.html %}
 
@@ -73,10 +73,6 @@ The UI provides a natural structure to nest our data.  This corresponds closely 
            :name name
            :value value
            :required true}])
-
-(defn pprint [s]
-  (with-out-str
-    (cljs.pprint/pprint s)))
 
 (defcomponent customer [req i {:keys [first-name last-name]}]
   [:div
@@ -100,6 +96,10 @@ The UI provides a natural structure to nest our data.  This corresponds closely 
   (fn [req]
     (customer-list req "Joe" "Stewart" [])))
 ```
+
+As we add customers the JSON builds up to match the UI.  We would lightly transform the data before persisting it, however it is often already close to what we want it to be.
+
+This example uses the `add-customer` middleware to transform parameters before they are displayed.
 
 
 {% include footer.html %}
