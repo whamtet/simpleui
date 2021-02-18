@@ -101,5 +101,32 @@ As we add customers the JSON builds up to match the UI.  We would lightly transf
 
 This example uses the `add-customer` middleware to transform parameters before they are displayed.
 
+## Casting parameters
+
+{% include serverless/functions/core/parameter_casting.html %}
+
+```clojure
+(defcomponent ^:endpoint click-div [req ^:int num-clicks]
+  [:form {:id id :hx-get "click-div" :hx-trigger "click"}
+    [:input {:type "hidden" :name "num-clicks" :value (inc num-clicks)}]
+    "You have clicked me " num-clicks " times!"])
+
+(make-routes
+  "/parameter-casting"
+  (fn [req]
+    (click-div req 0)))
+```
+
+Ctmx uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:int**, **^:boolean** and **^:float**. See (documentation)[https://github.com/whamtet/ctmx#parameter-casting] for details.
+
+We may also cast within the body of `defcomponent`.
+
+```clojure
+[:div
+  (if ^:boolean (value "grumpy")
+    "Cheer up!"
+    "How are you?")]
+```
+
 
 {% include footer.html %}
