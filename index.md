@@ -1,4 +1,4 @@
-CTMX is an app development tool for fast product development and even faster page load times.
+ctmx is an app development tool for fast product development and even faster page load times.
 
 ```clojure
 (defcomponent ^:endpoint hello [req my-name]
@@ -14,9 +14,12 @@ CTMX is an app development tool for fast product development and even faster pag
         [:input {:type "text"
                  :name "my-name"
                  :hx-patch "hello"
-                 :hx-target "#hello"
-                 :hx-swap "outerHTML"}]
+                 :hx-target "#hello"}]
          (hello req "")])))
 ```
 {% include serverless/functions/core/demo.html %}
 {% include footer.html %}
+
+Try inspecting the above text field.  You should see something like this.
+
+![](inspect.png)
