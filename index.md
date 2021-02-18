@@ -23,3 +23,8 @@ ctmx is an app development tool for fast product development and even faster pag
 Try inspecting the above text field.  You should see something like this.
 
 ![](inspect.png)
+
+Now try editing the text.  When the input looses focus it submits a request to `/hello` and updates its contents.
+
+The core of ctmx is the `defcomponent` macro which expands to both an ordinary function and a REST endpoint.  `defcomponent` enables developers to quickly build rich user interfaces with *no* javascript.  All code is on the server backend and yet it feels the same as frontend code.
+
