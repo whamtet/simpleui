@@ -58,7 +58,7 @@
        ~(some-annotation arg))))
 
 (defn- make-f [n args expanded]
-  (let [pre-f (-> n meta :params)
+  (let [pre-f (-> n meta :middleware)
         r (-> args (get 0) get-symbol-safe)]
     (case (count args)
       0 (throw (Exception. "zero args not supported"))
