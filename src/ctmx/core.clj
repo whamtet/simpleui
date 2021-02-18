@@ -132,6 +132,9 @@
     (as-> (meta v) m
           (assoc m :ns-name (-> m :ns ns-name)))))
 
+(defn namespaces []
+  (:cljs.analyzer/namespaces @env/*compiler*))
+
 (defn ns-resolve-cljs [ns sym]
   ;; very, very hacky
   (let [all-info (:cljs.analyzer/namespaces @env/*compiler*)
