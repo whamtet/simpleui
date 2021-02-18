@@ -55,6 +55,31 @@ ctmx maintains a call stack of nested components.  This makes it easy to label d
 
 `(path "first-name")` and `(path "last-name")` macroexpand to unique values which are automatically mapped back to the function arguments.  We can use the `form` component multiple times on the page without worrying about a name clash.
 
+### Components in array
+
+To expand `(path "first-name")` and `(path "last-name")` consistently we must be careful with components inside arrays.  Use `ctmx.rt/map-indexed` to map values across an array.
+
+{% include serverless/functions/core/nesting_components.html %}
+
+```clojure
+(def data
+  [{:first-name "Matthew" :last-name "Molloy"}
+   {:first-name "Chad" :last-name "Thomson"}])
+
+(defcomponent table-row [req i person]
+  [:tr
+    [:td (:first-name person)] [:td (:last-name person)]])
+
+(defcomponent table [req]
+  [:table
+    (ctmx.rt/map-indexed table-row req data)])
+
+(make-routes
+  "/nesting-components"
+  (fn [req]
+    (table req)))
+```
+
 ## Transforming parameters to JSON
 
 The UI provides a natural structure to nest our data.  This corresponds closely to the database schema and provides a natural connection between the two.  Try adding customers using the form below.
@@ -76,6 +101,7 @@ The UI provides a natural structure to nest our data.  This corresponds closely 
 
 (defcomponent customer [req i {:keys [first-name last-name]}]
   [:div
+    ;; other display here.
     [:input {:type "hidden" :name (path "first-name") :value first-name}]
     [:input {:type "hidden" :name (path "last-name") :value last-name}]])
 
