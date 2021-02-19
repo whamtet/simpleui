@@ -51,14 +51,14 @@
      :cljs (set! default-method method)))
 
 (defn get-value [params json stack value method]
-  (let [method (or method default-method)
-        stack (if (= :path method) stack [])
-        source (if (= :json method) json params)]
-    (->> value
-         (conj stack)
-         (string/join "_")
-         keyword
-         source)))
+  (case (or method default-method)
+    :simple (-> value keyword params)
+    :path (->> value (conj stack) (string/join "_") keyword params)
+    :json (-> value keyword json)
+    :json-stack (->> value
+                     (conj stack)
+                     (mapv keyword)
+                     (get-in json))))
 
 (defn concat-stack [concat stack]
   (reduce

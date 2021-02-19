@@ -43,8 +43,8 @@
     (assoc m :as (gensym))
     m))
 
-(def ^:private json? #(-> % meta :json))
-(def ^:private annotations #{:simple :json :path})
+(def ^:private json? #(-> % meta #{:json :json-stack}))
+(def ^:private annotations #{:simple :json :path :json-stack})
 (defn- some-annotation [arg]
   (->> arg meta keys (some annotations)))
 
@@ -79,7 +79,7 @@
          ([~'req]
           (let [req# ~(if pre-f `(update ~'req :params form/apply-params ~pre-f ~'req) 'req)
                 {:keys [~'params ~'stack]} (rt/conj-stack ~(name n) req#)
-                ~'json ~(when (some json? args) `(form/json-params ~'params ~'stack))]
+                ~'json ~(when (some json? args) `(form/json-params ~'params))]
             (this#
               req#
               ~@(map expand-params (rest args)))))

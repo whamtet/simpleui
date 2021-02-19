@@ -31,21 +31,11 @@
     (->> m (sort-by first-val) (mapv second))
     m))
 
-(defn json-params
-  ([params]
-   (->> params
-        nest-params
-        (walk/postwalk vectorize-map)
-        walk/keywordize-keys))
-  ([params stack]
-   (let [prefix (->> stack (map #(str % "_")) (string/join ""))]
-     (->>
-       (for [[k v] params
-             :let [k (name k)]
-             :when (.startsWith k prefix)]
-         [(-> k (.replace prefix "") name) v])
-       (into {})
-       json-params))))
+(defn json-params [params]
+  (->> params
+       nest-params
+       (walk/postwalk vectorize-map)
+       walk/keywordize-keys))
 
 (defn json-params-pruned [params]
   (-> params json-params prune-params))
