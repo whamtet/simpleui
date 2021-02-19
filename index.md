@@ -9,9 +9,7 @@ ctmx is an app development tool for fast product development and even faster pag
   (fn [req]
     [:div
      [:label "What is your name?"]
-     [:input {:name "my-name"
-              :hx-patch "hello"
-              :hx-target "#hello"}]
+     [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
      (hello req "")]))
 
 ```
