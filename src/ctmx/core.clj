@@ -57,6 +57,14 @@
        ~(str symbol)
        ~(some-annotation arg))))
 
+(defn- parse-args [args expanded]
+  `(let [~@(for [sym (rest args)
+                 :let [f (sym->f sym)]
+                 :when f
+                 x [sym `(~f ~sym)]]
+             x)]
+     ~expanded))
+
 (defn- make-f [n args expanded]
   (let [pre-f (-> n meta :middleware)
         r (-> args (get 0) get-symbol-safe)]
@@ -75,13 +83,7 @@
             (this#
               req#
               ~@(map expand-params (rest args)))))
-         (~args
-           (let [~@(for [sym (rest args)
-                         :let [f (sym->f sym)]
-                         :when f
-                         x [sym `(~f ~sym)]]
-                     x)]
-             ~expanded))))))
+         (~args ~(parse-args args expanded))))))
 
 (defmacro update-params [req f & body]
   `(let [~req (update ~req :params ~f ~req)
@@ -113,6 +115,10 @@
        (filter symbol?)
        distinct
        (mapv cljs-quote)))
+
+(defmacro defparse [name args & body]
+  `(defn ~name ~args
+     ~(parse-args args `(do ~@body))))
 
 (defmacro defcomponent [name args & body]
   (let [args (if (not-empty args)
