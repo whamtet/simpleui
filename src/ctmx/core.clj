@@ -8,6 +8,9 @@
     [ctmx.render :as render]
     [ctmx.rt :as rt]))
 
+;; clojure isn't powerful enough!
+(defn flatten-all [m] (->> m (tree-seq coll? seq) (remove coll?)))
+
 (def parsers
   {:int `rt/parse-int
    :float `rt/parse-float
@@ -28,13 +31,7 @@
 (defn dissoc-parsers [m]
   (apply vary-meta m dissoc (keys parsers)))
 
-(defn- get-symbol [s]
-  (if (symbol? s)
-    s
-    (do
-      (-> s :as symbol? assert)
-      (:as s))))
-(defn- get-symbol-safe [s]
+(defn- symbol-or-as [s]
   (if (symbol? s)
     s
     (:as s)))
@@ -49,7 +46,7 @@
   (->> arg meta keys (some annotations)))
 
 (defn- expand-params [arg]
-  (when-let [symbol (get-symbol-safe arg)]
+  (when-let [symbol (symbol-or-as arg)]
     `(rt/get-value
        ~'params
        ~'json
@@ -58,7 +55,7 @@
        ~(some-annotation arg))))
 
 (defn- parse-args [args expanded]
-  `(let [~@(for [sym (rest args)
+  `(let [~@(for [sym (-> args rest flatten-all)
                  :let [f (sym->f sym)]
                  :when f
                  x [sym `(~f ~sym)]]
@@ -67,7 +64,7 @@
 
 (defn- make-f [n args expanded]
   (let [pre-f (-> n meta :middleware)
-        r (-> args (get 0) get-symbol-safe)]
+        r (-> args (get 0) symbol-or-as)]
     (case (count args)
       0 (throw (Exception. "zero args not supported"))
       1
@@ -91,7 +88,7 @@
          ~'value (fn [p#] (-> p# ~'path keyword ~'params))] ~@body))
 
 (defn- with-stack [n [req] body]
-  (let [req (get-symbol req)]
+  (let [req (symbol-or-as req)]
     `(let [~'top-level? (-> ~req :stack empty?)
            {:keys [~'params ~'stack] :as ~req} (rt/conj-stack ~(name n) ~req)
            ~'id (rt/path "" ~'stack ".")
@@ -111,7 +108,7 @@
   (if env/*compiler* sym `(quote ~sym)))
 (defn get-syms [body]
   (->> body
-       flatten
+       flatten-all
        (filter symbol?)
        distinct
        (mapv cljs-quote)))
@@ -178,7 +175,7 @@
 
 (defn extract-endpoints-root [f]
   (->> f
-       flatten
+       flatten-all
        (filter symbol?)
        distinct
        (mapmerge extract-endpoints)))
