@@ -46,7 +46,7 @@
    (reduce
      (fn [done [k v]]
        (let [stack (conj stack (name k))]
-         (if (coll? v)
+         (if (and (coll? v) (not (set? v)))
            (flatten-json stack done v)
            (assoc done
              (->> stack (string/join "_") keyword) v))))
