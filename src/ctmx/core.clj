@@ -55,7 +55,7 @@
        ~(some-annotation arg))))
 
 (defn- parse-args [args expanded]
-  `(let [~@(for [sym (-> args rest flatten-all)
+  `(let [~@(for [sym (flatten-all args)
                  :let [f (sym->f sym)]
                  :when f
                  x [sym `(~f ~sym)]]
@@ -113,7 +113,7 @@
        distinct
        (mapv cljs-quote)))
 
-(defmacro defparse [name args & body]
+(defmacro defn-parse [name args & body]
   `(defn ~name ~args
      ~(parse-args args `(do ~@body))))
 
