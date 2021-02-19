@@ -66,4 +66,4 @@ We use the **.htmx-settling** class to flash the rows when they change status
 ```
 
 {% include footer.html %}
-{% include zero_outer.html %}
+{% include outer.html %}
