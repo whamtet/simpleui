@@ -102,7 +102,7 @@ The UI provides a natural structure to nest our data.  This corresponds closely 
     [:input {:type "hidden" :name (path "first-name") :value first-name}]
     [:input {:type "hidden" :name (path "last-name") :value last-name}]])
 
-(defcomponent ^:endpoint ^{:middleware add-customer} customer-list [req first-name last-name ^:json customer]
+(defcomponent ^:endpoint ^{:middleware add-customer} customer-list [req first-name last-name ^:json-stack customer]
   [:form {:id id :hx-post "customer-list"}
     ;; display the nested params
     [:pre (-> req :params ctmx.form/json-params pprint)]
