@@ -1,4 +1,4 @@
-ctmx is an app development tool for fast product development and even faster page load times.
+ctmx is an app development tool for fast product development and even faster page load times.  It uses [htmx](https://htmx.org/) on the frontend.
 
 ```clojure
 (defcomponent ^:endpoint hello [req my-name]
@@ -83,7 +83,7 @@ To expand `(path "first-name")` and `(path "last-name")` consistently we must be
 The UI provides a natural structure to nest our data.  This corresponds closely to the database schema and provides a natural connection between the two.  Try adding customers using the form below.
 
 {% include serverless/functions/core/transforming.html %}
-
+---
 ```clojure
 (defn add-customer [{:keys [first-name last-name customer-list]}]
   {:customer-list
@@ -124,7 +124,7 @@ This example uses the `add-customer` middleware to transform parameters before t
 ## Casting parameters
 
 {% include serverless/functions/core/parameter_casting.html %}
-
+---
 ```clojure
 (defcomponent ^:endpoint click-div [req ^:int num-clicks]
   [:form {:id id :hx-get "click-div" :hx-trigger "click"}

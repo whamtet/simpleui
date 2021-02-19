@@ -3,7 +3,6 @@
 This example shows how to implement click-to-load the next page in a table of data. The crux of the demo is the final row:
 
 ```clojure
-
 (def src "0123456789ABCDEF")
 (defn rand-str []
   (clojure.string/join (repeatedly 15 #(rand-nth src))))
@@ -11,17 +10,16 @@ This example shows how to implement click-to-load the next page in a table of da
 (defn tr [i]
     [:tr [:td "Agent Smith"] [:td (str "void" i "@null.org")] [:td (rand-str)]])
 
-(defcomponent ^:endpoint rows [req ^:int page]
+(defcomponent ^:endpoint rows-click [req ^:int page]
   (list
     (map tr (range (* 10 page) (* 10 (inc page))))
-    [:tr {:id id}
+    [:tr {:id id :hx-target "this"}
       [:td {:colspan "3"}
         [:button.btn
-          {:hx-get "rows"
-           :hx-target (hash ".")
+          {:hx-get "rows-click"
            :hx-vals (json {:page (inc page)})}
            "Load More Agents..."
-           [:img.htmx-indicator {:src "img/bars.svg"}]]]]))
+           [:img.htmx-indicator {:src "../../bars.svg"}]]]]))
 
 (make-routes
   "/demo"
@@ -29,7 +27,7 @@ This example shows how to implement click-to-load the next page in a table of da
     [:table
       [:thead
         [:tr [:th "Name"] [:th "Email"] [:th "ID"]]]
-      [:tbody (rows req 0)]]))
+      [:tbody (rows-click req 0)]]))
 
 ```
 

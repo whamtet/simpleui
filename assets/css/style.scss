@@ -19,3 +19,8 @@
 .mmargin {
   margin: 10px
 }
+
+tr.htmx-swapping {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
