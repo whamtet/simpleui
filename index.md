@@ -94,10 +94,7 @@ The UI provides a natural structure to nest our data.  This corresponds closely 
       #(conj (or % []) {:first-name first-name :last-name last-name}))})
 
 (defn- text [name value]
-  [:input {:type "text"
-           :name name
-           :value value
-           :required true}])
+  [:input {:type "text" :name name :value value :required true}])
 
 (defcomponent customer [req i {:keys [first-name last-name]}]
   [:div
