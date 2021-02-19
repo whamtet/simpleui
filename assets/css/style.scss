@@ -5,13 +5,15 @@
 .mr {margin-right: 5px}
 .margin {margin: 5px}
 
-.htmx-settling tr.Inactive td {
+.htmx-settling tr.Inactive {
   background: lightcoral;
+  transition: all 0s;
 }
-.htmx-settling tr.Active td {
+.htmx-settling tr.Active {
   background: darkseagreen;
+  transition: all 0s;
 }
-tr td {
+tr {
   transition: all 1.2s;
 }
 .mmargin {
