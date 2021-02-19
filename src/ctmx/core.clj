@@ -40,7 +40,9 @@
     (assoc m :as (gensym))
     m))
 
-(def ^:private json? #(-> % meta #{:json :json-stack}))
+(def ^:private json?
+  #(let [{:keys [json json-stack]} (meta %)]
+     (or json json-stack)))
 (def ^:private annotations #{:simple :json :path :json-stack})
 (defn- some-annotation [arg]
   (->> arg meta keys (some annotations)))
