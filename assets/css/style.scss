@@ -24,3 +24,13 @@ tr.htmx-swapping {
     opacity: 0;
     transition: opacity 0.5s;
 }
+
+.error-message {
+  color:red;
+}
+input.error {
+  box-shadow: 0 0 3px #CC0000;
+}
+.htmx-request + .htmx-indicator {
+  opacity: 1;
+}

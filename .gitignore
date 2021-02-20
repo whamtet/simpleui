@@ -1,0 +1,5 @@
+.idea
+Gemfile*
+.bundle
+_site
+vendor
