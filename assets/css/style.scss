@@ -5,6 +5,7 @@
 @import "pygment_trac";
 @import "styles";
 .mr {margin-right: 5px}
+.mr-long {margin-right: 100px}
 .margin {margin: 5px}
 
 #update-form.htmx-settling tr.Inactive {
@@ -59,4 +60,23 @@ input.error {
   -webkit-transition: width .6s ease;
   -o-transition: width .6s ease;
   transition: width .6s ease;
+}
+
+.tab-list {
+  border-bottom: solid 3px #eee;
+}
+
+.tab-list a {
+  display: inline-block;
+  padding: 5px 10px;
+  cursor:pointer;
+}
+
+.tab-list a.selected {
+  background-color: #eee;
+}
+
+.tab-content {
+  padding:10px;
+  margin-bottom:100px;
 }

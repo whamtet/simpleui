@@ -7,14 +7,14 @@
 
 {% seo %}
     <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
   </head>
   <body>
     <div class="container-lg px-3 my-5 markdown-body">
       {% if site.title and site.title != page.title %}
       <h1>
         <a href="{{ "/" | absolute_url }}" class="mr-long">{{ site.title }}</a>
-        <a href="{{ "/" | absolute_url }}examples/" style="font-size: 0.65em">examples</a>
+        <a href="{{ "/" | absolute_url }}examples/" style="font-size: 0.65em" class="mr-long">examples</a>
+        <a href="https://github.com/whamtet/ctmx" style="font-size: 0.65em" class="mr-long">source</a>
       </h1>
       {% endif %}
 
