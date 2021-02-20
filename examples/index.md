@@ -15,5 +15,5 @@ The following examples are taken from [htmx](https://htmx.org/examples).
 [Value Select](value-select)|	Demonstrates making the values of a select dependent on another select
 [Dialogs](dialogs)|	Demonstrates the prompt and confirm dialogs
 [Bootstrap Modal](modal-bootstrap)|	Demonstrates modal dialogs using Bootstrap
-[Tabs (Using HATEOAS)](tabs-hateoas)|	Demonstrates how to display and select tabs using HATEOAS principles
+[Tabs](tabs-hateoas)|	Demonstrates how to display and select tabs
 [Sortable](sortable)|	Demonstrates how to use htmx with the Sortable.js plugin to implement drag-and-drop reordering
