@@ -47,6 +47,14 @@
 (defn- some-annotation [arg]
   (->> arg meta keys (some annotations)))
 
+(def ^:private middleware [:req :params :params-stack])
+(defn- some-middleware [sym]
+  (when-let [m (meta sym)]
+    (some
+      #(when-let [f (m %)]
+        [℅ f])
+      middleware)))
+
 (defn- expand-params [arg]
   (when-let [symbol (symbol-or-as arg)]
     `(rt/get-value
@@ -65,18 +73,18 @@
      ~expanded))
 
 (defn- make-f [n args expanded]
-  (let [pre-f (-> n meta :middleware)
+  (let [middleware (some-middleware n)
         r (-> args (get 0) symbol-or-as)]
     (case (count args)
       0 (throw (Exception. "zero args not supported"))
       1
-      (if pre-f
+      (if middleware
         `(fn ~args
-           (let [~r (update ~r :params form/apply-params ~pre-f ~r)] ~expanded))
+           (let [~r (form/apply-middleware ~r ~middleware)] ~expanded))
         `(fn ~args ~expanded))
       `(fn this#
          ([~'req]
-          (let [req# ~(if pre-f `(update ~'req :params form/apply-params ~pre-f ~'req) 'req)
+          (let [req# ~(if middleware `(form/apply-middleware ~'req ~middleware) 'req)
                 {:keys [~'params ~'stack]} (rt/conj-stack ~(name n) req#)
                 ~'json ~(when (some json? args) `(form/json-params ~'params))]
             (this#
