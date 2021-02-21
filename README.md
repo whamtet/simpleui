@@ -1,4 +1,4 @@
-[Official Website](https://ctmx.info)
+[Official Website](https://whamtet.github.io/ctmx/)
 
 # ctmx
 
@@ -57,6 +57,10 @@ Here the only active element is the text input.  On the input's default action (
 
 **The first argument to defcomponent is always the req object**
 
+### component stack
+
+Ctmx retains a call stack of nested components.  This is used to set ids and values in the sections below.
+
 ### ids and values
 
 In the above example we use a fixed id `#hello`.  In general we should not hardcode ids because a component can exist multiple times in the dom.  To resolve this `id` is set automatically based on the call path of nested components.
@@ -94,7 +98,7 @@ When we first load the page ctmx generates the full dom tree.  Subsequent update
   [:div {:id id} ...])
 ```
 
-ctmx uses the id of the component being updated to set `path` consistently.
+ctmx uses the id of the component being updated to set the component stack consistently.
 
 ### Component Arrays
 
@@ -181,6 +185,22 @@ htmx submits all parameters as a flat map, however we can use the above `path` s
 ```
 
 `ctmx.form/flatten-json` reflattens the nested structure.
+
+### Middleware
+
+Middleware are applied to req *before* the arguments are bound on `defcomponent`.  It can be used in the following way
+
+```clojure
+(defcomponent ^{:req my-middleware} my-component [req arg1 arg2] ...)
+```
+
+Middleware can be applied in different ways
+
+- **^{:req middleware}** Middleware is applied to entire req object `(middleware req)`
+- **^{:params middleware}** Middleware is applied to the **JSON Nested** params.  `(middleware json-params req)`
+- **^{:params-stack middleware}** Middleware is applied to the **JSON Nested** params at the current point in the component stack.
+
+Middleware is not applied when a component is invoked with all its arguments.
 
 ### Additional Parameters
 
