@@ -36,13 +36,16 @@
                   %))
 
 (defn conj-stack [n {:keys [headers stack] :as req}]
-  (assoc req
-    :stack
-    (if-let [target (and (empty? stack) (get headers "hx-target"))]
-      (-> target (.split "_") vec)
+  (let [stack (if (empty? stack)
+                (if-let [target (get headers "hx-target")]
+                  (-> target (.split "_") vec pop)
+                  [])
+                stack)]
+    (assoc req
+      :stack
       (if (-> stack peek number?)
         (-> stack pop (conj n (peek stack)))
-        (conj (or stack []) n)))))
+        (conj stack n)))))
 
 (def default-method :simple)
 (defn set-param-method! [method]
