@@ -41,7 +41,7 @@ To use our endpoint we call `make-routes`
      (hello req "")]))
 ```
 
-![](screenshot.png)
+![](../inspect.png)
 
 Here the only active element is the text input.  On the input's default action (blur) it will request to `/hello` and replace `#hello` with the server response.  We are using `hello` both as a function and an endpoint.  When called as an endpoint arguments are set based on the html `name` attribute.
 
