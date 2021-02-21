@@ -39,16 +39,10 @@ To use our endpoint we call `make-routes`
 (make-routes
   "/demo"
   (fn [req]
-    (render/html5-response
-      [:div {:style "padding: 10px"}
-        [:label {:style "margin-right: 10px"}
-          "What is your name?"]
-        [:input {:type "text"
-                 :name "my-name"
-                 :hx-patch "hello"
-                 :hx-target "#hello"
-                 :hx-swap "outerHTML"}]
-         (hello req "")])))
+    [:div
+     [:label "What is your name?"]
+     [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
+     (hello req "")]))
 ```
 
 ![](screenshot.png)
