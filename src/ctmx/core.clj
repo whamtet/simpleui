@@ -51,8 +51,7 @@
 (defn- some-middleware [sym]
   (when-let [m (meta sym)]
     (some
-      #(when-let [f (m %)]
-        [℅ f])
+      #(when-let [f (m %)] [% f])
       middleware)))
 
 (defn- expand-params [arg]

@@ -53,7 +53,7 @@ Here the only active element is the text input.  On the input's default action (
 
 ### component stack
 
-Ctmx retains a call stack of nested components.  This is used to set ids and values in the sections below.
+ctmx retains a call stack of nested components.  This is used to set ids and values in the sections below.
 
 ### ids and values
 

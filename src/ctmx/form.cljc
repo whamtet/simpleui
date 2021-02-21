@@ -64,11 +64,11 @@
 (defn apply-params-stack [params stack f & args]
   (as-> params $
         (json-params $)
-        (apply update-in $ stack f args)
+        (apply update-in $ (mapv keyword stack) f args)
         (flatten-json $)))
 
 (defn apply-middleware [req [k f] stack]
   (case k
     :req (f req)
     :params (update req :params apply-params f req)
-    :params-stack (update req :params apply-params-stack stack  f req)))
+    :params-stack (update req :params apply-params-stack stack f req)))
