@@ -28,6 +28,12 @@ The core of ctmx is the `defcomponent` macro which expands to both:
 
 `defcomponent` enables developers to quickly build rich user interfaces with _no_ javascript.  All code is on the server backend and yet it feels the same as frontend code.
 
+## Architecture
+
+{% include architecture.html %}
+
+Ctmx uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)), the web as it was originally supposed to be.  By extending the original html model instead of building a javascript layer over top, we get simplicity and **much** faster page load times.
+
 ## Handling data flow
 
 {% include serverless/functions/core/data_flow.html %}
