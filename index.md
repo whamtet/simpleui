@@ -32,7 +32,7 @@ The core of ctmx is the `defcomponent` macro which expands to both:
 
 {% include architecture.html %}
 
-Ctmx uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)), the web as it was originally supposed to be.  By extending the original html model instead of building a javascript layer over top, we get simplicity and **much** faster page load times.
+Ctmx uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)), the web as it was originally supposed to be.  Application state is implicitly stored in the html itself, not in a separate javascript layer.  By extending the original html model instead of building a javascript layer over top, we get simplicity and **much** faster page load times.
 
 ## Handling data flow
 
