@@ -1,6 +1,7 @@
 (ns ctmx.rt
   (:refer-clojure :exclude [map-indexed])
   (:require
+    [ctmx.config :as config]
     #?(:cljs ctmx.form) ;; to ensure deps are pulled
     #?(:cljs cljs.reader)
     #?(:cljs ctmx.render)
@@ -47,14 +48,8 @@
         (-> stack pop (conj n (peek stack)))
         (conj stack n)))))
 
-(def default-method :simple)
-(defn set-param-method! [method]
-  {:pre [(contains? #{:simple :path} method)]}
-  #?(:clj (alter-var-root #'default-method (constantly method))
-     :cljs (set! default-method method)))
-
 (defn get-value [params json stack value method]
-  (case (or method default-method)
+  (case (or method config/default-param-method)
     :simple (-> value keyword params)
     :path (->> value (conj stack) (string/join "_") keyword params)
     :json (-> value keyword json)
