@@ -8,6 +8,7 @@
 
 (def render-style? true)
 (def render-hs? true)
+(def render-class? true)
 (def render-vals? true)
 
 (defn set-render-style! [s]
@@ -16,6 +17,9 @@
 (defn set-render-hs! [s]
   #?(:clj (alter-var-root #'render-hs? (constantly s))
      :cljs (set! render-hs? s)))
+(defn set-render-class! [s]
+  #?(:clj (alter-var-root #'render-class? (constantly s))
+     :cljs (set! render-class? s)))
 (defn set-render-vals! [s]
   #?(:clj (alter-var-root #'render-vals? (constantly s))
      :cljs (set! render-vals? s)))

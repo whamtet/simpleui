@@ -18,10 +18,13 @@
   #?(:clj json/write-str
      :cljs #(-> % clj->js js/JSON.stringify)))
 
-(defn walk-attr [{:keys [_ style hx-vals] :as s}]
+(defn walk-attr [{:keys [_ style hx-vals class] :as s}]
   (as-> s s
         (if (and config/render-hs? (vector? _))
-          (->> _ (map name) (string/join " ") (assoc s :_))
+          (->> _ (filter identity) (map name) (string/join " ") (assoc s :_))
+          s)
+        (if (and config/render-class? (vector? class))
+          (->> class (filter identity) (map name) (string/join " ") (assoc s :class))
           s)
         (if (and config/render-style? (map? style))
           (->> style fmt-style (assoc s :style))
