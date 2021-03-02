@@ -228,7 +228,7 @@
      ~args ~@body))
 
 (defmacro with-req [req & body]
-  `(let [{:keys [~'request-method ~'session]} ~req
+  `(let [{:keys [~'request-method ~'session ~'params]} ~req
          ~'get? (= :get ~'request-method)
          ~'post? (= :post ~'request-method)
          ~'put? (= :put ~'request-method)
