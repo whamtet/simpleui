@@ -105,6 +105,7 @@
            ~'id (rt/path "" ~'stack ".")
            ~'path (partial rt/path "" ~'stack)
            ~'hash (partial rt/path "#" ~'stack)
+           ~'hash-find (partial rt/path-find "#" ~'stack)
            ~'value (fn [p#] (-> p# ~'path keyword ~'params))]
        ~@body)))
 
