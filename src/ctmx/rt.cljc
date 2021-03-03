@@ -77,13 +77,16 @@
         (-> p (.split "/") rest)
         (-> p (.split "/") (concat-stack stack))))))
 
-(defn path-find [prefix stack find]
-  (as-> stack $
-        (reverse $)
-        (drop-while #(not= find %) $)
-        (reverse $)
-        (string/join "_" $)
-        (str prefix $)))
+(defn path-find
+  ([prefix stack find]
+   (path-find prefix stack find "."))
+  ([prefix stack find p]
+   (as-> stack $
+         (reverse $)
+         (drop-while #(not= find %) $)
+         (reverse $)
+         (vec $)
+         (path prefix $ p))))
 
 (defn map-indexed [f req s]
   (clojure.core/map-indexed
