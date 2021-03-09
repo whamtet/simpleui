@@ -4,6 +4,7 @@
     [clojure.string :as string]
     [clojure.walk :as walk]
     [ctmx.config :as config]
+    [ctmx.render.command :as command]
     [ctmx.response :as response]
     #?(:clj [hiccup.core :as hiccup]
        :cljs [hiccups.runtime :as hiccupsrt]))
@@ -20,6 +21,9 @@
 
 (defn walk-attr [{:keys [_ style hx-vals class] :as s}]
   (as-> s s
+        (if config/render-commands?
+          (command/assoc-commands s)
+          s)
         (if (and config/render-hs? (vector? _))
           (->> _ (filter identity) (map name) (string/join " ") (assoc s :_))
           s)
