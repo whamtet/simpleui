@@ -21,9 +21,6 @@
 
 (defn walk-attr [{:keys [_ style hx-vals class] :as s}]
   (as-> s s
-        (if config/render-commands?
-          (command/assoc-commands s)
-          s)
         (if (and config/render-hs? (vector? _))
           (->> _ (filter identity) (map name) (string/join " ") (assoc s :_))
           s)
@@ -36,8 +33,13 @@
         (if (and config/render-vals? (map? hx-vals))
           (->> hx-vals fmt-json (assoc s :hx-vals))
           s)))
+(defn render-commands [m]
+  (if config/render-commands?
+    (command/assoc-commands m)
+    m))
+
 (defn walk-attrs [m]
-  (walk/postwalk #(if (map? %) (walk-attr %) %) m))
+  (walk/postwalk #(if (map? %) (-> % render-commands walk-attr) %) m))
 
 (def html #(-> % walk-attrs hiccup/html)) ;; can call directly if needed
 
