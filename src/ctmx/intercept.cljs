@@ -2,9 +2,7 @@
   (:require
     [clojure.string :as string]
     [clojure.walk :as walk]
-    hiccups.runtime)
-  (:require-macros
-    [hiccups.core :as hiccups]))
+    [ctmx.render :as render]))
 
 (defn query-string [args]
   (if (-> args count pos?)
@@ -44,8 +42,8 @@
   (let [f-result (-> req js->clj walk/keywordize-keys coerce-static f)]
     (cond
       (nil? f-result) nil
-      (.-then f-result) (.then f-result #(hiccups/html %))
-      :else (hiccups/html f-result))))
+      (.-then f-result) (.then f-result #(render/html %))
+      :else (render/html f-result))))
 
 (def responses)
 
