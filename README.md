@@ -198,14 +198,24 @@ Middleware is not applied when a component is invoked with all its arguments.
 
 ### Additional Parameters
 
-In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  `hx-vals` takes json, use `clojure.data.json/write-str` for convenience.
+In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.
 
 ```clojure
 [:button.delete
   {:hx-delete "trash-can"
-   :hx-vals (json/write-str {:hard-delete true})}
+   :hx-vals {:hard-delete true}}
    "Delete"]
 ```
+
+### Commands
+
+Commands provide a shorthand to indicate custom actions.
+
+```clojure
+[:button {:hx-post "component:action"}]
+```
+
+`component` will be called with the `command` parameter set to `action`.
 
 ### Action at a distance (hx-swap-oob)
 
