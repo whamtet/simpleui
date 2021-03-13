@@ -212,10 +212,16 @@ In most cases htmx will supply all required parameters.  If you need to include 
 Commands provide a shorthand to indicate custom actions.
 
 ```clojure
-[:button {:hx-post "component:action"}]
+(defcomponent ^:endpoint component [req command]
+  (case command
+    "print" (print req)
+    "save" (save req))
+  [:div
+    [:button {:hx-post "component:print"} "Print"]
+    [:button {:hx-post "component:save"} "Save"]])
 ```
 
-`component` will be called with the `command` parameter set to `action`.
+`command` will be bound to the value after the colon in any endpoints.
 
 ### Action at a distance (hx-swap-oob)
 
