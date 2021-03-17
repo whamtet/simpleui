@@ -16,6 +16,10 @@ ctmx is a backend accompaniment which makes htmx even easier to use.  It works i
 
 [Auction](https://whamtet-auction.herokuapp.com/), source [here](https://github.com/whamtet/auction) is a more fleshed out auction app.
 
+## Live tests
+
+    lein auto test
+
 ## Usage
 
 First require the library

@@ -176,14 +176,16 @@
      sym
      #{}))
   ([ns sym exclusions]
-   (when-let [{:keys [ns ns-name name syms endpoint]} (ns-resolve ns sym)]
+   (when-let [{:keys [ns ns-name name syms endpoint css]} (ns-resolve ns sym)]
      (let [exclusions (conj exclusions name)
            mappings (->> syms
                          (remove exclusions)
                          (mapmerge #(extract-endpoints ns % exclusions)))]
-       (if endpoint
-         (assoc mappings name ns-name)
-         mappings)))))
+       (assoc mappings
+         name
+         (if endpoint
+           {:ns-name ns-name :css css}
+           {:css css}))))))
 
 (defn extract-endpoints-root [f]
   (->> f
@@ -202,8 +204,14 @@
   (symbol (str ns-name) (str name)))
 
 (defn extract-endpoints-all [f]
-  (for [[name ns-name] (extract-endpoints-root f)]
+  (for [[name {:keys [ns-name]}] (extract-endpoints-root f)
+        :when ns-name]
     [(str "/" name) `(fn [x#] (-> x# ~(full-symbol ns-name name) render/snippet-response))]))
+
+(defn extract-css [f]
+  (for [[name {:keys [css]}] (extract-endpoints-root f)
+        :when css]
+    [name css]))
 
 (defn strip-slash [root]
   (if (.endsWith root "/")
