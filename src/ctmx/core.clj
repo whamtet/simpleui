@@ -139,7 +139,7 @@
              (with-stack name args)
              (make-f name args)))))
 (defmacro defn-assets [name args & body]
-  `(def ~(vary-meta name assoc :syms (get-syms body))
+  `(defn ~(vary-meta name assoc :syms (get-syms body))
      ~args
      ~@body))
 
