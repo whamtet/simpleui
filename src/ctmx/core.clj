@@ -6,10 +6,10 @@
     [cljs.env :as env]
     [ctmx.form :as form]
     [ctmx.render :as render]
-    [ctmx.rt :as rt]))
+    [ctmx.rt :as rt]
+    [ctmx.util :as util]))
 
 ;; clojure isn't powerful enough!
-(defn flatten-all [m] (->> m (tree-seq coll? seq) (remove coll?)))
 
 (def parsers
   {:int `rt/parse-int
@@ -64,7 +64,7 @@
        ~(some-annotation arg))))
 
 (defn- parse-args [args expanded]
-  `(let [~@(for [sym (flatten-all args)
+  `(let [~@(for [sym (util/flatten-all args)
                  :let [f (sym->f sym)]
                  :when f
                  x [sym `(~f ~sym)]]
@@ -120,7 +120,7 @@
   (if env/*compiler* sym `(quote ~sym)))
 (defn get-syms [body]
   (->> body
-       flatten-all
+       util/flatten-all
        (filter symbol?)
        distinct
        (mapv cljs-quote)))
@@ -184,16 +184,18 @@
      (let [exclusions (conj exclusions name)
            mappings (->> syms
                          (remove exclusions)
-                         (mapmerge #(extract-endpoints ns % exclusions)))]
-       (assoc mappings
-         name
-         (if endpoint
-           {:ns-name ns-name :css css}
-           {:css css}))))))
+                         (mapmerge #(extract-endpoints ns % exclusions)))
+           this-info
+           (util/filter-vals
+             {:css css
+              :ns-name (when endpoint ns-name)})]
+       (if (empty? this-info)
+         mappings
+         (assoc mappings name this-info))))))
 
 (defn extract-endpoints-root [f]
   (->> f
-       flatten-all
+       util/flatten-all
        (filter symbol?)
        distinct
        (mapmerge extract-endpoints)))
