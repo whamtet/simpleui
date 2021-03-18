@@ -174,31 +174,31 @@
   ((if env/*compiler* ns-resolve-cljs ns-resolve-clj) ns sym))
 
 (defn extract-endpoints
-  ([sym]
+  ([search sym]
    (extract-endpoints
      (if env/*compiler* (ns-name *ns*) *ns*)
+     search
      sym
      #{}))
-  ([ns sym exclusions]
-   (when-let [{:keys [ns ns-name name syms endpoint css]} (ns-resolve ns sym)]
+  ([ns search sym exclusions]
+   (when-let [{:keys [ns ns-name name syms endpoint] :as m} (ns-resolve ns sym)]
      (let [exclusions (conj exclusions name)
            mappings (->> syms
                          (remove exclusions)
-                         (mapmerge #(extract-endpoints ns % exclusions)))
-           this-info
-           (util/filter-vals
-             {:css css
-              :ns-name (when endpoint ns-name)})]
-       (if (empty? this-info)
-         mappings
-         (assoc mappings name this-info))))))
+                         (mapmerge #(extract-endpoints ns search % exclusions)))
+           v (if (= :ns-name search)
+               (when endpoint ns-name)
+               (search m))]
+       (if v
+         (assoc mappings name v)
+         mappings)))))
 
-(defn extract-endpoints-root [f]
+(defn extract-endpoints-root [search f]
   (->> f
        util/flatten-all
        (filter symbol?)
        distinct
-       (mapmerge extract-endpoints)))
+       (mapmerge (partial extract-endpoints search))))
 
 (defn- compiled-str [s]
   (-> s name
@@ -210,14 +210,8 @@
   (symbol (str ns-name) (str name)))
 
 (defn extract-endpoints-all [f]
-  (for [[name {:keys [ns-name]}] (extract-endpoints-root f)
-        :when ns-name]
+  (for [[name ns-name] (extract-endpoints-root :ns-name f)]
     [(str "/" name) `(fn [x#] (-> x# ~(full-symbol ns-name name) render/snippet-response))]))
-
-(defn extract-css [f]
-  (for [[name {:keys [css]}] (extract-endpoints-root f)
-        :when css]
-    [name css]))
 
 (defn strip-slash [root]
   (if (.endsWith root "/")
@@ -236,7 +230,7 @@
      ~(vary-meta sym assoc
                  :export true
                  :deps (into {}
-                             (for [[name ns-name] (extract-endpoints-root body)]
+                             (for [[name ns-name] (extract-endpoints-root :ns-name body)]
                                [(str name)
                                 (str (compiled-str ns-name) "." (compiled-str name))])))
      ~args ~@body))
