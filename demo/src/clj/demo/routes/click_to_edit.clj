@@ -1,17 +1,7 @@
 (ns demo.routes.click-to-edit
   (:require
     [ctmx.core :as ctmx :refer [defcomponent make-routes]]
-    [hiccup.page :as page]))
-
-(defn page [body]
-  {:status 200
-   :headers {"content-type" "text/html"}
-   :body
-   (page/html5
-    [:body
-     body
-     [:script {:src "https://unpkg.com/htmx.org@1.3.3"}]]
-    )})
+    [demo.middleware.formats :as formats]))
 
 (defn- input [type name value]
   [:input {:type type :name name :value value}])
@@ -49,6 +39,6 @@
 (defn routes []
   (make-routes "/edit-demo"
                (fn [req]
-                 (page
+                 (formats/page
                    (form-ro req "Joe" "Blow" "joe@blow.com")))))
 

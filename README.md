@@ -276,7 +276,7 @@ htmx does not include disabled fields when submitting requests.  If you wish to 
 
 ## License
 
-Copyright © 2020 Matthew Molloy
+Copyright © 2021 Matthew Molloy
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
