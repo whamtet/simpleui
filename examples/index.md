@@ -1,6 +1,6 @@
 ## Examples
 
-The following examples are taken from [htmx](https://htmx.org/examples).
+The following examples are taken from [htmx](https://htmx.org/examples).  Source [here](https://github.com/whamtet/ctmx/tree/main/demo).
 
 | Pattern        | 	Description           |
 | ------------- |:-------------:|
