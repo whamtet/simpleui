@@ -33,3 +33,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.htmx-settling tr.Inactive {
+  background: lightcoral;
+  transition: all 0s;
+}
+.htmx-settling tr.Active {
+  background: darkseagreen;
+  transition: all 0s;
+}
+tr {
+  transition: all 1.2s;
+}

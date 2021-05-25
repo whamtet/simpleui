@@ -40,5 +40,6 @@
   (make-routes "/edit-demo"
                (fn [req]
                  (formats/page
+                   :zero-outer
                    (form-ro req "Joe" "Blow" "joe@blow.com")))))
 

@@ -9,8 +9,7 @@
     [demo.config :refer [env]]
     [ring.middleware.flash :refer [wrap-flash]]
     [ring.adapter.undertow.middleware.session :refer [wrap-session]]
-    [ring.middleware.defaults :refer [site-defaults wrap-defaults]])
-  )
+    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
 (defn wrap-internal-error [handler]
   (fn [req]

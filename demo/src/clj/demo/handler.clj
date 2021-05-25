@@ -2,6 +2,7 @@
   (:require
     [demo.middleware :as middleware]
     [demo.layout :refer [error-page]]
+    [demo.routes.bulk-update :as bulk-update]
     [demo.routes.home :refer [home-routes]]
     [demo.routes.click-to-edit :as click-to-edit]
     [reitit.ring :as ring]
@@ -19,7 +20,8 @@
   (ring/ring-handler
     (ring/router
       [(home-routes)
-       (click-to-edit/routes)])
+       (click-to-edit/routes)
+       (bulk-update/routes)])
     (ring/routes
       (ring/create-resource-handler
         {:path "/"})
