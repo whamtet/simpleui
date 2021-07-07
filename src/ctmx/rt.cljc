@@ -35,6 +35,7 @@
 (def parse-edn #(if (string? %)
                   (#?(:clj read-string :cljs cljs.reader/read-string) %)
                   %))
+(def parse-kw #(if (string? %) (keyword %) %))
 
 (defn conj-stack [n {:keys [headers stack] :as req}]
   (let [stack (if (empty? stack)
