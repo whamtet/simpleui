@@ -12,7 +12,7 @@ ctmx is a backend accompaniment which makes htmx even easier to use.  It works i
 
 ## Getting started
 
-Please see the [getting started project](tree/main/demo).
+Please see the [getting started project](https://github.com/whamtet/ctmx/tree/main/demo).
 
 ## Demo
 
