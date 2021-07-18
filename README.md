@@ -10,6 +10,10 @@ Clojure backend for for [htmx](https://htmx.org/).
 
 ctmx is a backend accompaniment which makes htmx even easier to use.  It works in conjunction with [hiccup](https://weavejester.github.io/hiccup/) for rendering and [reitit](https://cljdoc.org/d/metosin/reitit/0.5.10/doc/introduction) for routing.
 
+## Getting started
+
+Please see the [getting started project](tree/main/demo).
+
 ## Demo
 
 [ctmx-demo.herokuapp.com](https://ctmx-demo.herokuapp.com/), source [here](https://github.com/whamtet/ctmx-demo).  First request wakes up Heroku so a bit slow, after that you get an accurate idea of performance.
