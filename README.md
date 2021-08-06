@@ -12,7 +12,9 @@ ctmx is a backend accompaniment which makes htmx even easier to use.  It works i
 
 ## Getting started
 
-Please see the [getting started project](https://github.com/whamtet/ctmx/tree/main/demo).
+    lein new luminus my-project +ctmx
+
+The ctmx is all in the `routes/home.clj` ns, so you can see it is very simple.  For richer examples, see the [getting started project](https://github.com/whamtet/ctmx/tree/main/demo).
 
 ## Demo
 
