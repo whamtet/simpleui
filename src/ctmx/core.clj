@@ -12,10 +12,10 @@
 ;; clojure isn't powerful enough!
 
 (def parsers
-  {:int `rt/parse-int
-   :float `rt/parse-float
-   :ints `rt/parse-ints
-   :floats `rt/parse-floats
+  {:long `rt/parse-long
+   :double `rt/parse-double
+   :longs `rt/parse-longs
+   :doubles `rt/parse-doubles
    :array `rt/parse-array
    :boolean `rt/parse-boolean
    :boolean-true `rt/parse-boolean-true

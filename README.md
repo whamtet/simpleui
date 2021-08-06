@@ -161,10 +161,10 @@ You may also cast within the body of `defcomponent`
 
 Casts available include the following
 
-- **^:int** Casts to integer
-- **^:float** Casts to floating point number
-- **^:ints** Casts to array of integers
-- **^:floats** Casts to array of floating point numbers
+- **^:long** Casts to long
+- **^:double** Casts to double
+- **^:longs** Casts to array of longs
+- **^:doubles** Casts to array of doubles
 - **^:array** Puts into an array
 - **^:boolean** True when `(= argument "true")`
 - **^:boolean-true** True when `(not= argument "false")`

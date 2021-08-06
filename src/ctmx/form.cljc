@@ -21,7 +21,7 @@
     m))
 
 (defn first-val [[s]]
-  (#?(:clj Integer/parseInt :cljs js/Number) s))
+  (#?(:clj Long/parseLong :cljs js/Number) s))
 
 (defn vectorize-map [m]
   (if (and

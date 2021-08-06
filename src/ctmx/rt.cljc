@@ -8,18 +8,18 @@
     [clojure.string :as string]
     [ctmx.response :as response]))
 
-(def parse-int #(if (string? %)
-                  (#?(:clj Integer/parseInt :cljs js/Number) %)
+(def parse-long #(if (string? %)
+                  (#?(:clj Long/parseLong :cljs js/Number) %)
                   %))
-(def parse-float #(if (string? %)
-                    (#?(:clj Float/parseFloat :cljs js/Number) %)
+(def parse-double #(if (string? %)
+                    (#?(:clj Double/parseDouble :cljs js/Number) %)
                     %))
-(def parse-ints #(if (string? %)
-                   [(parse-int %)]
-                   (map parse-int %)))
-(def parse-floats #(if (string? %)
-                     [(parse-float %)]
-                     (map parse-float %)))
+(def parse-longs #(if (string? %)
+                   [(parse-long %)]
+                   (map parse-long %)))
+(def parse-doubles #(if (string? %)
+                     [(parse-double %)]
+                     (map parse-double %)))
 (def parse-array #(if (string? %) [%] %))
 (def parse-boolean
   #(case %
@@ -99,7 +99,7 @@
   ([f req i j]
    (map #(f (conj-stack % req))
         (range
-          (parse-int i) (parse-int j)))))
+          (parse-long i) (parse-long j)))))
 
 (defn redirect [path]
   (fn [req]
