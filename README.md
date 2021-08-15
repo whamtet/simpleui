@@ -49,10 +49,12 @@ To use our endpoint we call `make-routes`
 (make-routes
   "/demo"
   (fn [req]
-    [:div
-     [:label "What is your name?"]
-     [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
-     (hello req "")]))
+    ;; page renders the hiccup and returns a ring map
+    (page
+      [:div
+       [:label "What is your name?"]
+       [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
+       (hello req "")])))
 ```
 
 ![](screenshot.png)
