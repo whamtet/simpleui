@@ -30,7 +30,9 @@ In this example we show how to make the values in one select depend on the value
 (make-routes
   "/demo"
   (fn [req]
-    (models req "Audi")))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      (models req "Audi"))))
 ```
 
 {% include footer.html %}

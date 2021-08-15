@@ -25,10 +25,12 @@ We start with an intial state with a button that issues a **POST** to **start** 
 (make-routes
   "/demo"
   (fn [req]
-    [:div {:style "height: 200px"}
-      [:div {:hx-target "this"}
-        [:h3 "Start Progress"]
-        [:button.btn {:hx-post "start"} "Start Job"]]]))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:div {:style "height: 200px"}
+        [:div {:hx-target "this"}
+          [:h3 "Start Progress"]
+          [:button.btn {:hx-post "start"} "Start Job"]]])))
 ```
 
 {% include serverless/examples/progress_bar/demo.html %}

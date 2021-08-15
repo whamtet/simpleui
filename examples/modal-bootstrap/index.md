@@ -32,13 +32,16 @@ We start with a button that triggers the dialog, along with a div at the bottom 
   "/demo"
   (fn [req]
     modal ;; need to include modal in list of endpoints
-    [:div
-      [:button.btn.btn-primary
-        {:hx-get "modal"
-         :hx-target "#modals-here"
-         :_ "on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop"}
-        "Open Modal"]
-      [:div#modals-here]]))
+    
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:div
+        [:button.btn.btn-primary
+          {:hx-get "modal"
+           :hx-target "#modals-here"
+           :_ "on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop"}
+          "Open Modal"]
+        [:div#modals-here]])))
 ```
 
 The **Open Modal** button contains a [hyperscript](https://hyperscript.org/) snippet to handle css transitions. 

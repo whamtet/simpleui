@@ -21,10 +21,12 @@ The infinite scroll pattern provides a way to load content dynamically on user s
 (make-routes
   "/demo"
   (fn [req]
-    [:table
-      [:thead
-        [:tr [:th "Name"] [:th "Email"] [:th "ID"]]]
-      [:tbody (rows req 0)]]))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:table
+        [:thead
+          [:tr [:th "Name"] [:th "Email"] [:th "ID"]]]
+        [:tbody (rows req 0)]])))
 ```
 
 {% include serverless/examples/infinite_scroll/demo.html %}

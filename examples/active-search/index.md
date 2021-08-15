@@ -20,19 +20,21 @@ This example actively searches a contacts database as the user enters text.
 (make-routes
   "/demo"
   (fn [req]
-    [:div
-      [:h3 "Search Contacts"]
-      [:input.mr
-        {:type "text" :name "search" :placeholder "Search e.g. Joe"
-         :hx-post "active-search" :hx-trigger "keyup changed delay:500ms"
-         :hx-target "#search-results"}]
-      [:span.htmx-indicator
-          [:img {:src "../../bars.svg"}] " Searching..."]
-      [:table.table
-        [:thead
-          [:tr [:th "Name"] [:th "Email"]]]
-        [:tbody#search-results
-          (active-search req "")]]]))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:div
+        [:h3 "Search Contacts"]
+        [:input.mr
+          {:type "text" :name "search" :placeholder "Search e.g. Joe"
+           :hx-post "active-search" :hx-trigger "keyup changed delay:500ms"
+           :hx-target "#search-results"}]
+        [:span.htmx-indicator
+            [:img {:src "../../bars.svg"}] " Searching..."]
+        [:table.table
+          [:thead
+            [:tr [:th "Name"] [:th "Email"]]]
+          [:tbody#search-results
+            (active-search req "")]]])))
 ```
 
 The input issues a **POST** to **rows** on the keyup event and sets the body of the table to be the resulting content.

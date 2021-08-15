@@ -14,14 +14,16 @@ but the request is only sent if the dialog is accepted.
 (make-routes
   "/demo"
   (fn [req]
-    [:div
-      [:button.btn.mb
-        {:hx-post "reply"
-         :hx-prompt "Enter a string"
-         :hx-confirm "Are you sure?"
-         :hx-target "#response"}
-        "Prompt Submission"]
-      [:div#response]]))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:div
+        [:button.btn.mb
+          {:hx-post "reply"
+           :hx-prompt "Enter a string"
+           :hx-confirm "Are you sure?"
+           :hx-target "#response"}
+          "Prompt Submission"]
+        [:div#response]])))
 ```
 
 {% include footer.html %}

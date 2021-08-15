@@ -7,10 +7,12 @@ ctmx is an app development tool for fast product development and even faster pag
 (make-routes
   "/demo"
   (fn [req]
-    [:div
-     [:label "What is your name?"]
-     [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
-     (hello req "")]))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:div
+       [:label "What is your name?"]
+       [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
+       (hello req "")])))
 
 ```
 {% include serverless/functions/core/demo.html %}
@@ -50,7 +52,7 @@ Ctmx uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wi
 (make-routes
   "/data-flow"
   (fn [req]
-    (form req "Barry" "")))
+    (page (form req "Barry" ""))))
 ```
 
 ctmx maintains a call stack of nested components.  This makes it easy to label data without name clashes.  Try submitting the above form and then inspecting the browser network tab.
@@ -81,7 +83,7 @@ To expand `(path "first-name")` and `(path "last-name")` consistently we must be
 (make-routes
   "/nesting-components"
   (fn [req]
-    (table req)))
+    (page (table req))))
 ```
 
 ## Transforming parameters to JSON
@@ -119,7 +121,7 @@ The UI provides a natural structure to nest our data.  This corresponds closely 
 (make-routes
   "/transforming"
   (fn [req]
-    (customer-list req "Joe" "Stewart" [])))
+    (page (customer-list req "Joe" "Stewart" []))))
 ```
 
 As we add customers the JSON builds up to match the UI.  We would lightly transform the data before persisting it, however it is often already close to what we want it to be.
@@ -139,7 +141,7 @@ This example uses the `add-customer` middleware to transform parameters before t
 (make-routes
   "/parameter-casting"
   (fn [req]
-    (click-div req 0)))
+    (page (click-div req 0))))
 ```
 
 Ctmx uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:int**, **^:boolean** and **^:float**. See [documentation](https://github.com/whamtet/ctmx#parameter-casting) for details.

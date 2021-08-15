@@ -22,7 +22,9 @@ Therefore, to display and select tabs in your application, simply include the ta
 (make-routes
   "/demo"
   (fn [req]
-    (content req 1)))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      (content req 1))))
 ```
 {% include serverless/examples/tabs_hateoas/demo.html %}
 
@@ -44,10 +46,12 @@ We can use [hyperscript](https://hyperscript.org/) instead of server requests fo
 (make-routes
   "/demo2"
   (fn [req]
-    [:div
-     [:div.tab-list
-      (map static-tab (range 1 4))]
-     (map static-content (range 1 4))]))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:div
+       [:div.tab-list
+        (map static-tab (range 1 4))]
+       (map static-content (range 1 4))])))
 ```
 Try clicking the second set of tabs and notice the performance difference.
 {% include serverless/examples/tabs_hateoas/demo2.html %}

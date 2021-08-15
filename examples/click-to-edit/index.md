@@ -38,7 +38,9 @@ The click to edit pattern provides a way to offer inline editing of all or part 
 
 (make-routes "/edit-demo"
   (fn [req]
-    (form-ro req "Joe" "Blow" "joe@blow.com")))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      (form-ro req "Joe" "Blow" "joe@blow.com"))))
 ```
 
 {% include serverless/examples/click_to_edit/edit_demo.html %}

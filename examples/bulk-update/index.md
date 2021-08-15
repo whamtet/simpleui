@@ -43,7 +43,10 @@ This demo shows how to implement a common pattern where rows are selected and th
 
 (make-routes
   "/demo"
-  (fn [req] (update-form req #{} init-data nil)))
+  (fn [req]
+    ;; page renders the hiccup and returns a ring response
+    (page
+      (update-form req #{} init-data nil))))
 ```
 
 {% include serverless/examples/bulk_update/demo.html %}

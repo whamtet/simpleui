@@ -24,10 +24,12 @@ This example shows how to implement click-to-load the next page in a table of da
 (make-routes
   "/demo"
   (fn [req]
-    [:table
-      [:thead
-        [:tr [:th "Name"] [:th "Email"] [:th "ID"]]]
-      [:tbody (rows-click req 0)]]))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:table
+        [:thead
+          [:tr [:th "Name"] [:th "Email"] [:th "ID"]]]
+        [:tbody (rows-click req 0)]])))
 
 ```
 

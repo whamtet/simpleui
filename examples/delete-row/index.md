@@ -21,11 +21,13 @@ This example shows how to implement a delete button that removes a table row upo
 (make-routes
   "/demo"
   (fn [req]
-    [:table.table.delete-row-example
-      [:thead
-        [:tr [:th "Name"] [:th "Email"] [:th "Status"] [:th]]]
-      [:tbody {:hx-confirm "Are you sure?" :hx-target "closest tr" :hx-swap "outerHTML swap:0.5s"}
-        (ctmx.rt/map-indexed tr req data)]]))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:table.table.delete-row-example
+        [:thead
+          [:tr [:th "Name"] [:th "Email"] [:th "Status"] [:th]]]
+        [:tbody {:hx-confirm "Are you sure?" :hx-target "closest tr" :hx-swap "outerHTML swap:0.5s"}
+          (ctmx.rt/map-indexed tr req data)]])))
 ```
 
 {% include serverless/examples/delete_row/demo.html %}

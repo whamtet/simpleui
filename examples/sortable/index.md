@@ -31,7 +31,9 @@ We then trigger **POST** to **sortable** on the **end** event to persist changes
 (make-routes
   "/demo"
   (fn [req]
-    (sortable req nil)))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      (sortable req nil))))
 ```
 
 {% include footer.html %}

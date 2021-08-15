@@ -19,12 +19,14 @@ This example shows how to do inline field validation, in this case of an email a
 (make-routes
   "/demo"
   (fn [req]
-    [:div
-     [:h3 "Signup Form"]
-     [:form
-      (email req "")
-      (input-group "First Name" "first-name")
-      (input-group "Last Name" "last-name")]]))
+    ;; page renders the hiccup and returns a ring response
+    (page
+      [:div
+       [:h3 "Signup Form"]
+       [:form
+        (email req "")
+        (input-group "First Name" "first-name")
+        (input-group "Last Name" "last-name")]])))
 ```
 
 {% include serverless/examples/inline_validation/demo.html %}
