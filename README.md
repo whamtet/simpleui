@@ -149,7 +149,7 @@ We need to ascend two levels in the call path because the array index counts as 
 htmx submits all parameters as strings.  It can be convenient to cast parameters to the required type
 
 ```clojure
-(defcomponent my-component [req ^:int int-argument ^:boolean boolean-argument] ...)
+(defcomponent my-component [req ^:long long-argument ^:boolean boolean-argument] ...)
 ```
 
 You may also cast within the body of `defcomponent`
