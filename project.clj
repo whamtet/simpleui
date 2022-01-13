@@ -8,6 +8,7 @@
                  [org.clojure/clojurescript "1.10.773"]
                  [macchiato/hiccups "0.4.1"]
                  ;; TODO reitit-ring
-                 [metosin/reitit "0.5.11"]]
+                 [metosin/reitit "0.5.11"]
+                 [crouton "0.1.2"]]
   :plugins [[lein-auto "0.1.3"]]
   :repl-options {:init-ns ctmx.core})
