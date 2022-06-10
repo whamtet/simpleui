@@ -8,7 +8,7 @@ Therefore, to display and select tabs in your application, simply include the ta
 ```clojure
 (defn- tab [i val]
   [:a {:hx-get "content"
-       :hx-vals (json {:tab-index i})
+       :hx-vals {:tab-index i}
        :class (when (= i val) "selected")}
     "Tab " i])
 

@@ -17,7 +17,7 @@ This example shows how to implement click-to-load the next page in a table of da
       [:td {:colspan "3"}
         [:button.btn
           {:hx-get "rows-click"
-           :hx-vals (json {:page (inc page)})}
+           :hx-vals {:page (inc page)}}
            "Load More Agents..."
            [:img.htmx-indicator {:src "../../bars.svg"}]]]]))
 

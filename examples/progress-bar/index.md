@@ -18,7 +18,7 @@ We start with an intial state with a button that issues a **POST** to **start** 
       [:div {:hx-target "this"
              :hx-get "start"
              :hx-trigger "load delay:600ms"
-             :hx-vals (json {:width width})}
+             :hx-vals {:width width}}
         [:h3 "Running"]
         (progress width)])))
 

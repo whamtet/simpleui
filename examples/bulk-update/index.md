@@ -34,11 +34,11 @@ This demo shows how to implement a common pattern where rows are selected and th
     [:tbody (map-indexed (partial tr ids status) data)]]
    [:button.mmargin
     {:hx-put "update-form"
-     :hx-vals (json {:status "Active"})}
+     :hx-vals {:status "Active"}}
     "Activate"]
    [:button.mmargin
     {:hx-put "update-form"
-     :hx-vals (json {:status "Inactive"})}
+     :hx-vals {:status "Inactive"}}
     "Deactivate"]])
 
 (make-routes

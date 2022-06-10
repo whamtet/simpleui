@@ -10,7 +10,7 @@ The infinite scroll pattern provides a way to load content dynamically on user s
 (defn tr [i]
     [:tr
       (when (= 9 (mod i 10))
-        {:hx-get "rows" :hx-trigger "revealed" :hx-swap "afterend" :hx-vals (json {:page (inc i)})})
+        {:hx-get "rows" :hx-trigger "revealed" :hx-swap "afterend" :hx-vals {:page (inc i)}})
       [:td "Agent Smith"]
       [:td (str "void" i "@null.org")]
       [:td (rand-str)]])
