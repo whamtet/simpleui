@@ -9,5 +9,7 @@
                  [macchiato/hiccups "0.4.1"]
                  ;; TODO reitit-ring
                  [metosin/reitit "0.5.11"]]
+  :repositories [["clojars" {:url "https://clojars.org/repo/"
+                             :sign-releases false}]]
   :plugins [[lein-auto "0.1.3"]]
   :repl-options {:init-ns ctmx.core})
