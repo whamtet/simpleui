@@ -8,7 +8,7 @@ We start with an intial state with a button that issues a **POST** to **start** 
   [:div.progress
     [:div#pb.progress-bar {:style (str "width:" width "%")}]])
 
-(defcomponent ^:endpoint start [req ^:float width]
+(defcomponent ^:endpoint start [req ^:double width]
   (let [width (if width (-> width (+ (rand 30)) (min 100)) 0)]
     (if (= width 100)
       [:div {:hx-target "this"}

@@ -22,7 +22,7 @@ We then trigger **POST** to **sortable** on the **end** event to persist changes
         [:input {:type "hidden" :name "order" :value item}]
         "Item " item])))
 
-(defcomponent ^:endpoint sortable [req ^:ints order]
+(defcomponent ^:endpoint sortable [req ^:longs order]
   (if (not-empty order)
     (content order)
     [:form#to-sort {:hx-post "sortable" :hx-trigger "end"}

@@ -13,7 +13,7 @@ This demo shows how to implement a common pattern where rows are selected and th
 (defn- set-status [status data i]
   (update data i assoc :status status))
 
-(defn-parse update-data [{:keys [^:edn data ^:ints ids status]} _]
+(defn-parse update-data [{:keys [^:edn data ^:longs ids status]} _]
   {:ids (set ids)
    :data (reduce (partial set-status status) data ids)
    :status status})

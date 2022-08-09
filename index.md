@@ -133,7 +133,7 @@ This example uses the `add-customer` middleware to transform parameters before t
 {% include serverless/functions/core/parameter_casting.html %}
 ---
 ```clojure
-(defcomponent ^:endpoint click-div [req ^:int num-clicks]
+(defcomponent ^:endpoint click-div [req ^:long num-clicks]
   [:form {:id id :hx-get "click-div" :hx-trigger "click"}
     [:input {:type "hidden" :name "num-clicks" :value (inc num-clicks)}]
     "You have clicked me " num-clicks " times!"])
@@ -144,7 +144,7 @@ This example uses the `add-customer` middleware to transform parameters before t
     (page (click-div req 0))))
 ```
 
-Ctmx uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:int**, **^:boolean** and **^:float**. See [documentation](https://github.com/whamtet/ctmx#parameter-casting) for details.
+Ctmx uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:long**, **^:boolean** and **^:double**. See [documentation](https://github.com/whamtet/ctmx#parameter-casting) for details.
 
 We may also cast within the body of `defcomponent`.
 

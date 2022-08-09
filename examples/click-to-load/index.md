@@ -10,7 +10,7 @@ This example shows how to implement click-to-load the next page in a table of da
 (defn tr [i]
     [:tr [:td "Agent Smith"] [:td (str "void" i "@null.org")] [:td (rand-str)]])
 
-(defcomponent ^:endpoint rows-click [req ^:int page]
+(defcomponent ^:endpoint rows-click [req ^:long page]
   (list
     (map tr (range (* 10 page) (* 10 (inc page))))
     [:tr {:id id :hx-target "this"}

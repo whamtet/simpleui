@@ -15,7 +15,7 @@ The infinite scroll pattern provides a way to load content dynamically on user s
       [:td (str "void" i "@null.org")]
       [:td (rand-str)]])
 
-(defcomponent ^:endpoint rows [req ^:int page]
+(defcomponent ^:endpoint rows [req ^:long page]
   (map tr (range page (+ 10 page))))
 
 (make-routes
