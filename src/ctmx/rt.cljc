@@ -1,5 +1,5 @@
 (ns ctmx.rt
-  (:refer-clojure :exclude [map-indexed])
+  (:refer-clojure :exclude [map-indexed parse-long parse-double parse-boolean])
   (:require
     [ctmx.config :as config]
     #?(:cljs ctmx.form) ;; to ensure deps are pulled
