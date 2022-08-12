@@ -106,6 +106,53 @@ When we first load the page ctmx generates the full dom tree.  Subsequent update
 
 ctmx uses the id of the component being updated to set the component stack consistently.
 
+You can "group" multiple components in the same `make-routes` call like this:
+
+```clojure
+
+(ctmx/defcomponent ^:endpoint next-month [req] ([:p "next-month"]) )
+(ctmx/defcomponent ^:endpoint previous-month [req] ([:p "previous-month"]) )
+
+(ctmx/defcomponent ^:endpoint calendar [req]
+  ;; we do not use next-month and previous-month within calendar
+  ;; but we want the endpoints to be exposed so we reference them here
+  next-month
+  previous-month
+  (list 
+    [:div
+       [:button {:type "button" :hx-get "previous-month" :hx-target "#calendar" :title "Previous Month"}]
+
+       [:button {:type "button" :hx-get "next-month" :hx-target "#calendar" :title "Next Month"}]]))
+
+;; this call will register all components in routes: calendar, next-month, previous-month
+
+(clojure.pprint/pprint
+   (ctmx/make-routes
+    "/"
+    (fn [req]
+      (html5-response
+       (calendar req)))))
+;; [""
+;;  [""
+;;   {:get
+;;    #object[ctmx.rt$redirect$fn__10431 0x71e6a542 
+;;            "ctmx.rt$redirect$fn__10431@71e6a542"]}]
+;;  ["/"
+;;   {:get
+;;    #object[jlp.routes.calendar$eval15327$fn__15328 0x6dbdf805 
+;;            "jlp.routes.calendar$eval15327$fn__15328@6dbdf805"]}]
+;;  ["/next-month"
+;;   #object[jlp.routes.calendar$eval15327$fn__15330 0x7d8507dd 
+;;           "jlp.routes.calendar$eval15327$fn__15330@7d8507dd"]]
+;;  ["/previous-month"
+;;   #object[jlp.routes.calendar$eval15327$fn__15332 0x713093aa 
+;;           "jlp.routes.calendar$eval15327$fn__15332@713093aa"]]
+;;  ["/calendar"
+;;   #object[jlp.routes.calendar$eval15327$fn__15338 0x6a7a2170 
+;;           "jlp.routes.calendar$eval15327$fn__15338@6a7a2170"]]]
+     
+```
+
 ### Component Arrays
 
 `path` also includes array indices.  Instead of using `clojure.core/map` use `ctmx.rt/map-indexed`.
