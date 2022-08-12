@@ -1,5 +1,9 @@
 ctmx is an app development tool for fast product development and even faster page load times.  It uses [htmx](https://htmx.org/) on the frontend.
 
+Get started with the luminus template `lein new luminus my-project +ctmx` and update `project.clj` to the latest version of ctmx.
+
+## Basic example
+
 ```clojure
 (defcomponent ^:endpoint hello [req my-name]
   [:div#hello "Hello " my-name])
