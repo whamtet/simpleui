@@ -6,7 +6,7 @@
     [ctmx.config :as config]
     [ctmx.render.command :as command]
     [ctmx.response :as response]
-    #?(:clj [hiccup.core :as hiccup]
+    #?(:clj [hiccup2.core :as hiccup]
        :cljs [hiccups.runtime :as hiccupsrt]))
   #?(:cljs (:require-macros [hiccups.core :as hiccup])))
 
@@ -41,7 +41,7 @@
 (defn walk-attrs [m]
   (walk/postwalk #(if (map? %) (-> % render-commands walk-attr) %) m))
 
-(def html #(-> % walk-attrs hiccup/html)) ;; can call directly if needed
+(def html #(-> % walk-attrs hiccup/html str)) ;; can call directly if needed
 
 (defn snippet-response [body]
   (cond
