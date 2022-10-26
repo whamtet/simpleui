@@ -175,31 +175,27 @@
   ((if env/*compiler* ns-resolve-cljs ns-resolve-clj) ns sym))
 
 (defn extract-endpoints
-  ([search sym]
+  ([sym]
    (extract-endpoints
      (if env/*compiler* (ns-name *ns*) *ns*)
-     search
      sym
      #{}))
-  ([ns search sym exclusions]
+  ([ns sym exclusions]
    (when-let [{:keys [ns ns-name name syms endpoint] :as m} (ns-resolve ns sym)]
      (let [exclusions (conj exclusions name)
            mappings (->> syms
                          (remove exclusions)
-                         (mapmerge #(extract-endpoints ns search % exclusions)))
-           v (if (= :ns-name search)
-               (when endpoint ns-name)
-               (search m))]
-       (if v
-         (assoc mappings name v)
+                         (mapmerge #(extract-endpoints ns % exclusions)))]
+       (if endpoint
+         (assoc mappings name ns-name)
          mappings)))))
 
-(defn extract-endpoints-root [search f]
+(defn extract-endpoints-root [f]
   (->> f
        util/flatten-all
        (filter symbol?)
        distinct
-       (mapmerge (partial extract-endpoints search))))
+       (mapmerge extract-endpoints)))
 
 (defn- compiled-str [s]
   (-> s name
@@ -211,7 +207,7 @@
   (symbol (str ns-name) (str name)))
 
 (defn extract-endpoints-all [f]
-  (for [[name ns-name] (extract-endpoints-root :ns-name f)]
+  (for [[name ns-name] (extract-endpoints-root f)]
     [(str "/" name) `(fn [x#] (-> x# ~(full-symbol ns-name name) render/snippet-response))]))
 
 (defn strip-slash [root]
@@ -231,7 +227,7 @@
      ~(vary-meta sym assoc
                  :export true
                  :deps (into {}
-                             (for [[name ns-name] (extract-endpoints-root :ns-name body)]
+                             (for [[name ns-name] (extract-endpoints-root body)]
                                [(str name)
                                 (str (compiled-str ns-name) "." (compiled-str name))])))
      ~args ~@body))
