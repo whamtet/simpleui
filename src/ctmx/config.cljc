@@ -24,6 +24,6 @@
 (defn set-render-vals! [s]
   #?(:clj (alter-var-root #'render-vals? (constantly s))
      :cljs (set! render-vals? s)))
-(defn set-render-commands [s]
+(defn set-render-commands! [s]
   #?(:clj (alter-var-root #'render-commands? (constantly s))
      :cljs (set! render-commands? s)))

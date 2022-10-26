@@ -9,11 +9,11 @@
     [ctmx.rt :as rt]
     [ctmx.util :as util]))
 
-;; clojure isn't powerful enough!
-
 (def parsers
   {:long `rt/parse-long
+   :long-option `rt/parse-long-option
    :double `rt/parse-double
+   :double-option `rt/parse-double-option
    :longs `rt/parse-longs
    :doubles `rt/parse-doubles
    :array `rt/parse-array

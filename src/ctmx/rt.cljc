@@ -20,6 +20,16 @@
 (def parse-doubles #(if (string? %)
                      [(parse-double %)]
                      (map parse-double %)))
+
+(def parse-long-option #(if (string? %)
+                  (when (-> % .trim not-empty)
+                    (#?(:clj Long/parseLong :cljs js/Number) %))
+                  %))
+(def parse-double-option #(if (string? %)
+                  (when (-> % .trim not-empty)
+                    (#?(:clj Double/parseDouble :cljs js/Number) %))
+                    %))
+
 (def parse-array #(if (string? %) [%] %))
 (def parse-boolean
   #(case %
@@ -93,13 +103,6 @@
   (clojure.core/map-indexed
     (fn [i x]
       (f (conj-stack i req) i x)) s))
-
-(defn map-range
-  ([f req i] (map-range f req 0 i))
-  ([f req i j]
-   (map #(f (conj-stack % req))
-        (range
-          (parse-long i) (parse-long j)))))
 
 (defn redirect [path]
   (fn [req]
