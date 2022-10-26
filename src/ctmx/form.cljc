@@ -31,6 +31,29 @@
     (->> m (sort-by first-val) (mapv second))
     m))
 
+(defn- digital? [[k]]
+  (boolean (re-find #"^\d+$" k)))
+(defn- key-value [[k]]
+  (Long/parseLong k))
+(defn- conjv [s x]
+  (conj (or s []) x))
+
+(defn vectorize-map [m]
+  (if (map? m)
+    (let [{digital-elements true normal-elements false} (group-by digital? m)
+          normal-map (into {} normal-elements)
+          digital-sorted (->> digital-elements (sort-by key-value) (map second))]
+      (reduce
+       (fn [m sorted-item]
+         (reduce
+          (fn [m [k v]]
+            (update m k conjv v))
+          m
+          sorted-item))
+       normal-map
+       digital-sorted))
+    m))
+
 (defn json-params [params]
   (->> params
        nest-params

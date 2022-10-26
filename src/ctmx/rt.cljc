@@ -53,11 +53,7 @@
                   (-> target (.split "_") vec pop)
                   [])
                 stack)]
-    (assoc req
-      :stack
-      (if (-> stack peek number?)
-        (-> stack pop (conj n (peek stack)))
-        (conj stack n)))))
+    (assoc req :stack (conj stack n))))
 
 (defn get-value [params json stack value method]
   (case (or method config/default-param-method)
