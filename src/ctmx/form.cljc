@@ -20,17 +20,6 @@
       :else m)
     m))
 
-(defn first-val [[s]]
-  (#?(:clj Long/parseLong :cljs js/Number) s))
-
-(defn vectorize-map [m]
-  (if (and
-        (map? m)
-        (not-empty m)
-        (every? #(re-find #"^\d+$" %) (keys m)))
-    (->> m (sort-by first-val) (mapv second))
-    m))
-
 (defn- digital? [[k]]
   (boolean (re-find #"^\d+$" k)))
 (defn- key-value [[k]]
