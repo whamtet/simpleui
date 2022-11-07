@@ -52,20 +52,41 @@
 (defn json-params-pruned [params]
   (-> params json-params prune-params))
 
+(defn- reduce-indexed [f state s]
+  (reduce
+    (fn [state [i x]]
+      (f state i x))
+    state
+    (map-indexed list s)))
+
+(declare flatten-json)
+(defn flatten-json-vector [k stack done v]
+  (reduce-indexed
+    (fn [done i x]
+      (let [stack (conj stack i (name k))]
+        (cond
+          (vector? x) (throw (IllegalStateException. "nested vectors unsupported"))
+          (map? x) (flatten-json stack done x)
+          :else
+          (assoc done
+            (->> stack (string/join "_") keyword) x))))
+    done
+    v))
+
 (defn flatten-json
   ([m] (flatten-json [] {} m))
   ([stack done m]
    (reduce
      (fn [done [k v]]
-       (let [stack (conj stack (name k))]
-         (if (or (map? v) (vector? v))
-           (flatten-json stack done v)
-           (assoc done
-             (->> stack (string/join "_") keyword) v))))
+       (if (vector? v) 
+         (flatten-json-vector k stack done v)
+         (let [stack (conj stack (name k))]
+           (if (map? v)
+             (flatten-json stack done v)
+             (assoc done
+               (->> stack (string/join "_") keyword) v)))))
      done
-     (if (map? m)
-       m
-       (map-indexed #(list (str %1) %2) m)))))
+     m)))
 
 (defn apply-params [params f & args]
   (as-> params $

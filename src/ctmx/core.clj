@@ -94,11 +94,6 @@
               ~@(map expand-params (rest args)))))
          (~args ~(parse-args args expanded))))))
 
-(defmacro update-params [req f & body]
-  `(let [~req (update ~req :params ~f ~req)
-         {:keys [~'params]} ~req
-         ~'value (fn [p#] (-> p# ~'path keyword ~'params))] ~@body))
-
 (defn- with-stack [n [req] body]
   (let [req (symbol-or-as req)]
     `(let [~'top-level? (-> ~req :stack empty?)
