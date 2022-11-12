@@ -102,7 +102,8 @@
            ~'path (partial rt/path "" ~'stack)
            ~'hash (partial rt/path "#" ~'stack)
            ~'hash-find (partial rt/path-find "#" ~'stack)
-           ~'value (fn [p#] (-> p# ~'path keyword ~'params))]
+           ~'value (fn [p#] (-> p# ~'path keyword ~'params))
+           ~'self ~(name n)]
        ~@body)))
 
 (defn expand-parser-hint [x]
