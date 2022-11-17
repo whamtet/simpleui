@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [ns-resolve])
   (:require
     [clojure.string :as string]
-    [clojure.walk :as walk]
+    [ctmx.walk :as walk]
     [cljs.env :as env]
     [ctmx.form :as form]
     [ctmx.render :as render]
