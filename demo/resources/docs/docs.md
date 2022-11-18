@@ -8,6 +8,7 @@ Demo project based on a [luminus](https://luminusweb.com) template.
 * [active-search](active-search)
 * [click-to-load](click-to-load)
 * [delete-row](delete-row)
+* [edit-row](edit-row)
 * [dialogs](dialogs)
 * [infinite-scroll](infinite-scroll)
 * [inline-validation](inline-validation)

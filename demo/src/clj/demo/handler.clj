@@ -7,6 +7,7 @@
     [demo.routes.click-to-edit :as click-to-edit]
     [demo.routes.click-to-load :as click-to-load]
     [demo.routes.delete-row :as delete-row]
+    [demo.routes.edit-row :as edit-row]
     [demo.routes.dialogs :as dialogs]
     [demo.routes.home :refer [home-routes]]
     [demo.routes.infinite-scroll :as infinite-scroll]
@@ -35,6 +36,7 @@
        (click-to-edit/routes)
        (click-to-load/routes)
        (delete-row/routes)
+       (edit-row/routes)
        (dialogs/routes)
        (inline-validation/routes)
        (infinite-scroll/routes)
