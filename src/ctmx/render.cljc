@@ -14,10 +14,23 @@
   (string/join "; "
                (for [[k v] style :when v]
                  (str (name k) ": " v))))
+(defn write-key-fn
+  "Modified version of clojure.data.json/default-write-key-fn that serializes namespaced keys with their namespace. That is :foo/bar -> 'foo/bar'"
+  [x]
+  #?(:clj
+     (cond
+       (keyword? x)
+       (subs (str x) 1)
+       (instance? clojure.lang.Named x)
+       (name x)
+       (nil? x)
+       (throw (Exception. "JSON object properties may not be nil"))
+       :else (str x))
+     :cljs (subs (str x) 1)))
 
 (def fmt-json
-  #?(:clj json/write-str
-     :cljs #(-> % clj->js js/JSON.stringify)))
+  #?(:clj #(json/write-str % :key-fn write-key-fn)
+     :cljs #(-> % (clj->js :keyword-fn write-key-fn) js/JSON.stringify)))
 
 (defn walk-attr [{:keys [_ style hx-vals class] :as s}]
   (as-> s s
