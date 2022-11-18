@@ -47,7 +47,7 @@
                   %))
 (def parse-kw #(if (string? %) (keyword %) %))
 
-(defn conj-stack [n {:keys [headers stack] :as req}]
+(defn conj-stack [{:keys [headers stack] :as req} n]
   (let [stack (if (empty? stack)
                 (if-let [target (get headers "hx-target")]
                   (-> target (.split "_") vec pop)
@@ -95,10 +95,14 @@
          (vec $)
          (path prefix $ p))))
 
+(defn- merge-params [req i x]
+  (update req :params merge x {:index i}))
+
 (defn map-indexed [f req s]
   (clojure.core/map-indexed
     (fn [i x]
-      (f (conj-stack i req) i x)) s))
+      (-> req (conj-stack i) (merge-params i x) f))
+    s))
 
 (defn redirect [path]
   (fn [req]
