@@ -80,9 +80,9 @@
     prefix
     (string/join
       "_"
-      (if (.startsWith p "/")
-        (-> p (.split "/") rest)
-        (-> p (.split "/") (concat-stack stack))))))
+      (if (.startsWith p "\\")
+        (-> p (.split "\\") rest)
+        (-> p (.split "\\") (concat-stack stack))))))
 
 (defn path-find
   ([prefix stack find]
