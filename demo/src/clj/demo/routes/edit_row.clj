@@ -10,16 +10,18 @@
    {:name "Fuqua Tarkenton" :email "fuqua@tarkenton.org"}
    {:name "Kim Yee"	:email "kim@yee.org"}])
 
-(defcomponent ^:endpoint demo-table-row [req index {:keys [name email]}]
-  (let [edit-index ^:long (value "edit-index")]
-    (if (= index edit-index)
-      [:tr {:id id :hx-target "this"}
-       [:td "editing"]]
-      [:tr {:id id :hx-target "this"}
-       [:td name]
-       [:td email]
-       [:td [:button.btn.btn-primary
-             {:hx-get self} "Edit"]]])))
+(defcomponent ^:endpoint demo-table-row [req name email command]
+  (if (= "edit" command)
+    [:tr {:id id :hx-target "this"}
+     [:td [:input {:value name}]]
+     [:td [:input {:value email}]]
+     [:td "todo"]]
+    [:tr {:id id :hx-target "this"}
+     [:td name]
+     [:td email]
+     [:td [:button.btn.btn-primary
+           {:hx-get self
+            :hx-vals {:name name :email email :command "edit"}} "Edit"]]]))
 
 (defcomponent demo-table [req]
   [:table.table.delete-row-example

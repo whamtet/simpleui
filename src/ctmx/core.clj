@@ -80,12 +80,12 @@
       1
       (if middleware
         `(fn ~args
-           (let [stack# (:stack (rt/conj-stack ~(name n) ~r))
+           (let [stack# (:stack (rt/conj-stack ~r ~(name n)))
                  ~r (form/apply-middleware ~r ~middleware stack#)] ~expanded))
         `(fn ~args ~expanded))
       `(fn this#
          ([~'req]
-          (let [{:keys [~'stack]} (rt/conj-stack ~(name n) ~'req)
+          (let [{:keys [~'stack]} (rt/conj-stack ~'req ~(name n))
                 req# ~(if middleware `(form/apply-middleware ~'req ~middleware ~'stack) 'req)
                 {:keys [~'params]} req#
                 ~'json ~(when (some json? args) `(form/json-params ~'params))]
@@ -97,7 +97,7 @@
 (defn- with-stack [n [req] body]
   (let [req (symbol-or-as req)]
     `(let [~'top-level? (-> ~req :stack empty?)
-           {:keys [~'params ~'stack] :as ~req} (rt/conj-stack ~(name n) ~req)
+           {:keys [~'params ~'stack] :as ~req} (rt/conj-stack ~req ~(name n))
            ~'id (rt/path "" ~'stack ".")
            ~'path (partial rt/path "" ~'stack)
            ~'hash (partial rt/path "#" ~'stack)

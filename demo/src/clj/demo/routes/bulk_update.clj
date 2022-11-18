@@ -30,7 +30,7 @@
    [:table
     [:thead
      [:tr [:th] [:th "Name"] [:th "Email"] [:th "Status"]]]
-    [:tbody (map-indexed (partial tr ids status) data)]]
+    [:tbody #_(map-indexed (partial tr ids status) data)]]
    [:button.mmargin
     {:hx-put "update-form"
      :hx-vals {:status "Active"}}
