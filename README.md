@@ -180,10 +180,10 @@ htmx submits all parameters as a flat map, however we can use the above `path` s
 ```clojure
 (json-params
   {:store-name "My Store"
-   :customers_0_first-name "Joe"
-   :customers_0_last-name "Smith"
-   :customers_1_first-name "Jane"
-   :customers_1_last-name "Doe"})
+   :0_customers_first-name "Joe"
+   :0_customers_last-name "Smith"
+   :1_customers_first-name "Jane"
+   :1_customers_last-name "Doe"})
 
 ;; {:store-name "My Store"
 ;;  :customers [{:first-name "Joe" :last-name "Smith"}
