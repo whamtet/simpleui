@@ -28,7 +28,7 @@ The ctmx is all in the `routes/home.clj` ns, so you can see it is very simple.  
 
 ## Usage
 
-First require the library.  Make sure that your server applies `ring.middleware.keyword-params/keyword-params`.  ctmx assumes that http parameters are keywordized.
+First require the library.  Make sure that your server applies `ring.middleware.keyword-params/keyword-params`.  ctmx assumes that http parameters are keywordized (see [issue #10](https://github.com/whamtet/ctmx/issues/10) for more info).
 
 ```clojure
 (require '[ctmx.core :refer :all])
