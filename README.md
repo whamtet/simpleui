@@ -210,7 +210,7 @@ Middleware is not applied when a component is invoked with all its arguments.
 
 ### Additional Parameters
 
-In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.
+In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute. To serialize the map as json in initial page renders, you should call `ctmx.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/ctmx-demo/blob/57f9b3c55c8088dc5136b10f5ce1d66e9f6bd152/src/clj/htmx/render.clj#L32)).
 
 ```clojure
 [:button.delete
