@@ -13,4 +13,6 @@
                              :sign-releases false}]]
   :resource-paths ["src/resources"]
   :plugins [[lein-auto "0.1.3"]]
-  :repl-options {:init-ns ctmx.core})
+  :repl-options {:init-ns ctmx.core}
+  :profiles {:test {:dependencies [[ring/ring-mock "0.4.0"]]}
+             :test-repl [:test :leiningen/default]})
