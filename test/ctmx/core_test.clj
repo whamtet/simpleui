@@ -15,11 +15,21 @@
    headers
    (-> "Location" headers (= redirect-path))))
 
+(defn- ok? [^String test-body {:keys [status body]}]
+  (and
+   (= 200 status)
+   (= test-body body)))
+
+(defn- no-content? [{:keys [status]}]
+  (= 204 status))
+
 ;; end helper functions
 
+(defcomponent ^:endpoint c [req])
 (defcomponent ^:endpoint a [req]
   [:a])
-(defcomponent ^:endpoint b [req]
+(defcomponent b [req]
+  c
   [:b (a req)])
 
 (def handler (ctmx/make-routes
@@ -27,16 +37,37 @@
               (fn [req]
                 (b req))))
 
-(def true-base-request
-  (assoc
-   (mock/request :get "") :uri ""))
-
 (deftest component-test
-  (let []
-    (testing "basic routing works"
-             (is
-              (redirect?
-               "/base/?"
+  (testing "redirects to slash ending"
+           (is
+            (redirect?
+             "/base/?"
+             (test-req
+              handler
+              (mock/request :get "/base")))))
+  (testing "initial render works"
+           (is
+            (= [:b [:a]]
                (test-req
                 handler
-                (mock/request :get "/base")))))))
+                (mock/request :get "/base/")))))
+  (testing "a endpoint works"
+           (is
+            (ok?
+             "<a></a>"
+             (test-req
+              handler
+              (mock/request :get "/base/a")))))
+  (testing "c endpoint works"
+           (is
+            (no-content?
+             (test-req
+              handler
+              (mock/request :get "/base/c")))))
+  (testing "no b endpoint"
+           (is
+            (nil?
+             (test-req
+              handler
+              (mock/request :get "/base/b"))))))
+
