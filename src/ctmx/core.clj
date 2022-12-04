@@ -215,9 +215,9 @@
     [root (str root "/")]))
 
 (defmacro make-routes [root f]
-  (let [[short full] (strip-slash root)]
-    `[~short
-      ["" {:get (rt/redirect ~full)}]
+  `(let [[short# full#] (strip-slash ~root)]
+    [short#
+      ["" {:get (rt/redirect full#)}]
       ["/" {:get ~f}]
       ~@(extract-endpoints-all f)]))
 
