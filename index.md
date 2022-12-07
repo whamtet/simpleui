@@ -98,9 +98,9 @@ To expand `(path "first-name")` and `(path "last-name")` consistently we must be
   [{:first-name "Matthew" :last-name "Molloy"}
    {:first-name "Chad" :last-name "Thomson"}])
 
-(defcomponent table-row [req i person]
+(defcomponent table-row [req first-name last-name]
   [:tr
-    [:td (:first-name person)] [:td (:last-name person)]])
+    [:td first-name] [:td last-name]])
 
 (defcomponent table [req]
   [:table
@@ -126,7 +126,7 @@ The UI provides a natural structure to nest our data.  This corresponds closely 
 (defn- text [name value]
   [:input {:type "text" :name name :value value :required true}])
 
-(defcomponent customer [req i {:keys [first-name last-name]}]
+(defcomponent customer [req first-name last-name]
   [:div
     ;; other display here.
     [:input {:type "hidden" :name (path "first-name") :value first-name}]
