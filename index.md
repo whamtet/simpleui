@@ -1,7 +1,5 @@
 ctmx is an app development tool for fast product development and even faster page load times.  It uses [htmx](https://htmx.org/) on the frontend.
 
-Get started with the luminus template `lein new luminus my-project +ctmx` and update `project.clj` to the latest version of ctmx.
-
 ## Basic example
 
 ```clojure
@@ -33,6 +31,30 @@ The core of ctmx is the `defcomponent` macro which expands to both:
 - A rest endpoint.  Arguments are bound based on the html `name` attribute.
 
 `defcomponent` enables developers to quickly build rich user interfaces with _no_ javascript.  All code is on the server backend and yet it feels the same as frontend code.
+
+## Getting started
+
+Getting started is easy with clojure tools and the excellent [kit](https://kit-clj.github.io) framework.
+
+```bash
+clojure -Ttools install com.github.seancorfield/clj-new '{:git/tag "v1.2.381"}' :as new
+clojure -Tnew create :template io.github.kit-clj :name yourname/guestbook
+```
+
+Change the url in `kit.edn` to `"https://github.com/whamtet/modules.git"` then run `make repl`
+
+```clojure
+(kit/sync-modules)
+(kit/install-module :kit/ctmx)
+```
+
+Quit the process, `make repl` then
+
+```clojure
+(go)
+```
+
+Visit [localhost:3000](http://localhost:3000)
 
 ## Architecture
 
