@@ -54,7 +54,11 @@ Quit the process, `make repl` then
 (go)
 ```
 
-Visit [localhost:3000](http://localhost:3000)
+Visit [localhost:3000](http://localhost:3000).  To reload changes
+
+```clojure
+(reset)
+```
 
 ## Architecture
 

@@ -6,12 +6,6 @@ Clojure backend for for [htmx](https://htmx.org/).
 
 ctmx is a backend accompaniment which makes htmx even easier to use.  It works in conjunction with [hiccup](https://weavejester.github.io/hiccup/) for rendering and [reitit](https://cljdoc.org/d/metosin/reitit/0.5.10/doc/introduction) for routing.
 
-## Demo
-
-[ctmx-demo.herokuapp.com](https://ctmx-demo.herokuapp.com/), source [here](https://github.com/whamtet/ctmx-demo).  First request wakes up Heroku so a bit slow, after that you get an accurate idea of performance.
-
-[Auction](https://whamtet-auction.herokuapp.com/), source [here](https://github.com/whamtet/auction) is a more fleshed out auction app.
-
 ## Usage
 
 First require the library
@@ -35,10 +29,11 @@ To use our endpoint we call `make-routes`
 (make-routes
   "/demo"
   (fn [req]
-    [:div
-     [:label "What is your name?"]
-     [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
-     (hello req "")]))
+    (page ;; page renders the rest of the page, htmx script etc
+      [:div
+       [:label "What is your name?"]
+       [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
+       (hello req "")])))
 ```
 
 ![](../inspect.png)
@@ -96,13 +91,16 @@ ctmx uses the id of the component being updated to set the component stack consi
 
 
 ```clojure
-(defcomponent table-row [req i row-datum]
+(def data [{:first-name "Fred" :last-name "Smith"}
+           {:first-name "Ocean" :last-name "Leader"}])
+
+(defcomponent table-row [req index first-name last-name]
   [:tr ...])
 
 ...
 
 [:table
-  (rt/map-indexed table-row req table-data)]
+  (rt/map-indexed table-row req data)]
 ```
 
 ### relative paths
@@ -199,9 +197,25 @@ In most cases htmx will supply all required parameters.  If you need to include 
 ```clojure
 [:button.delete
   {:hx-delete "trash-can"
-   :hx-vals (json/write-str {:hard-delete true})}
+   :hx-vals {:hard-delete true}}
    "Delete"]
 ```
+
+### Commands
+
+Commands provide a shorthand to indicate custom actions.
+
+```clojure
+(defcomponent ^:endpoint component [req command]
+  (case command
+    "print" (print req)
+    "save" (save req))
+  [:div
+    [:button {:hx-post "component:print"} "Print"]
+    [:button {:hx-post "component:save"} "Save"]])
+```
+
+`command` will be bound to the value after the colon in any endpoints.
 
 ### Action at a distance (hx-swap-oob)
 
@@ -239,6 +253,20 @@ You may also return an explicit ring map if you wish.  A common use case is to r
 ```
 
 `ctmx.response/hx-refresh` sets the "HX-Refresh" header to "true" and htmx will refresh the page.
+
+### Hanging Components
+
+If you don't include components in an initial render, reference them as symbols so they are still available as endpoints.
+
+```clojure
+(defcomponent ^:endpoint next-month [req] [:p "next-month"])
+(defcomponent ^:endpoint previous-month [req] [:p "previous-month"])
+
+(defcomponent ^:endpoint calendar [req]
+              next-month
+              previous-month
+              [:div#calendar ...])
+```
 
 ### Extra hints
 
