@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dev purposes only</title>
+</head>
+<body>
+
+<div hx-ext="lambda-cors"><div style="padding: 10px"><label style="margin-right: 10px">What is your name?</label><input hx-patch="hello" hx-target="#hello" name="my-name" type="text" /><div id="hello">Hello </div></div></div>
+
+<script src="https://unpkg.com/htmx.org@1.2.0"></script>
+<script>
+    var root = 'http://localhost:3000/';
+    function onEvent(evtName, evt) {
+        if (evtName === 'htmx:configRequest') {
+            evt.detail.path = root + evt.detail.path;
+        }
+    }
+    htmx.defineExtension('lambda-cors', {onEvent: onEvent});
+</script>
+
+</body>
+</html>
