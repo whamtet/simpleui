@@ -221,16 +221,6 @@
       ["/" {:get ~f}]
       ~@(extract-endpoints-all f)]))
 
-(defmacro defstatic [sym args & body]
-  `(defn
-     ~(vary-meta sym assoc
-                 :export true
-                 :deps (into {}
-                             (for [[name ns-name] (extract-endpoints-root body)]
-                               [(str name)
-                                (str (compiled-str ns-name) "." (compiled-str name))])))
-     ~args ~@body))
-
 (defmacro with-req [req & body]
   `(let [{:keys [~'request-method ~'session ~'params]} ~req
          ~'get? (= :get ~'request-method)
