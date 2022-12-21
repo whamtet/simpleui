@@ -33,6 +33,6 @@ We start with an intial state with a button that issues a **POST** to **start** 
           [:button.btn {:hx-post "start"} "Start Job"]]])))
 ```
 
-{% include serverless/examples/progress_bar/demo.html %}
+{% include examples/progress_bar_handler.html %}
 {% include footer.html %}
 {% include outer.html %}

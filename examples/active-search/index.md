@@ -44,6 +44,6 @@ Additionally, we add the **changed** modifier to the trigger to ensure we don't 
 
 Finally, we show an indicator when the search is in flight with the **hx-indicator** attribute.
 
-{% include serverless/examples/active_search/demo.html %}
+{% include examples/active_search_handler.html %}
 {% include footer.html %}
 {% include zero_inner.html %}

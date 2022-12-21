@@ -2,7 +2,7 @@
 
 In this example we show how to make the values in one select depend on the value selected in another select.
 ---
-{% include serverless/examples/value_select/demo.html %}
+{% include examples/value_select_handler.html %}
 
 ```clojure
 (def data

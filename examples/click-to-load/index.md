@@ -33,7 +33,7 @@ This example shows how to implement click-to-load the next page in a table of da
 
 ```
 
-{% include serverless/examples/click_to_load/demo.html %}
+{% include examples/click_to_load_handler.html %}
 
 {% include footer.html %}
 {% include outer.html %}

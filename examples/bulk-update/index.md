@@ -49,7 +49,7 @@ This demo shows how to implement a common pattern where rows are selected and th
       (update-form req #{} init-data nil))))
 ```
 
-{% include serverless/examples/bulk_update/demo.html %}
+{% include examples/bulk_update_handler.html %}
 
 We use the **.htmx-settling** class to flash the rows when they change status
 

@@ -43,6 +43,6 @@ The click to edit pattern provides a way to offer inline editing of all or part 
       (form-ro req "Joe" "Blow" "joe@blow.com"))))
 ```
 
-{% include serverless/examples/click_to_edit/edit_demo.html %}
+{% include examples/click_to_edit_handler.html %}
 {% include footer.html %}
 {% include zero_outer.html %}

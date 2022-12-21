@@ -30,7 +30,7 @@ This example shows how to implement a delete button that removes a table row upo
           (ctmx.rt/map-indexed tr req data)]])))
 ```
 
-{% include serverless/examples/delete_row/demo.html %}
+{% include examples/delete_row_handler.html %}
 
 The table body has a **hx-confirm** attribute to confirm the delete action. 
 It also set the target to be the **closest tr** that is, the closest table row, for all the buttons. 

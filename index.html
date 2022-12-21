@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Dev purposes only</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
 
-<div hx-ext="lambda-cors"><div style="padding: 10px"><label style="margin-right: 10px">What is your name?</label><input hx-patch="hello" hx-target="#hello" name="my-name" type="text" /><div id="hello">Hello </div></div></div>
+    <div hx-ext="lambda-cors"><div hx-target="this" id="models"><h3>Pick a Make / Model</h3><div><label class="mr">Make</label><select hx-get="models" name="make"><option selected="selected" value="Audi">Audi</option><option value="Toyota">Toyota</option><option value="BMW">BMW</option></select></div><div><label class="mr">Model</label><select><option selected="selected" value="A1">A1</option><option value="A4">A4</option><option value="A6">A6</option></select></div></div></div>
 
 <script src="https://unpkg.com/htmx.org@1.2.0"></script>
 <script>
@@ -18,6 +19,14 @@
     }
     htmx.defineExtension('lambda-cors', {onEvent: onEvent});
 </script>
+
+<script>
+    htmx.config.defaultSettleDelay = 0;
+    htmx.config.defaultSwapStyle = 'outerHTML';
+</script>    
+
+<script src="https://unpkg.com/hyperscript.org@0.0.3"></script>
+
 
 </body>
 </html>

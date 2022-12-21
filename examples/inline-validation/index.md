@@ -29,7 +29,7 @@ This example shows how to do inline field validation, in this case of an email a
         (input-group "Last Name" "last-name")]])))
 ```
 
-{% include serverless/examples/inline_validation/demo.html %}
+{% include examples/inline_validation_handler.html %}
 ---
 This form can be lightly styled with this CSS:
 

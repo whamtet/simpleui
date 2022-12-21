@@ -26,7 +26,7 @@ Therefore, to display and select tabs in your application, simply include the ta
     (page
       (content req 1))))
 ```
-{% include serverless/examples/tabs_hateoas/demo.html %}
+{% include examples/tabs_hateoas_handler.html %}
 
 ## Tabs (Using Hyperscript)
 Tabs are a good example of a static component.  
@@ -54,7 +54,7 @@ We can use [hyperscript](https://hyperscript.org/) instead of server requests fo
        (map static-content (range 1 4))])))
 ```
 Try clicking the second set of tabs and notice the performance difference.
-{% include serverless/examples/tabs_hateoas/demo2.html %}
+{% include examples/tabs_hateoas_handler2.html %}
 
 {% include footer.html %}
 {% include zero_outer.html %}

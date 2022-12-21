@@ -17,7 +17,7 @@ ctmx is an app development tool for fast product development and even faster pag
        (hello req "")])))
 
 ```
-{% include serverless/functions/core/demo.html %}
+{% include examples/demo.html %}
 ---
 Try inspecting the above text field.  You should see something like this.
 
@@ -68,7 +68,7 @@ Ctmx uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wi
 
 ## Handling data flow
 
-{% include serverless/functions/core/data_flow.html %}
+{% include examples/data_flow.html %}
 
 ```clojure
 (defcomponent ^:endpoint form [req ^:path first-name ^:path last-name]
@@ -95,7 +95,7 @@ ctmx maintains a call stack of nested components.  This makes it easy to label d
 
 To expand `(path "first-name")` and `(path "last-name")` consistently we must be careful with components inside arrays.  Use `ctmx.rt/map-indexed` to map values across an array.
 
-{% include serverless/functions/core/nesting_components.html %}
+{% include examples/nesting_components.html %}
 
 ```clojure
 (def data
@@ -120,7 +120,7 @@ To expand `(path "first-name")` and `(path "last-name")` consistently we must be
 
 The UI provides a natural structure to nest our data.  This corresponds closely to the database schema and provides a natural connection between the two.  Try adding customers using the form below.
 
-{% include serverless/functions/core/transforming.html %}
+{% include examples/transforming.html %}
 ---
 ```clojure
 (defn add-customer [{:keys [first-name last-name customer]}]
@@ -160,7 +160,7 @@ This example uses the `add-customer` middleware to transform parameters before t
 
 ## Casting parameters
 
-{% include serverless/functions/core/parameter_casting.html %}
+{% include examples/parameter_casting.html %}
 ---
 ```clojure
 (defcomponent ^:endpoint click-div [req ^:long num-clicks]

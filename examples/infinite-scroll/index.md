@@ -29,6 +29,6 @@ The infinite scroll pattern provides a way to load content dynamically on user s
         [:tbody (rows req 0)]])))
 ```
 
-{% include serverless/examples/infinite_scroll/demo.html %}
+{% include examples/infinite_scroll_handler.html %}
 {% include footer.html %}
 {% include zero_outer.html %}

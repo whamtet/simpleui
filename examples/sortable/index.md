@@ -10,7 +10,7 @@ To begin we intialize the **Sortable** javascript library:
 
 We then trigger **POST** to **sortable** on the **end** event to persist changes (if necessary).
 
-{% include serverless/examples/sortable/demo.html %}
+{% include examples/sortable_handler.html %}
 
 ```clojure
 
