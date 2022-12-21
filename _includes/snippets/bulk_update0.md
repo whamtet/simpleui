@@ -37,8 +37,8 @@
     "Deactivate"]])
 
 (def routes
-  (fn [req] (update-form req #{} init-data nil)))
+  (fn [req]
     ;; page renders html
     (page
-    )
+        (update-form req #{} init-data nil))))
 ```
