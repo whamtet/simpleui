@@ -2,21 +2,7 @@ ctmx is an app development tool for fast product development and even faster pag
 
 ## Basic example
 
-```clojure
-(defcomponent ^:endpoint hello [req my-name]
-  [:div#hello "Hello " my-name])
-
-(make-routes
-  "/demo"
-  (fn [req]
-    ;; page renders the hiccup and returns a ring response
-    (page
-      [:div
-       [:label "What is your name?"]
-       [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
-       (hello req "")])))
-
-```
+{% include snippets/demo.md %}
 {% include examples/demo.html %}
 ---
 Try inspecting the above text field.  You should see something like this.
