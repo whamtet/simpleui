@@ -2,33 +2,7 @@
 
 This example shows how to implement a delete button that removes a table row upon completion.
 
-```clojure
-(def data
-  [{:name "Joe Smith" :email "joe@smith.org"}
-   {:name "Angie MacDowell" :email "angie@macdowell.org"}
-   {:name "Fuqua Tarkenton" :email "fuqua@tarkenton.org"}
-   {:name "Kim Yee"	:email "kim@yee.org"}])
-
-(defcomponent ^:endpoint tr [{:keys [request-method]} i {:keys [name email]}]
-  (if (= :delete request-method)
-    ""
-    [:tr
-      [:td name]
-      [:td email]
-      [:td "Active"]
-      [:td [:button.btn.btn-danger {:hx-delete "tr"} "Delete"]]]))
-
-(make-routes
-  "/demo"
-  (fn [req]
-    ;; page renders the hiccup and returns a ring response
-    (page
-      [:table.table.delete-row-example
-        [:thead
-          [:tr [:th "Name"] [:th "Email"] [:th "Status"] [:th]]]
-        [:tbody {:hx-confirm "Are you sure?" :hx-target "closest tr" :hx-swap "outerHTML swap:0.5s"}
-          (ctmx.rt/map-indexed tr req data)]])))
-```
+{% include snippets/delete_row0.md %}
 
 {% include examples/delete_row_handler.html %}
 

@@ -2,7 +2,7 @@ ctmx is an app development tool for fast product development and even faster pag
 
 ## Basic example
 
-{% include snippets/demo.md %}
+{% include snippets/hello0.md %}
 {% include examples/demo.html %}
 ---
 Try inspecting the above text field.  You should see something like this.
@@ -56,20 +56,7 @@ Ctmx uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wi
 
 {% include examples/data_flow.html %}
 
-```clojure
-(defcomponent ^:endpoint form [req ^:path first-name ^:path last-name]
-  [:form {:id id :hx-post "form"}
-    [:input {:type "text" :name (path "first-name") :value first-name}] [:br]
-    [:input {:type "text" :name (path "last-name") :value last-name}] [:br]
-    (when (= ["Barry" "Crump"] [first-name last-name])
-      [:div "A good keen man!"])
-    [:input {:type "submit"}]])
-
-(make-routes
-  "/data-flow"
-  (fn [req]
-    (page (form req "Barry" ""))))
-```
+{% include snippets/hello1.md %}
 
 ctmx maintains a call stack of nested components.  This makes it easy to label data without name clashes.  Try submitting the above form and then inspecting the browser network tab.
 
@@ -83,24 +70,7 @@ To expand `(path "first-name")` and `(path "last-name")` consistently we must be
 
 {% include examples/nesting_components.html %}
 
-```clojure
-(def data
-  [{:first-name "Matthew" :last-name "Molloy"}
-   {:first-name "Chad" :last-name "Thomson"}])
-
-(defcomponent table-row [req first-name last-name]
-  [:tr
-    [:td first-name] [:td last-name]])
-
-(defcomponent table [req]
-  [:table
-    (ctmx.rt/map-indexed table-row req data)])
-
-(make-routes
-  "/nesting-components"
-  (fn [req]
-    (page (table req))))
-```
+{% include snippets/hello2.md %}
 
 ## Transforming parameters to JSON
 
@@ -108,37 +78,7 @@ The UI provides a natural structure to nest our data.  This corresponds closely 
 
 {% include examples/transforming.html %}
 ---
-```clojure
-(defn add-customer [{:keys [first-name last-name customer]}]
-  {:customer
-   (conj (or customer []) {:first-name first-name :last-name last-name})})
-
-(defn- text [name value]
-  [:input {:type "text" :name name :value value :required true}])
-
-(defcomponent customer [req first-name last-name]
-  [:div
-    ;; other display here.
-    [:input {:type "hidden" :name (path "first-name") :value first-name}]
-    [:input {:type "hidden" :name (path "last-name") :value last-name}]])
-
-(defcomponent ^:endpoint ^{:params-stack add-customer} customer-list
-  [req first-name last-name ^:json-stack customer]
-  [:form {:id id :hx-post "customer-list"}
-    ;; display the nested params
-    [:pre (-> req :params ctmx.form/json-params util/pprint)]
-    [:br]
-
-    (ctmx.rt/map-indexed serverless.functions.core/customer req customer)
-    (text (path "first-name") first-name)
-    (text (path "last-name") last-name)
-    [:input {:type "submit" :value "Add Customer"}]])
-
-(make-routes
-  "/transforming"
-  (fn [req]
-    (page (customer-list req "Joe" "Stewart" []))))
-```
+{% include snippets/hello4.md %}
 
 As we add customers the JSON builds up to match the UI.  We would lightly transform the data before persisting it, however it is often already close to what we want it to be.
 
@@ -148,17 +88,7 @@ This example uses the `add-customer` middleware to transform parameters before t
 
 {% include examples/parameter_casting.html %}
 ---
-```clojure
-(defcomponent ^:endpoint click-div [req ^:long num-clicks]
-  [:form {:id id :hx-get "click-div" :hx-trigger "click"}
-    [:input {:type "hidden" :name "num-clicks" :value (inc num-clicks)}]
-    "You have clicked me " num-clicks " times!"])
-
-(make-routes
-  "/parameter-casting"
-  (fn [req]
-    (page (click-div req 0))))
-```
+{% include snippets/hello3.md %}
 
 Ctmx uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:long**, **^:boolean** and **^:double**. See [documentation](https://github.com/whamtet/ctmx#parameter-casting) for details.
 

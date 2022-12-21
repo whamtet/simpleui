@@ -7,24 +7,7 @@ but the request is only sent if the dialog is accepted.
 ---
 {% include examples/dialogs_handler.html %}
 
-```clojure
-(defcomponent ^:endpoint reply [{:keys [headers]}]
-  [:div#response.mmargin "You entered " (headers "hx-prompt")])
-
-(make-routes
-  "/demo"
-  (fn [req]
-    ;; page renders the hiccup and returns a ring response
-    (page
-      [:div
-        [:button.btn.mb
-          {:hx-post "reply"
-           :hx-prompt "Enter a string"
-           :hx-confirm "Are you sure?"
-           :hx-target "#response"}
-          "Prompt Submission"]
-        [:div#response]])))
-```
+{% include snippets/dialogs0.md %}
 
 {% include footer.html %}
 {% include zero_outer.html %}

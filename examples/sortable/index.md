@@ -12,29 +12,7 @@ We then trigger **POST** to **sortable** on the **end** event to persist changes
 
 {% include examples/sortable_handler.html %}
 
-```clojure
-
-(defn- content [items]
-  (list*
-    [:div.htmx-indicator "Updating..."]
-    (for [item items]
-      [:div
-        [:input {:type "hidden" :name "order" :value item}]
-        "Item " item])))
-
-(defcomponent ^:endpoint sortable [req ^:longs order]
-  (if (not-empty order)
-    (content order)
-    [:form#to-sort {:hx-post "sortable" :hx-trigger "end"}
-      (content (range 1 6))]))
-
-(make-routes
-  "/demo"
-  (fn [req]
-    ;; page renders the hiccup and returns a ring response
-    (page
-      (sortable req nil))))
-```
+{% include snippets/sortable0.md %}
 
 {% include footer.html %}
 {% include sortable.html %}
