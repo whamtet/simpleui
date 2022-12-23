@@ -7,8 +7,7 @@
    ;; page renders html
    (page
      [:form.hello {:hx-patch "hello" :hx-target "#hello"}
-      [:label {:style "margin-right: 10px"}
-       "What is your name?"]
+      [:label "What is your name?"]
       [:input.mr {:type "text" :name "my-name"}]
       [:input {:type "submit"}]
        (hello req "")])))
