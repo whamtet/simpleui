@@ -27,9 +27,9 @@
    (text (path "last-name") last-name)
    [:input {:type "submit" :value "Add Customer"}]])
 
-(def routes
+(def ring-handler
  (fn [req]
-   ;; page renders html
+   ;; page renders initial html
    (page
-      (customer-list req "Joe" "Stewart" []))))
+     (customer-list req "Joe" "Stewart" []))))
 ```

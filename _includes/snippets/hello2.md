@@ -11,9 +11,9 @@
     [{:first-name "Matthew" :last-name "Molloy"}
      {:first-name "Chad" :last-name "Thomson"}])])
 
-(def routes
+(def ring-handler
  (fn [req]
-   ;; page renders html
+   ;; page renders initial html
    (page
-      (table req))))
+     (table req))))
 ```

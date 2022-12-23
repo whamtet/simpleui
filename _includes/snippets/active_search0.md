@@ -14,9 +14,9 @@
       (filter #(-> % :name .toLowerCase (.contains search)))
       (map tr))))
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
       [:div
         [:h3 "Search Contacts"]
@@ -30,5 +30,5 @@
           [:thead
             [:tr [:th "Name"] [:th "Email"]]]
           [:tbody#search-results
-              (active-search req "")]]])))
+            (active-search req "")]]])))
 ```

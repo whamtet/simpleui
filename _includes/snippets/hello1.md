@@ -7,9 +7,9 @@
          [:div "A good keen man!"])
    [:input {:type "submit"}]])
 
-(def routes
+(def ring-handler
  (fn [req]
-   ;; page renders html
+   ;; page renders initial html
    (page
-      (form req "Barry" ""))))
+     (form req "Barry" ""))))
 ```

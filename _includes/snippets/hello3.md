@@ -4,9 +4,9 @@
    [:input {:type "hidden" :name "num-clicks" :value (inc num-clicks)}]
    "You have clicked me " num-clicks " times!"])
 
-(def routes
+(def ring-handler
  (fn [req]
-   ;; page renders html
+   ;; page renders initial html
    (page
-      (click-div req 0))))
+     (click-div req 0))))
 ```

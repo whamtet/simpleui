@@ -14,12 +14,12 @@
 (defcomponent ^:endpoint rows [req ^:long page]
   (map tr (range page (+ 10 page))))
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
       [:table
         [:thead
           [:tr [:th "Name"] [:th "Email"] [:th "ID"]]]
-          [:tbody (rows req 0)]])))
+        [:tbody (rows req 0)]])))
 ```

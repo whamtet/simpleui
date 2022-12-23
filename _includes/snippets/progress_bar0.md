@@ -17,13 +17,13 @@
         [:h3 "Running"]
         (progress width)])))
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
       start
       [:div {:style "height: 200px"}
         [:div {:hx-target "this"}
           [:h3 "Start Progress"]
-            [:button.btn {:hx-post "start"} "Start Job"]]])))
+          [:button.btn {:hx-post "start"} "Start Job"]]])))
 ```

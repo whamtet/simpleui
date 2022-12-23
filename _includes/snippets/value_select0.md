@@ -21,9 +21,9 @@
         [:label.mr "Model"]
         (select {} (first models) models)]]))
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
-        (models req "Audi"))))
+      (models req "Audi"))))
 ```

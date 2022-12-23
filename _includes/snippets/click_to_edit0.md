@@ -27,9 +27,9 @@
      {:hx-put "form-edit"}
       "Click To Edit"]])
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
-        (form-ro req "Joe" "Blow" "joe@blow.com"))))
+      (form-ro req "Joe" "Blow" "joe@blow.com"))))
 ```

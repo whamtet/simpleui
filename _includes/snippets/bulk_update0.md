@@ -36,9 +36,9 @@
      :hx-vals {:status "Inactive"}}
     "Deactivate"]])
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
-        (update-form req #{} init-data nil))))
+      (update-form req #{} init-data nil))))
 ```

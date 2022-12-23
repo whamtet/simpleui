@@ -12,9 +12,9 @@
     [:div.tab-content
       "This is the content for tab " tab-index]])
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
-        (content req 1))))
+      (content req 1))))
 ```

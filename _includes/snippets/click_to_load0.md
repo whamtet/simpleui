@@ -18,12 +18,12 @@
            "Load More Agents..."
            [:img.htmx-indicator {:src "../../bars.svg"}]]]]))
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
       [:table
         [:thead
           [:tr [:th "Name"] [:th "Email"] [:th "ID"]]]
-          [:tbody (rows-click req 0)]])))
+        [:tbody (rows-click req 0)]])))
 ```

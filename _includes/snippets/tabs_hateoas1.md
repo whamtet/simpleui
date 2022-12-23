@@ -9,12 +9,12 @@
          :id (str "content" i)}
    "This is the content for tab " i])
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
       [:div
        [:div.tab-list
         (map static-tab (range 1 4))]
-         (map static-content (range 1 4))])))
+       (map static-content (range 1 4))])))
 ```

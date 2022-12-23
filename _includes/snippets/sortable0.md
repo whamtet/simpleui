@@ -13,9 +13,9 @@
     [:form#to-sort {:hx-post "sortable" :hx-trigger "end"}
       (content (range 1 6))]))
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
-        (sortable req nil))))
+      (sortable req nil))))
 ```

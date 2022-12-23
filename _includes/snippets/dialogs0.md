@@ -2,9 +2,9 @@
 (defcomponent ^:endpoint reply [{:keys [headers]}]
   [:div#response.mmargin "You entered " (headers "hx-prompt")])
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
       reply
       [:div
@@ -14,5 +14,5 @@
            :hx-confirm "Are you sure?"
            :hx-target "#response"}
           "Prompt Submission"]
-          [:div#response]])))
+        [:div#response]])))
 ```

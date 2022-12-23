@@ -12,14 +12,14 @@
   [:div.form-group
    [:label.mr label] [:input {:type "text" :name name}]])
 
-(def routes
+(def ring-handler
   (fn [req]
-    ;; page renders html
+    ;; page renders initial html
     (page
       [:div
        [:h3 "Signup Form"]
        [:form
         (email req "")
         (input-group "First Name" "first-name")
-          (input-group "Last Name" "last-name")]])))
+        (input-group "Last Name" "last-name")]])))
 ```
