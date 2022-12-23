@@ -6,12 +6,10 @@
  (fn [req]
    ;; page renders html
    (page
-     [:div {:style "padding: 10px"}
+     [:form.hello {:hx-patch "hello" :hx-target "#hello"}
       [:label {:style "margin-right: 10px"}
        "What is your name?"]
-      [:input {:type "text"
-               :name "my-name"
-               :hx-patch "hello"
-               :hx-target "#hello"}]
+      [:input.mr {:type "text" :name "my-name"}]
+      [:input {:type "submit"}]
        (hello req "")])))
 ```
