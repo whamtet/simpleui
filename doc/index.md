@@ -26,6 +26,8 @@ This defines an ordinary function which also expands to an endpoint `/hello`.
 To use our endpoint we call `make-routes`
 
 ```clojure
+;; make-routes generates a reitit handler with the root page at /demo
+;; and all subcomponents on their own routes
 (make-routes
   "/demo"
   (fn [req]
@@ -119,7 +121,7 @@ Be careful when using `ctmx.rt/map-indexed`
 (value "../../sibling-component/parameter")
 ```
 
-We need to ascend two levels in the call path because the array index counts as one level.  We can also use 'absolute' paths for simple parameters
+We need to ascend two levels in the call path because the array index counts as one level.  We can also use absolute paths for simple parameters not in the component stack.
 
 ```clojure
 (when (= (value "/parameter-without-path") "do")
@@ -146,18 +148,20 @@ You may also cast within the body of `defcomponent`
 Casts available include the following
 
 - **^:long** Casts to long
+- **^:long-option** Casts to long (ignores empty string)
 - **^:double** Casts to double
+- **^:double-option** Casts to double (ignores empty string)
 - **^:longs** Casts to array of longs
 - **^:doubles** Casts to array of doubles
 - **^:array** Puts into an array
 - **^:boolean** True when `(= argument "true")`
 - **^:boolean-true** True when `(not= argument "false")`
 - **^:edn** Reads string into edn
+- **^:keyword** Casts to keyword
 
 ### Transforming parameters to JSON
 
 htmx submits all parameters as a flat map, however we can use the above `path` scheme to transform it into nested json for database access etc.  Simply call `ctmx.form/json-params`
-
 
 ```clojure
 (json-params
@@ -188,11 +192,11 @@ Middleware can be applied in different ways
 - **^{:params middleware}** Middleware is applied to the **JSON Nested** params.  `(middleware json-params req)`
 - **^{:params-stack middleware}** Middleware is applied to the **JSON Nested** params at the current point in the component stack.
 
-Middleware is not applied when a component is invoked with all its arguments.
+For components with multiple arguments, middleware will not be applied when the multi-arg version is invoked.
 
 ### Additional Parameters
 
-In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  `hx-vals` takes json, use `clojure.data.json/write-str` for convenience.
+In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  To serialize the map as json in initial page renders, you should call `ctmx.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/ctmx-demo/blob/57f9b3c55c8088dc5136b10f5ce1d66e9f6bd152/src/clj/htmx/render.clj#L32)).
 
 ```clojure
 [:button.delete
@@ -277,3 +281,17 @@ htmx does not include disabled fields when submitting requests.  If you wish to 
 (when disabled?
   [:input {:type "hidden" :name (path "input") :value (value "input")}])
 ```
+## License
+
+Copyright © 2022 Matthew Molloy
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0.
+
+This Source Code may also be made available under the following Secondary
+Licenses when the conditions for such availability set forth in the Eclipse
+Public License, v. 2.0 are satisfied: GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or (at your
+option) any later version, with the GNU Classpath Exception which is available
+at https://www.gnu.org/software/classpath/license.html.

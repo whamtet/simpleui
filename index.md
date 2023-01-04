@@ -5,12 +5,6 @@ ctmx is an app development tool for fast product development and even faster pag
 {% include snippets/hello0.md %}
 {% include examples/demo.html %}
 ---
-Try inspecting the above text field.  You should see something like this.
-
-![](inspect.png)
-
-Now try editing the text.  When the input looses focus it submits a request to `/hello` and updates the contents of `#hello`.
-
 The core of ctmx is the `defcomponent` macro which expands to both:
 
 - An ordinary function
