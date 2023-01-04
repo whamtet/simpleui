@@ -78,7 +78,7 @@
   ([stack done m]
    (reduce
      (fn [done [k v]]
-       (if (vector? v) 
+       (if (vector? v)
          (flatten-json-vector k stack done v)
          (let [stack (conj stack (name k))]
            (if (map? v)
@@ -88,16 +88,16 @@
      done
      m)))
 
-(defn apply-params [params f & args]
+(defn- apply-params [params f req]
   (as-> params $
         (json-params $)
-        (apply f $ args)
+        (f $ req)
         (flatten-json $)))
 
-(defn apply-params-stack [params stack f & args]
+(defn- apply-params-stack [params stack f req]
   (as-> params $
         (json-params $)
-        (apply update-in $ (mapv keyword stack) f args)
+        (update-in $ (mapv keyword stack) f req)
         (flatten-json $)))
 
 (defn apply-middleware [req [k f] stack]
