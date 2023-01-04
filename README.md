@@ -1,7 +1,3 @@
-[Official Website](https://whamtet.github.io/ctmx/)
-
-# ctmx
-
 Clojure backend for for [htmx](https://htmx.org/).
 
 ## Rationale
@@ -12,23 +8,35 @@ ctmx is a backend accompaniment which makes htmx even easier to use.  It works i
 
 ## Getting started
 
-    lein new luminus my-project +ctmx
+Getting started is easy with clojure tools and the excellent [kit](https://kit-clj.github.io) framework.
 
-The ctmx is all in the `routes/home.clj` ns, so you can see it is very simple.  For richer examples, see the [getting started project](https://github.com/whamtet/ctmx/tree/main/demo).
+```bash
+clojure -Ttools install com.github.seancorfield/clj-new '{:git/tag "v1.2.381"}' :as new
+clojure -Tnew create :template io.github.kit-clj :name yourname/guestbook
+```
 
-## Demo
+Change the url in `kit.edn` to `"https://github.com/whamtet/modules.git"` then run `make repl`
 
-[ctmx-demo.herokuapp.com](https://ctmx-demo.herokuapp.com/), source [here](https://github.com/whamtet/ctmx-demo).  First request wakes up Heroku so a bit slow, after that you get an accurate idea of performance.
+```clojure
+(kit/sync-modules)
+(kit/install-module :kit/ctmx)
+```
 
-[Auction](https://whamtet-auction.herokuapp.com/), source [here](https://github.com/whamtet/auction) is a more fleshed out auction app.
+Quit the process, `make repl` then
 
-## Live tests
+```clojure
+(go)
+```
 
-    lein auto test
+Visit [localhost:3000](http://localhost:3000).  To reload changes
+
+```clojure
+(reset)
+```
 
 ## Usage
 
-First require the library.  Make sure that your server applies `ring.middleware.keyword-params/keyword-params`.  ctmx assumes that http parameters are keywordized (see [issue #10](https://github.com/whamtet/ctmx/issues/10) for more info).
+First require the library
 
 ```clojure
 (require '[ctmx.core :refer :all])
@@ -46,11 +54,12 @@ This defines an ordinary function which also expands to an endpoint `/hello`.
 To use our endpoint we call `make-routes`
 
 ```clojure
+;; make-routes generates a reitit handler with the root page at /demo
+;; and all subcomponents on their own routes
 (make-routes
   "/demo"
   (fn [req]
-    ;; page renders the hiccup and returns a ring map
-    (page
+    (page ;; page renders the rest of the page, htmx script etc
       [:div
        [:label "What is your name?"]
        [:input {:name "my-name" :hx-patch "hello" :hx-target "#hello"}]
@@ -112,13 +121,16 @@ ctmx uses the id of the component being updated to set the component stack consi
 
 
 ```clojure
-(defcomponent table-row [req i row-datum]
+(def data [{:first-name "Fred" :last-name "Smith"}
+           {:first-name "Ocean" :last-name "Leader"}])
+
+(defcomponent table-row [req index first-name last-name]
   [:tr ...])
 
 ...
 
 [:table
-  (rt/map-indexed table-row req table-data)]
+  (rt/map-indexed table-row req data)]
 ```
 
 ### relative paths
@@ -137,7 +149,7 @@ Be careful when using `ctmx.rt/map-indexed`
 (value "../../sibling-component/parameter")
 ```
 
-We need to ascend two levels in the call path because the array index counts as one level.  We can also use 'absolute' paths for simple parameters
+We need to ascend two levels in the call path because the array index counts as one level.  We can also use absolute paths for simple parameters not in the component stack.
 
 ```clojure
 (when (= (value "/parameter-without-path") "do")
@@ -149,7 +161,7 @@ We need to ascend two levels in the call path because the array index counts as 
 htmx submits all parameters as strings.  It can be convenient to cast parameters to the required type
 
 ```clojure
-(defcomponent my-component [req ^:long long-argument ^:boolean boolean-argument] ...)
+(defcomponent my-component [req ^:long int-argument ^:boolean boolean-argument] ...)
 ```
 
 You may also cast within the body of `defcomponent`
@@ -164,26 +176,28 @@ You may also cast within the body of `defcomponent`
 Casts available include the following
 
 - **^:long** Casts to long
+- **^:long-option** Casts to long (ignores empty string)
 - **^:double** Casts to double
+- **^:double-option** Casts to double (ignores empty string)
 - **^:longs** Casts to array of longs
 - **^:doubles** Casts to array of doubles
 - **^:array** Puts into an array
 - **^:boolean** True when `(= argument "true")`
 - **^:boolean-true** True when `(not= argument "false")`
 - **^:edn** Reads string into edn
+- **^:keyword** Casts to keyword
 
 ### Transforming parameters to JSON
 
 htmx submits all parameters as a flat map, however we can use the above `path` scheme to transform it into nested json for database access etc.  Simply call `ctmx.form/json-params`
 
-
 ```clojure
 (json-params
   {:store-name "My Store"
-   :0_customers_first-name "Joe"
-   :0_customers_last-name "Smith"
-   :1_customers_first-name "Jane"
-   :1_customers_last-name "Doe"})
+   :customers_0_first-name "Joe"
+   :customers_0_last-name "Smith"
+   :customers_1_first-name "Jane"
+   :customers_1_last-name "Doe"})
 
 ;; {:store-name "My Store"
 ;;  :customers [{:first-name "Joe" :last-name "Smith"}
@@ -206,11 +220,11 @@ Middleware can be applied in different ways
 - **^{:params middleware}** Middleware is applied to the **JSON Nested** params.  `(middleware json-params req)`
 - **^{:params-stack middleware}** Middleware is applied to the **JSON Nested** params at the current point in the component stack.
 
-Middleware is not applied when a component is invoked with all its arguments.
+For components with multiple arguments, middleware will not be applied when the multi-arg version is invoked.
 
 ### Additional Parameters
 
-In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute. To serialize the map as json in initial page renders, you should call `ctmx.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/ctmx-demo/blob/57f9b3c55c8088dc5136b10f5ce1d66e9f6bd152/src/clj/htmx/render.clj#L32)).
+In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  To serialize the map as json in initial page renders, you should call `ctmx.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/ctmx-demo/blob/57f9b3c55c8088dc5136b10f5ce1d66e9f6bd152/src/clj/htmx/render.clj#L32)).
 
 ```clojure
 [:button.delete
@@ -295,7 +309,6 @@ htmx does not include disabled fields when submitting requests.  If you wish to 
 (when disabled?
   [:input {:type "hidden" :name (path "input") :value (value "input")}])
 ```
-
 ## License
 
 Copyright © 2022 Matthew Molloy
