@@ -10,7 +10,7 @@
            :required true
            :style "margin-right: 5px"}])
 
-(defcomponent customer [req i {:keys [first-name last-name]}]
+(defcomponent customer [req first-name last-name]
   [:div
    [:input {:type "hidden" :name (path "first-name") :value first-name}]
    [:input {:type "hidden" :name (path "last-name") :value last-name}]])
