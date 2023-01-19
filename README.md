@@ -19,7 +19,7 @@ Change the url in `kit.edn` to `"https://github.com/whamtet/modules.git"` then r
 
 ```clojure
 (kit/sync-modules)
-(kit/install-module :kit/ctmx)
+(kit/install-module :kit/htmx)
 ```
 
 Quit the process, `make repl` then
