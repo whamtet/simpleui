@@ -19,9 +19,9 @@ Getting started is easy with clojure tools and the excellent [kit](https://kit-c
 ```bash
 clojure -Ttools install com.github.seancorfield/clj-new '{:git/tag "v1.2.381"}' :as new
 clojure -Tnew create :template io.github.kit-clj :name yourname/guestbook
+cd guestbook
+make repl
 ```
-
-Change the url in `kit.edn` to `"https://github.com/whamtet/modules.git"` then run `make repl`
 
 ```clojure
 (kit/sync-modules)
