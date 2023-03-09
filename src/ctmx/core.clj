@@ -32,7 +32,7 @@
 (defn dissoc-parsers [m]
   (apply vary-meta m dissoc (keys parsers)))
 
-(defn- symbol-or-as [s]
+(defn symbol-or-as [s]
   (if (symbol? s)
     s
     (:as s)))
