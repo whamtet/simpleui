@@ -205,21 +205,26 @@
 (defn- full-symbol [ns-name name]
   (symbol (str ns-name) (str name)))
 
-(defn extract-endpoints-all [f]
-  (for [[name ns-name] (extract-endpoints-root f)]
-    [(str "/" name) `(fn [x#] (-> x# ~(full-symbol ns-name name) render/snippet-response))]))
+(defn extract-endpoints-all [f extra-args]
+  (let [extra-args (zipmap (map keyword extra-args) extra-args)]
+    (for [[name ns-name] (extract-endpoints-root f)]
+      [(str "/" name) `(fn [x#] (-> x# (merge ~extra-args) ~(full-symbol ns-name name) render/snippet-response))])))
 
 (defn strip-slash [root]
   (if (.endsWith root "/")
     [(.substring root 0 (dec (count root))) root]
     [root (str root "/")]))
-
-(defmacro make-routes [root f]
+    
+(defn make-routes-fn [root f extra-args]
   `(let [[short# full#] (strip-slash ~root)]
     [short#
       ["" {:get (rt/redirect full#)}]
       ["/" {:get ~f}]
-      ~@(extract-endpoints-all f)]))
+      ~@(extract-endpoints-all f extra-args)]))
+
+(defmacro make-routes 
+  ([root f] (make-routes-fn root f []))
+  ([root extra-args f] (make-routes-fn root f extra-args)))
 
 (defmacro with-req [req & body]
   `(let [{:keys [~'request-method ~'session ~'params]} ~req
