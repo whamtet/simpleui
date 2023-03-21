@@ -48,12 +48,12 @@
 (defn- some-annotation [arg]
   (->> arg meta keys (some annotations)))
 
-(def ^:private middleware [:req :params :params-stack])
-(defn- some-middleware [sym]
+(def ^:private prebind [:req :params :params-stack])
+(defn- some-prebind [sym]
   (when-let [m (meta sym)]
     (some
       #(when-let [f (m %)] [% f])
-      middleware)))
+      prebind)))
 
 (defn- expand-params [arg]
   (when-let [symbol (symbol-or-as arg)]
@@ -73,20 +73,20 @@
      ~expanded))
 
 (defn- make-f [n args expanded]
-  (let [middleware (some-middleware n)
+  (let [prebind (some-prebind n)
         r (-> args (get 0) symbol-or-as)]
     (case (count args)
       0 (throw (Exception. "zero args not supported"))
       1
-      (if middleware
+      (if prebind
         `(fn ~args
            (let [stack# (:stack (rt/conj-stack ~r ~(name n)))
-                 ~r (form/apply-middleware ~r ~middleware stack#)] ~expanded))
+                 ~r (form/apply-prebind ~r ~prebind stack#)] ~expanded))
         `(fn ~args ~expanded))
       `(fn this#
          ([~'req]
           (let [{:keys [~'stack]} (rt/conj-stack ~'req ~(name n))
-                req# ~(if middleware `(form/apply-middleware ~'req ~middleware ~'stack) 'req)
+                req# ~(if prebind `(form/apply-prebind ~'req ~prebind ~'stack) 'req)
                 {:keys [~'params]} req#
                 ~'json ~(when (some json? args) `(form/json-params ~'params))]
             (this#
@@ -214,7 +214,7 @@
   (if (.endsWith root "/")
     [(.substring root 0 (dec (count root))) root]
     [root (str root "/")]))
-    
+
 (defn make-routes-fn [root f extra-args]
   `(let [[short# full#] (strip-slash ~root)]
     [short#
@@ -222,7 +222,7 @@
       ["/" {:get ~f}]
       ~@(extract-endpoints-all f extra-args)]))
 
-(defmacro make-routes 
+(defmacro make-routes
   ([root f] (make-routes-fn root f []))
   ([root extra-args f] (make-routes-fn root f extra-args)))
 
