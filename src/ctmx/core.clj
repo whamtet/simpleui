@@ -212,13 +212,13 @@
 
 (defn strip-slash [root]
   (if (.endsWith root "/")
-    [(.substring root 0 (dec (count root))) root]
-    [root (str root "/")]))
+    (.substring root 0 (dec (count root)))
+    root))
 
 (defn make-routes-fn [root f extra-args]
-  `(let [[short# full#] (strip-slash ~root)]
+  `(let [short# (strip-slash ~root)]
     [short#
-      ["" {:get (rt/redirect full#)}]
+      ["" {:get rt/redirect}]
       ["/" {:get ~f}]
       ~@(extract-endpoints-all f extra-args)]))
 

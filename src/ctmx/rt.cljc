@@ -104,9 +104,8 @@
       (-> req (conj-stack i) (merge-params i x) f))
     s))
 
-(defn redirect [path]
-  (fn [req]
-    (->> req
-         :query-string
-         (str path "?")
-         response/redirect)))
+(defn redirect [req]
+  (->> req
+       :query-string
+       (str (:uri req) "/?")
+       response/redirect))
