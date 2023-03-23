@@ -100,7 +100,7 @@
         (update-in $ (mapv keyword stack) f req)
         (flatten-json $)))
 
-(defn apply-middleware [req [k f] stack]
+(defn apply-prebind [req [k f] stack]
   (case k
     :req (f req)
     :params (update req :params apply-params f req)

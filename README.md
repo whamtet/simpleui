@@ -206,21 +206,21 @@ htmx submits all parameters as a flat map, however we can use the above `path` s
 
 `ctmx.form/flatten-json` reflattens the nested structure.
 
-### Middleware
+### Prebind
 
-Middleware are applied to req *before* the arguments are bound on `defcomponent`.  It can be used in the following way
+prebind are applied to req *before* the arguments are bound on `defcomponent`.  It can be used in the following way
 
 ```clojure
-(defcomponent ^{:req my-middleware} my-component [req arg1 arg2] ...)
+(defcomponent ^{:req my-prebind} my-component [req arg1 arg2] ...)
 ```
 
-Middleware can be applied in different ways
+prebind can be applied in different ways
 
-- **^{:req middleware}** Middleware is applied to entire req object `(middleware req)`
-- **^{:params middleware}** Middleware is applied to the **JSON Nested** params.  `(middleware json-params req)`
-- **^{:params-stack middleware}** Middleware is applied to the **JSON Nested** params at the current point in the component stack.
+- **^{:req prebind}** prebind is applied to entire req object `(prebind req)`
+- **^{:params prebind}** prebind is applied to the **JSON Nested** params.  `(prebind json-params req)`
+- **^{:params-stack prebind}** prebind is applied to the **JSON Nested** params at the current point in the component stack.
 
-For components with multiple arguments, middleware will not be applied when the multi-arg version is invoked.
+For components with multiple arguments, prebind will not be applied when the multi-arg version is invoked.
 
 ### Additional Parameters
 
