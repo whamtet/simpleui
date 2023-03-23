@@ -76,7 +76,7 @@ The UI provides a natural structure to nest our data.  This corresponds closely 
 
 As we add customers the JSON builds up to match the UI.  We would lightly transform the data before persisting it, however it is often already close to what we want it to be.
 
-This example uses the `add-customer` middleware to transform parameters before they are displayed.
+This example uses the `add-customer` prebind to transform parameters before they are displayed.
 
 ## Casting parameters
 
