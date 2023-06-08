@@ -147,7 +147,7 @@
 (defn ns-resolve-clj [ns sym]
   (when-let [v (clojure.core/ns-resolve ns sym)]
     (as-> (meta v) m
-          (assoc m :ns-name (-> m :ns ns-name)))))
+          (assoc m :ns-name (some-> m :ns ns-name)))))
 
 (defn namespaces []
   #_(:cljs.analyzer/namespaces @env/*compiler*))
