@@ -5,6 +5,7 @@
     [clojure.walk :as walk]
     [ctmx.config :as config]
     [ctmx.render.command :as command]
+    [ctmx.render.oob :as oob]
     [ctmx.response :as response]
     #?(:clj [hiccup2.core :as hiccup]
        :cljs [hiccups.runtime :as hiccupsrt]))
@@ -60,4 +61,5 @@
   (cond
     (not body) response/no-content
     (map? body) body
+    (and config/render-oob? (list? body)) (-> body oob/assoc-oob html response/html-response)
     :else (-> body html response/html-response)))

@@ -11,6 +11,7 @@
 (def render-class? true)
 (def render-vals? true)
 (def render-commands? true)
+(def render-oob? true)
 
 (defn set-render-style! [s]
   #?(:clj (alter-var-root #'render-style? (constantly s))
@@ -27,3 +28,6 @@
 (defn set-render-commands! [s]
   #?(:clj (alter-var-root #'render-commands? (constantly s))
      :cljs (set! render-commands? s)))
+(defn set-render-oob [s]
+  #?(:clj (alter-var-root #'render-oob? (constantly s))
+     :cljs (set! render-oob? s)))
