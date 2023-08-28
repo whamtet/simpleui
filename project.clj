@@ -1,4 +1,4 @@
-(defproject ctmx "1.4.9"
+(defproject ctmx "1.4.10"
   :description "Backend helpers for htmx"
   :url "https://github.com/whamtet/ctmx"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"

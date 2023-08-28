@@ -1,6 +1,6 @@
 (ns ctmx.render.oob)
 
-(defn assoc-style [v k value]
+(defn assoc-attr [v k value]
   (if (vector? v)
     (case (count v)
       0 v
@@ -14,5 +14,5 @@
 
 (defn assoc-oob [items]
   (conj
-    (->> items butlast (map #(assoc-style % :hx-swap-oob true)))
+    (->> items butlast (map #(assoc-attr % :hx-swap-oob true)))
     (last items)))
