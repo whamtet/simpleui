@@ -12,6 +12,7 @@
 (def render-vals? true)
 (def render-commands? true)
 (def render-oob? true)
+(def render-safe? true)
 
 (defn set-render-style! [s]
   #?(:clj (alter-var-root #'render-style? (constantly s))
@@ -31,3 +32,6 @@
 (defn set-render-oob [s]
   #?(:clj (alter-var-root #'render-oob? (constantly s))
      :cljs (set! render-oob? s)))
+(defn set-render-safe [s]
+  #?(:clj (alter-var-root #'render-safe? (constantly s))
+     :cljs (set! render-safe? s)))

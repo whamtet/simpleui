@@ -7,8 +7,9 @@
     [ctmx.render.command :as command]
     [ctmx.render.oob :as oob]
     [ctmx.response :as response]
-    #?(:clj [hiccup2.core :as hiccup]
-       :cljs [hiccups.runtime :as hiccupsrt]))
+    #?(:clj [hiccup2.core :as hiccup2]
+       :cljs [hiccups.runtime :as hiccupsrt])
+    #?(:clj [hiccup.core :as hiccup]))
   #?(:cljs (:require-macros [hiccups.core :as hiccup])))
 
 (defn fmt-style [style]
@@ -55,7 +56,11 @@
 (defn walk-attrs [m]
   (walk/postwalk #(if (map? %) (-> % render-commands walk-attr) %) m))
 
-(def html #(-> % walk-attrs hiccup/html str)) ;; can call directly if needed
+(defn html [s]
+  #?(:cljs (-> s walk-attrs hiccup/html)
+     :clj (if config/render-safe?
+             (-> s walk-attrs hiccup2/html str)
+             (-> s walk-attrs hiccup/html))))
 
 (defn snippet-response [body]
   (cond
