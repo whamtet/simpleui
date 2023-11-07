@@ -1,7 +1,6 @@
 (ns ctmx.core
   (:refer-clojure :exclude [ns-resolve])
   (:require
-    [clojure.string :as string]
     [ctmx.walk :as walk]
     ;[cljs.env :as env]
     [ctmx.form :as form]
