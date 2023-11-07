@@ -23,7 +23,7 @@
 (defn- digital? [[k]]
   (boolean (re-find #"^\d+$" k)))
 (defn- key-value [[k]]
-  (Long/parseLong k))
+  (#?(:clj Long/parseLong :cljs js/Number) k))
 (defn- conjv [s x]
   (conj (or s []) x))
 
@@ -65,7 +65,8 @@
     (fn [done i x]
       (let [stack (conj stack i (name k))]
         (cond
-          (vector? x) (throw (IllegalStateException. "nested vectors unsupported"))
+          (vector? x) (throw #?(:clj (IllegalStateException. "nested vectors unsupported")
+                                :cljs (js/Error. "nested vectors unsupported")))
           (map? x) (flatten-json stack done x)
           :else
           (assoc done
