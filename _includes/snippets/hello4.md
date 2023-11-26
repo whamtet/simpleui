@@ -22,7 +22,7 @@
    [:pre (-> req :params ctmx.form/json-params util/pprint)]
    [:br]
 
-   (ctmx.rt/map-indexed ctmx.github-demo.web.views.hello/customer req customer)
+   (ctmx.rt/map-indexed simpleui.views.hello/customer req customer)
    (text (path "first-name") first-name)
    (text (path "last-name") last-name)
    [:input {:type "submit" :value "Add Customer"}]])
