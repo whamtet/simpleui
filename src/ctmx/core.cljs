@@ -122,3 +122,8 @@
              expand-parser-hints
              (with-stack name args)
              (make-f name args)))))
+
+(defn strip-slash [root]
+  (if (.endsWith root "/")
+    (.substring root 0 (dec (count root)))
+    root))

@@ -11,7 +11,7 @@
 (def render-class? true)
 (def render-vals? true)
 (def render-commands? true)
-(def render-oob? true)
+(def render-oob? false)
 (def render-safe? true)
 
 (defn set-render-style! [s]
