@@ -1,8 +1,6 @@
 (ns ctmx.core
-  (:refer-clojure :exclude [ns-resolve])
   (:require
     [ctmx.walk :as walk]
-    ;[cljs.env :as env]
     [ctmx.form :as form]
     [ctmx.rt :as rt]
     [ctmx.util :as util]))
@@ -111,16 +109,6 @@
 (defn expand-parser-hints [x]
   (walk/prewalk expand-parser-hint x))
 
-(defn- cljs-quote [sym]
-  `(quote ~sym)
-  #_(if env/*compiler* sym `(quote ~sym)))
-(defn get-syms [body]
-  (->> body
-       util/flatten-all
-       (filter symbol?)
-       distinct
-       (mapv cljs-quote)))
-
 (defmacro defn-parse [name args & body]
   `(defn ~name ~args
      ~(parse-args args `(do ~@body))))
@@ -129,24 +117,8 @@
   (let [args (if (not-empty args)
                (update args 0 assoc-as)
                args)]
-    `(def ~(vary-meta name assoc :syms (get-syms body))
+    `(def ~name
        ~(->> body
              expand-parser-hints
              (with-stack name args)
              (make-f name args)))))
-(defmacro defn-assets [name args & body]
-  `(defn ~(vary-meta name assoc :syms (get-syms body))
-     ~args
-     ~@body))
-
-(defmacro with-req [req & body]
-  `(let [{:keys [~'request-method ~'session ~'params]} ~req
-         ~'get? (= :get ~'request-method)
-         ~'post? (= :post ~'request-method)
-         ~'put? (= :put ~'request-method)
-         ~'patch? (= :patch ~'request-method)
-         ~'delete? (= :delete ~'request-method)]
-     ~@body))
-
-(defmacro metas [& syms]
-  (mapv (fn [sym] `(meta (var ~sym))) syms))
