@@ -15,5 +15,4 @@ We then trigger **POST** to **sortable** on the **end** event to persist changes
 {% include snippets/sortable0.md %}
 
 {% include footer.html %}
-{% include outer.html %}
 {% include sortable.html %}

@@ -8,8 +8,10 @@
         "Item " item])))
 
 (defcomponent ^:endpoint sortable [req ^:ints order]
-  [:form#to-sort {:hx-post "sortable" :hx-trigger "end"}
-   (content (or order (range 1 6)))])
+  (if (not-empty order)
+    (content order)
+    [:form#to-sort {:hx-post "sortable" :hx-trigger "end"}
+      (content (range 1 6))]))
 
 (def ring-handler
   (fn [req]
