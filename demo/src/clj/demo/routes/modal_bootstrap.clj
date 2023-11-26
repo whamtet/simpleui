@@ -1,6 +1,6 @@
 (ns demo.routes.modal-bootstrap
   (:require
-    [ctmx.core :as ctmx :refer [defcomponent make-routes defn-parse]]
+    [simpleui.core :as simpleui :refer [defcomponent make-routes defn-parse]]
     [demo.middleware.formats :refer [page]]))
 
 (defcomponent ^:endpoint modal [req]

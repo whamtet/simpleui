@@ -1,4 +1,4 @@
-(ns ctmx.response)
+(ns simpleui.response)
 
 (def no-content {:status 204 :headers {} :body ""})
 (def hx-refresh {:status 200 :headers {"HX-Refresh" "true"} :body ""})

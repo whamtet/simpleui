@@ -1,0 +1,2 @@
+{:linters {:unresolved-symbol {:exclude [(simpleui.core/defcomponent [path id value self])
+                                         (simpleui.core/with-req [post? put? patch? delete?])]}}}

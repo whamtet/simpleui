@@ -1,6 +1,6 @@
-(ns ctmx.core-test
+(ns simpleui.core-test
   (:require [clojure.test :refer :all]
-            [ctmx.core :as ctmx :refer [defcomponent]]
+            [simpleui.core :as simpleui :refer [defcomponent]]
             reitit.ring
             [ring.mock.request :as mock]))
 
@@ -32,7 +32,7 @@
   c
   [:b (a req)])
 
-(def handler (ctmx/make-routes
+(def handler (simpleui/make-routes
               "/base"
               (fn [req]
                 (b req))))

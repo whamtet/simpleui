@@ -1,6 +1,6 @@
 (ns demo.middleware.formats
   (:require
-    [ctmx.render :as render]
+    [simpleui.render :as render]
     [hiccup.page :as page]
     [luminus-transit.time :as time]
     [muuntaja.core :as m]))

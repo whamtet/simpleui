@@ -1,4 +1,4 @@
-(ns ctmx.walk)
+(ns simpleui.walk)
 
 (defn- walk
   "Meta preserving walk"

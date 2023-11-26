@@ -1,9 +1,9 @@
-(ns ctmx.core
+(ns simpleui.core
   (:require
-    [ctmx.walk :as walk]
-    [ctmx.form :as form]
-    [ctmx.rt :as rt]
-    [ctmx.util :as util]))
+    [simpleui.walk :as walk]
+    [simpleui.form :as form]
+    [simpleui.rt :as rt]
+    [simpleui.util :as util]))
 
 (def parsers
   {:long `rt/parse-long

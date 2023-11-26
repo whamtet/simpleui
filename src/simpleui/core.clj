@@ -1,12 +1,12 @@
-(ns ctmx.core
+(ns simpleui.core
   (:refer-clojure :exclude [ns-resolve])
   (:require
-    [ctmx.walk :as walk]
+    [simpleui.walk :as walk]
     [cljs.env :as env]
-    [ctmx.form :as form]
-    [ctmx.render :as render]
-    [ctmx.rt :as rt]
-    [ctmx.util :as util]))
+    [simpleui.form :as form]
+    [simpleui.render :as render]
+    [simpleui.rt :as rt]
+    [simpleui.util :as util]))
 
 (def parsers
   {:long `rt/parse-long

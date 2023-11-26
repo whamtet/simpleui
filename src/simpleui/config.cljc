@@ -1,4 +1,4 @@
-(ns ctmx.config)
+(ns simpleui.config)
 
 (def default-param-method :simple)
 (defn set-param-method! [method]

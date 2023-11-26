@@ -1,12 +1,12 @@
-(ns ctmx.rt
+(ns simpleui.rt
   (:refer-clojure :exclude [map-indexed parse-long parse-double parse-boolean])
   (:require
-    [ctmx.config :as config]
-    #?(:cljs ctmx.form) ;; to ensure deps are pulled
+    [simpleui.config :as config]
+    #?(:cljs simpleui.form) ;; to ensure deps are pulled
     #?(:cljs cljs.reader)
-    #?(:cljs ctmx.render)
+    #?(:cljs simpleui.render)
     [clojure.string :as string]
-    [ctmx.response :as response]))
+    [simpleui.response :as response]))
 
 (def parse-long #(if (string? %)
                   (#?(:clj Long/parseLong :cljs js/Number) %)

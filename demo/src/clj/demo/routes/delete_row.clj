@@ -1,6 +1,6 @@
 (ns demo.routes.delete-row
   (:require
-    [ctmx.core :as ctmx :refer [defcomponent make-routes defn-parse]]
+    [simpleui.core :as simpleui :refer [defcomponent make-routes defn-parse]]
     [demo.middleware.formats :refer [page]]))
 
 (def data
@@ -28,4 +28,4 @@
         [:thead
           [:tr [:th "Name"] [:th "Email"] [:th "Status"] [:th]]]
         [:tbody {:hx-confirm "Are you sure?" :hx-target "closest tr" :hx-swap "outerHTML swap:0.5s"}
-        #_(ctmx.rt/map-indexed tr req data)]]))))
+        #_(simpleui.rt/map-indexed tr req data)]]))))

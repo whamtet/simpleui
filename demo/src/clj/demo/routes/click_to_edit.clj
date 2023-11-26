@@ -1,6 +1,6 @@
 (ns demo.routes.click-to-edit
   (:require
-    [ctmx.core :as ctmx :refer [defcomponent make-routes]]
+    [simpleui.core :as simpleui :refer [defcomponent make-routes]]
     [demo.middleware.formats :as formats]))
 
 (defn- input [type name value]

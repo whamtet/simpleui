@@ -1,4 +1,4 @@
-(ns ctmx.render.command)
+(ns simpleui.render.command)
 
 ;; when the hx-* endpoint is of the form endpoint:command
 ;; we shall split on the colon and add command to hx-vals

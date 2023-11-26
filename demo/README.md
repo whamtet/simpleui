@@ -2,8 +2,6 @@
 
 generated using Luminus version "4.08"
 
-This demo shows how to run the ctmx examples on [ctmx.info](https://ctmx.info).
-
 ## Prerequisites
 
 You will need [Leiningen][1] 2.0 or above installed.

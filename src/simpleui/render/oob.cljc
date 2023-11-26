@@ -1,4 +1,4 @@
-(ns ctmx.render.oob)
+(ns simpleui.render.oob)
 
 (defn assoc-attr [v k value]
   (if (vector? v)

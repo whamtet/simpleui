@@ -1,6 +1,6 @@
 (ns demo.routes.dialogs
   (:require
-    [ctmx.core :as ctmx :refer [defcomponent make-routes defn-parse]]
+    [simpleui.core :as simpleui :refer [defcomponent make-routes defn-parse]]
     [demo.middleware.formats :refer [page]]))
 
 (defcomponent ^:endpoint reply [{:keys [headers]}]

@@ -1,4 +1,4 @@
-## CTMX Demo
+## SimpleUI Demo
 
 Demo project based on a [luminus](https://luminusweb.com) template.
 

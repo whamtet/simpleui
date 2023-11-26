@@ -1,4 +1,4 @@
-(ns ctmx.walk)
+(ns simpleui.walk)
 
 (defmacro preserve-meta [f]
   `(with-meta ~f (meta ~'form)))

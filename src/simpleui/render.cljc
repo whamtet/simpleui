@@ -1,12 +1,12 @@
-(ns ctmx.render
+(ns simpleui.render
   (:require
     #?(:clj [clojure.data.json :as json])
     [clojure.string :as string]
     [clojure.walk :as walk]
-    [ctmx.config :as config]
-    [ctmx.render.command :as command]
-    [ctmx.render.oob :as oob]
-    [ctmx.response :as response]
+    [simpleui.config :as config]
+    [simpleui.render.command :as command]
+    [simpleui.render.oob :as oob]
+    [simpleui.response :as response]
     #?(:clj [hiccup2.core :as hiccup2]
        :cljs [hiccups.runtime :as hiccupsrt])
     #?(:clj [hiccup.core :as hiccup]))

@@ -1,2 +1,0 @@
-{:linters {:unresolved-symbol {:exclude [(ctmx.core/defcomponent [path id value self])
-                                         (ctmx.core/with-req [post? put? patch? delete?])]}}}

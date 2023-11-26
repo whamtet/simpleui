@@ -1,4 +1,4 @@
-(ns ctmx.handler
+(ns simpleui.handler
   (:require
     [reitit.ring :as ring]))
 

@@ -1,9 +1,9 @@
 ;; still using this?
-(ns ctmx.intercept
+(ns simpleui.intercept
   (:require
     [clojure.string :as string]
     [clojure.walk :as walk]
-    [ctmx.render :as render]))
+    [simpleui.render :as render]))
 
 (defn query-string [args]
   (if (-> args count pos?)

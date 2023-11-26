@@ -1,7 +1,7 @@
 (ns demo.routes.edit-row
   (:require
-    [ctmx.core :as ctmx :refer [defcomponent make-routes defn-parse]]
-    ctmx.rt
+    [simpleui.core :as simpleui :refer [defcomponent make-routes defn-parse]]
+    simpleui.rt
     [demo.middleware.formats :refer [page]]))
 
 (def data
@@ -28,7 +28,7 @@
    [:thead
     [:tr [:th "Name"] [:th "Email"] [:th]]]
    [:tbody ;{:hx-confirm "Are you sure?" :hx-target "closest tr" :hx-swap "outerHTML swap:0.5s"}
-    (ctmx.rt/map-indexed demo-table-row req data)]])
+    (simpleui.rt/map-indexed demo-table-row req data)]])
 
 (defn routes []
   (make-routes
