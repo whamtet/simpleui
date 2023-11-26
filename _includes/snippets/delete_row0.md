@@ -22,5 +22,5 @@
         [:thead
           [:tr [:th "Name"] [:th "Email"] [:th "Status"] [:th]]]
         [:tbody {:hx-confirm "Are you sure?" :hx-target "closest tr" :hx-swap "outerHTML swap:0.5s"}
-          (ctmx.rt/map-indexed tr req data)]])))
+          (simpleui.rt/map-indexed tr req data)]])))
 ```

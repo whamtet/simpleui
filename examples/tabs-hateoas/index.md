@@ -1,6 +1,6 @@
 ## Tabs (Using HATEOAS)
 
-This example shows how easy it is to implement tabs using ctmx. 
+This example shows how easy it is to implement tabs using SimpleUI. 
 Following the principle of [Hypertext As The Engine Of Application State](https://en.wikipedia.org/wiki/HATEOAS),
 the selected tab is a part of the application state. 
 Therefore, to display and select tabs in your application, simply include the tab markup in the returned HTML.

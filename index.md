@@ -1,11 +1,11 @@
-ctmx is an app development tool for fast product development and even faster page load times.  It uses [htmx](https://htmx.org/) on the frontend.
+SimpleUI is an app development tool for fast product development and even faster page load times.  It uses [htmx](https://htmx.org/) on the frontend.
 
 ## Basic example
 
 {% include snippets/hello0.md %}
 {% include examples/demo.html %}
 ---
-The core of ctmx is the `defcomponent` macro which expands to both:
+The core of SimpleUI is the `defcomponent` macro which expands to both:
 
 - An ordinary function
 - A rest endpoint.  Arguments are bound based on the html `name` attribute.
@@ -44,7 +44,7 @@ Visit [localhost:3000](http://localhost:3000).  To reload changes
 
 {% include architecture.html %}
 
-Ctmx uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)), the web as it was originally supposed to be.  Application state is implicitly stored in the html itself, not in a separate javascript layer.  By extending the original html model instead of building a javascript layer over top, we get simplicity and **much** faster page load times.
+SimpleUI uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)), the web as it was originally supposed to be.  Application state is implicitly stored in the html itself, not in a separate javascript layer.  By extending the original html model instead of building a javascript layer over top, we get simplicity and **much** faster page load times.
 
 ## Handling data flow
 
@@ -52,7 +52,7 @@ Ctmx uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wi
 
 {% include snippets/hello1.md %}
 
-ctmx maintains a call stack of nested components.  This makes it easy to label data without name clashes.  Try submitting the above form and then inspecting the browser network tab.
+SimpleUI maintains a call stack of nested components.  This makes it easy to label data without name clashes.  Try submitting the above form and then inspecting the browser network tab.
 
 ![](network.png)
 
@@ -60,7 +60,7 @@ ctmx maintains a call stack of nested components.  This makes it easy to label d
 
 ### Components in array
 
-To expand `(path "first-name")` and `(path "last-name")` consistently we must be careful with components inside arrays.  Use `ctmx.rt/map-indexed` to map values across an array.
+To expand `(path "first-name")` and `(path "last-name")` consistently we must be careful with components inside arrays.  Use `simpleui.rt/map-indexed` to map values across an array.
 
 {% include examples/nesting_components.html %}
 
@@ -84,7 +84,7 @@ This example uses the `add-customer` prebind to transform parameters before they
 ---
 {% include snippets/hello3.md %}
 
-Ctmx uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:long**, **^:boolean** and **^:double**. See [documentation](https://github.com/whamtet/ctmx#parameter-casting) for details.
+SimpleUI uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:long**, **^:boolean** and **^:double**. See [documentation](https://github.com/whamtet/ctmx#parameter-casting) for details.
 
 We may also cast within the body of `defcomponent`.
 

@@ -4,17 +4,17 @@ Clojure backend for for [htmx](https://htmx.org/).
 
 [htmx](https://htmx.org/) enables web developers to create powerful webapps without writing any javascript.  Whenever `hx-*` attributes are included in html the library will update the dom in response to user events.  The architecture is simpler and pages load more quickly than in javascript oriented webapps.
 
-ctmx is a backend accompaniment which makes htmx even easier to use.  It works in conjunction with [hiccup](https://weavejester.github.io/hiccup/) for rendering and [reitit](https://cljdoc.org/d/metosin/reitit/0.5.10/doc/introduction) for routing.
+SimpleUI is a backend accompaniment which makes htmx even easier to use.  It works in conjunction with [hiccup](https://weavejester.github.io/hiccup/) for rendering and [reitit](https://cljdoc.org/d/metosin/reitit/0.5.10/doc/introduction) for routing.
 
 ## Usage
 
 First require the library
 
 ```clojure
-(require '[ctmx.core :refer :all])
+(require '[simpleui.core :refer :all])
 ```
 
-The core of ctmx is the `defcomponent` macro.
+The core of SimpleUI is the `defcomponent` macro.
 
 ```clojure
 (defcomponent ^:endpoint hello [req my-name]
@@ -46,7 +46,7 @@ Here the only active element is the text input.  On the input's default action (
 
 ### component stack
 
-ctmx retains a call stack of nested components.  This is used to set ids and values in the sections below.
+SimpleUI retains a call stack of nested components.  This is used to set ids and values in the sections below.
 
 ### ids and values
 
@@ -67,7 +67,7 @@ In addition we need to set names and values
 
 ### hx-target
 
-When we first load the page ctmx generates the full dom tree.  Subsequent updates only render a branch on the tree.  To ensure `path` and `value` are set consistently we must always set `hx-target`.
+When we first load the page SimpleUI generates the full dom tree.  Subsequent updates only render a branch on the tree.  To ensure `path` and `value` are set consistently we must always set `hx-target`.
 
 ```clojure
 (my-component req)
@@ -85,11 +85,11 @@ When we first load the page ctmx generates the full dom tree.  Subsequent update
   [:div {:id id} ...])
 ```
 
-ctmx uses the id of the component being updated to set the component stack consistently.
+SimpleUI uses the id of the component being updated to set the component stack consistently.
 
 ### Component Arrays
 
-`path` also includes array indices.  Instead of using `clojure.core/map` use `ctmx.rt/map-indexed`.
+`path` also includes array indices.  Instead of using `clojure.core/map` use `simpleui.rt/map-indexed`.
 
 
 ```clojure
@@ -114,7 +114,7 @@ ctmx uses the id of the component being updated to set the component stack consi
 (value "../sibling-component/parameter")
 ````
 
-Be careful when using `ctmx.rt/map-indexed`
+Be careful when using `simpleui.rt/map-indexed`
 
 ```clojure
 ;; called from within array component
@@ -161,7 +161,7 @@ Casts available include the following
 
 ### Transforming parameters to JSON
 
-htmx submits all parameters as a flat map, however we can use the above `path` scheme to transform it into nested json for database access etc.  Simply call `ctmx.form/json-params`
+htmx submits all parameters as a flat map, however we can use the above `path` scheme to transform it into nested json for database access etc.  Simply call `simpleui.form/json-params`
 
 ```clojure
 (json-params
@@ -176,7 +176,7 @@ htmx submits all parameters as a flat map, however we can use the above `path` s
 ;;              {:first-name "Jane" :last-name "Doe"}]}
 ```
 
-`ctmx.form/flatten-json` reflattens the nested structure.
+`simpleui.form/flatten-json` reflattens the nested structure.
 
 ### Prebind
 
@@ -196,7 +196,7 @@ For components with multiple arguments, prebind will not be applied when the mul
 
 ### Additional Parameters
 
-In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  To serialize the map as json in initial page renders, you should call `ctmx.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/ctmx-demo/blob/57f9b3c55c8088dc5136b10f5ce1d66e9f6bd152/src/clj/htmx/render.clj#L32)).
+In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  To serialize the map as json in initial page renders, you should call `simpleui.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/ctmx-demo/blob/57f9b3c55c8088dc5136b10f5ce1d66e9f6bd152/src/clj/htmx/render.clj#L32)).
 
 ```clojure
 [:button.delete
@@ -223,7 +223,7 @@ Commands provide a shorthand to indicate custom actions.
 
 ### Action at a distance (hx-swap-oob)
 
-Best to avoid, but sometimes too convenient to resist.  htmx provides the `hx-swap-oob` attribute for updating multiple dom elements within a single response.  In ctmx we must only provide the additional elements when htmx is updating, not in the initial render
+Best to avoid, but sometimes too convenient to resist.  htmx provides the `hx-swap-oob` attribute for updating multiple dom elements within a single response.  In SimpleUI we must only provide the additional elements when htmx is updating, not in the initial render
 
 ```clojure
 (defcomponent my-component [req]
@@ -240,7 +240,7 @@ Be very careful to only include `hx-swap-oob` elements when `top-level?` is true
 
 ### Responses
 
-By default ctmx expects components to return hiccup vectors which are rendered into html.
+By default SimpleUI expects components to return hiccup vectors which are rendered into html.
 
 `nil` returns http **204 - No Content** and htmx will not update the dom.
 
@@ -252,11 +252,11 @@ You may also return an explicit ring map if you wish.  A common use case is to r
     :post
     (do
       (save-to-db ...)
-      ctmx.response/hx-refresh)
+      simpleui.response/hx-refresh)
     :get ...))
 ```
 
-`ctmx.response/hx-refresh` sets the "HX-Refresh" header to "true" and htmx will refresh the page.
+`simpleui.response/hx-refresh` sets the "HX-Refresh" header to "true" and htmx will refresh the page.
 
 ### Hanging Components
 

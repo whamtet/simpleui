@@ -19,10 +19,10 @@
   [req first-name last-name ^:json-stack customer]
   [:form {:id id :hx-post "customer-list"}
    ;; display the nested params
-   [:pre (-> req :params ctmx.form/json-params util/pprint)]
+   [:pre (-> req :params simpleui.form/json-params util/pprint)]
    [:br]
 
-   (ctmx.rt/map-indexed simpleui.views.hello/customer req customer)
+   (simpleui.rt/map-indexed simpleui.views.hello/customer req customer)
    (text (path "first-name") first-name)
    (text (path "last-name") last-name)
    [:input {:type "submit" :value "Add Customer"}]])

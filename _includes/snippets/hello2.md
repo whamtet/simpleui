@@ -5,7 +5,7 @@
 
 (defcomponent table [req]
   [:table
-   (ctmx.rt/map-indexed
+   (simpleui.rt/map-indexed
     table-row
     req
     [{:first-name "Matthew" :last-name "Molloy"}
