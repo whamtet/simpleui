@@ -1,6 +1,6 @@
 <script src="https://unpkg.com/htmx.org@1.9.5"></script>
 <script>
-  var root = 'https://backend.molloy.link/';
+  var root = 'https://simpleui-demo.simpleui.workers.dev/';
   function onEvent(evtName, evt) {
     if (evtName === 'htmx:configRequest') {
       evt.detail.path = root + evt.detail.path;
