@@ -84,7 +84,7 @@ This example uses the `add-customer` prebind to transform parameters before they
 ---
 {% include snippets/hello3.md %}
 
-SimpleUI uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:long**, **^:boolean** and **^:double**. See [documentation](https://github.com/whamtet/ctmx#parameter-casting) for details.
+SimpleUI uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:long**, **^:boolean** and **^:double**. See [documentation](https://github.com/whamtet/simpleui#parameter-casting) for details.
 
 We may also cast within the body of `defcomponent`.
 
