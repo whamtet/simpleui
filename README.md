@@ -93,12 +93,11 @@ SimpleUI also provides optional `path` and `value` functions.
 
 These are unique for each instance of a component and make it easy to retain state over stateless http requests.
 
-**Note:** `path` and `value` only work when `id` is set at the top level of the component.  
-SimpleUI uses `id` to record the position of the component in the component stack.
+**Note:** `path` and `value` only work when `id` is set at the top level of the component.  SimpleUI uses `id` to record the position of the component in the component stack.
 
 ### Component Arrays
 
-If you are using the component stack on a page, you must invoke `simpleui.rt/max-indexed` instead of `clojure.core/map`.
+If you are using the component stack on a page, you must invoke `simpleui.rt/map-indexed` instead of `clojure.core/map`.
 This is because the index of the array forms part of the component stack.
 
 ```clojure
@@ -112,29 +111,6 @@ This is because the index of the array forms part of the component stack.
 
 [:table
   (rt/map-indexed table-row req data)]
-```
-
-### relative paths
-
-`path` and `value` are set based on the call path to each component.  To reference paths and values of other components use relative paths.
-
-```clojure
-(value "subcomponent/parameter") ;; naughty naughty!
-(value "../sibling-component/parameter")
-````
-
-Be careful when using `simpleui.rt/map-indexed`
-
-```clojure
-;; called from within array component
-(value "../../sibling-component/parameter")
-```
-
-We need to ascend two levels in the call path because the array index counts as one level.  We can also use absolute paths for simple parameters not in the component stack.
-
-```clojure
-(when (= (value "/parameter-without-path") "do")
-  ...)
 ```
 
 ### Parameter Casting
