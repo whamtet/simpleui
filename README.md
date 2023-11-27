@@ -1,4 +1,4 @@
-Clojure backend for for [htmx](https://htmx.org/).
+Clojure backend for for [htmx](https://htmx.org/).  Previously known as ctmx.
 
 ## Rationale
 
@@ -68,7 +68,7 @@ To use our endpoint we call `make-routes`
 
 ![](screenshot.png)
 
-Here the only active element is the text input.  On the input's default action (blur) it will request to `/hello` and replace `#hello` with the server response.  We are using `hello` both as a function and an endpoint.  When called as an endpoint arguments are set based on the html `name` attribute.
+Here the only active element is the text input.  On the input's default action (blur) it will request to `/hello` and replace `#hello` with the server response.  We are using `hello` both as a function and an endpoint.  When called as an endpoint arguments are set based on the http parameter `my-name`.
 
 **The first argument to defcomponent is always the req object**
 
@@ -78,47 +78,28 @@ SimpleUI retains a call stack of nested components.  This is used to set ids and
 
 ### ids and values
 
-In the above example we use a fixed id `#hello`.  In general we should not hardcode ids because a component can exist multiple times in the dom.  To resolve this `id` is set automatically based on the call path of nested components.
+In the above example we use a fixed id `#hello`.  If a component exists multiple times you may set `id` automatically.
 
 ```clojure
 [:div.my-component {:id id} ...]
 ```
 
-In addition we need to set names and values
+SimpleUI also provides optional `path` and `value` functions.
 
 ```clojure
 [:input {:type "text" :name (path "first-name") :value (value "first-name")}]
 [:input {:type "text" :name (path "last-name") :value (value "last-name")}]
 ```
 
-`path` is guaranteed to be unique and `value` will autopopulate based on the request parameters.  This makes it very easy to dynamically generate content without thinking about data flow.
+These are unique for each instance of a component and make it easy to retain state over stateless http requests.
 
-### hx-target
-
-When we first load the page SimpleUI generates the full dom tree.  Subsequent updates only render a branch on the tree.  To ensure `path` and `value` are set consistently we must always set `hx-target`.
-
-```clojure
-(my-component req)
-;; clicking updates my-component
-[:button
-  {:hx-get "my-component"
-   :hx-target (hash "my-component")}
-   "Click Me!"]
-```
-
-`my-component` must also have id set correctly
-
-```clojure
-(defcomponent ^:endpoint my-component [req]
-  [:div {:id id} ...])
-```
-
-SimpleUI uses the id of the component being updated to set the component stack consistently.
+**Note:** `path` and `value` only work when `id` is set at the top level of the component.  
+SimpleUI uses `id` to record the position of the component in the component stack.
 
 ### Component Arrays
 
-`path` also includes array indices.  Instead of using `clojure.core/map` use `simpleui.rt/map-indexed`.
-
+If you are using the component stack on a page, you must invoke `simpleui.rt/max-indexed` instead of `clojure.core/map`.
+This is because the index of the array forms part of the component stack.
 
 ```clojure
 (def data [{:first-name "Fred" :last-name "Smith"}
@@ -182,7 +163,7 @@ Casts available include the following
 - **^:longs** Casts to array of longs
 - **^:doubles** Casts to array of doubles
 - **^:array** Puts into an array
-- **^:boolean** True when `(= argument "true")`
+- **^:boolean** True when `(contains? #{"true" "on"} argument)`.  Useful with checkboxes.
 - **^:boolean-true** True when `(not= argument "false")`
 - **^:edn** Reads string into edn
 - **^:keyword** Casts to keyword
@@ -208,13 +189,13 @@ htmx submits all parameters as a flat map, however we can use the above `path` s
 
 ### Prebind
 
-prebind are applied to req *before* the arguments are bound on `defcomponent`.  It can be used in the following way
+Prebind is applied to req *before* the arguments are bound on `defcomponent`.  It can be used in the following way
 
 ```clojure
 (defcomponent ^{:req my-prebind} my-component [req arg1 arg2] ...)
 ```
 
-prebind can be applied in different ways
+Prebind can be applied in different ways
 
 - **^{:req prebind}** prebind is applied to entire req object `(prebind req)`
 - **^{:params prebind}** prebind is applied to the **JSON Nested** params.  `(prebind json-params req)`
@@ -311,7 +292,7 @@ htmx does not include disabled fields when submitting requests.  If you wish to 
 ```
 ## License
 
-Copyright © 2022 Matthew Molloy
+Copyright © 2023 Matthew Molloy
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
