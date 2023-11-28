@@ -4,7 +4,7 @@ The following covers more experimental use of SimpleUI in dynamic forms.  Dynami
 
 ### relative paths
 
-`path` and `value` are set based on the position of each component on the stack.  It is *ocassionally* useful to reference other components
+`path` and `value` are set based on the position of each component on the stack.  It is sometimes useful to reference other components
 
 ```clojure
 (value "subcomponent/parameter") ;; naughty naughty!
