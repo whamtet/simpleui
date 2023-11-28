@@ -96,7 +96,7 @@
          (path prefix $ p))))
 
 (defn- merge-params [req i x]
-  (update req :params merge x {:index i}))
+  (update req :params merge x {:index i :i i}))
 
 (defn map-indexed [f req s]
   (clojure.core/map-indexed
