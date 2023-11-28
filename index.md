@@ -58,6 +58,8 @@ SimpleUI maintains a call stack of nested components.  This makes it easy to lab
 
 `(path "first-name")` and `(path "last-name")` macroexpand to unique values which are automatically mapped back to the function arguments.  We can use the `form` component multiple times on the page without worrying about a name clash.
 
+If a component only exists once on a page you can use the above example without `path`
+.
 ### Components in array
 
 To expand `(path "first-name")` and `(path "last-name")` consistently we must be careful with components inside arrays.  Use `simpleui.rt/map-indexed` to map values across an array.
@@ -65,18 +67,6 @@ To expand `(path "first-name")` and `(path "last-name")` consistently we must be
 {% include examples/nesting_components.html %}
 
 {% include snippets/hello2.md %}
-
-## Transforming parameters to JSON
-
-The UI provides a natural structure to nest our data.  This corresponds closely to the database schema and provides a natural connection between the two.  Try adding customers using the form below.
-
-{% include examples/transforming.html %}
----
-{% include snippets/hello4.md %}
-
-As we add customers the JSON builds up to match the UI.  We would lightly transform the data before persisting it, however it is often already close to what we want it to be.
-
-This example uses the `add-customer` prebind to transform parameters before they are displayed (see [prebind](doc/#prebind)).
 
 ## Casting parameters
 
