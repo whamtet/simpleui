@@ -227,7 +227,7 @@ You may also return an explicit ring map if you wish.  A common use case is to r
 
 `simpleui.response/hx-refresh` sets the "HX-Refresh" header to "true" and htmx will refresh the page.
 
-## Script Responses
+### Script Responses
 
 htmx will execute any script tags you include.
 
