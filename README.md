@@ -13,6 +13,7 @@ Clojure backend for for [htmx](https://htmx.org/).  Previously known as ctmx.
     * [Commands](#commands)
     * [Action at a distance (hx-swap-oob)](#action-at-a-distance--hx-swap-oob-)
     * [Responses](#responses)
+    * [Script Responses](#script-responses)
     * [Hanging Components](#hanging-components)
     * [Extra hints](#extra-hints)
 - [Advanced Usage](#advanced-usage)
@@ -225,6 +226,16 @@ You may also return an explicit ring map if you wish.  A common use case is to r
 ```
 
 `simpleui.response/hx-refresh` sets the "HX-Refresh" header to "true" and htmx will refresh the page.
+
+## Script Responses
+
+htmx will execute any script tags you include.
+
+```clojure
+[:script "alert('Application successful')"]
+```
+
+You can also mix scripts with visual content.
 
 ### Hanging Components
 
