@@ -1,5 +1,21 @@
 Clojure backend for for [htmx](https://htmx.org/).  Previously known as ctmx.
 
+- [Rationale](#rationale)
+- [Getting started](#getting-started)
+- [Usage](#usage)
+    * [component stack](#component-stack)
+    * [ids and values](#ids-and-values)
+    * [Component Arrays](#component-arrays)
+    * [Parameter Casting](#parameter-casting)
+    * [Additional Parameters](#additional-parameters)
+    * [Commands](#commands)
+    * [Action at a distance (hx-swap-oob)](#action-at-a-distance--hx-swap-oob-)
+    * [Responses](#responses)
+    * [Hanging Components](#hanging-components)
+    * [Extra hints](#extra-hints)
+- [Advanced Usage](#advanced-usage)
+- [License](#license)
+
 ## Rationale
 
 [htmx](https://htmx.org/) enables web developers to create powerful webapps without writing any Javascript.  Whenever `hx-*` attributes are included in html the library will update the dom in response to user events.  The architecture is simpler and pages load more quickly than in Javascript-oriented webapps.
