@@ -8,7 +8,7 @@ SimpleUI is an app development tool for fast product development and even faster
 The core of SimpleUI is the `defcomponent` macro which expands to both:
 
 - An ordinary function
-- A rest endpoint.  Arguments are bound based on the html `name` attribute.
+- A rest endpoint.  Arguments are bound based on the http parameter `my-name`.
 
 `defcomponent` enables developers to quickly build rich user interfaces with _no_ javascript.  All code is on the server backend and yet it feels the same as frontend code.
 
