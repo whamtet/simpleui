@@ -62,9 +62,14 @@
              (-> s walk-attrs hiccup2/html str)
              (-> s walk-attrs hiccup/html))))
 
+(defn html-safe [s]
+  (cond-> s
+          (and config/render-oob? (list? s)) oob/assoc-oob
+          (coll? s) html))
+
 (defn snippet-response [body]
   (cond
-    (not body) response/no-content
-    (map? body) body
+    (nil? body) response/no-content
+    (map? body) (update body :body html-safe)
     (and config/render-oob? (list? body)) (-> body oob/assoc-oob html response/html-response)
     :else (-> body html response/html-response)))
