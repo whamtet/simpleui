@@ -87,7 +87,7 @@ We may also cast within the body of `defcomponent`.
 
 ## Further reading
 
-Please see the [examples](examples).
+Please see the [examples](examples) or [full documentation](https://github.com/whamtet/simpleui).
 
 {% include footer.html %}
 {% include zero_outer.html %}
