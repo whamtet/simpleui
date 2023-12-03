@@ -17,6 +17,7 @@ Clojure backend for for [htmx](https://htmx.org/).  Previously known as ctmx.
     * [Hanging Components](#hanging-components)
     * [Extra hints](#extra-hints)
 - [Advanced Usage](#advanced-usage)
+- [Testing](#testing)
 - [License](#license)
 
 ## Rationale
@@ -264,6 +265,12 @@ htmx does not include disabled fields when submitting requests.  If you wish to 
 ## Advanced Usage
 
 SimpleUI makes it possible to build dynamic forms, for details please see [advanced usage](doc/advanced_usage.md).
+
+## Testing
+
+```clojure
+lein auto test
+```
 
 ## License
 

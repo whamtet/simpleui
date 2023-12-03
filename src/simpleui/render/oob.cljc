@@ -1,6 +1,7 @@
 (ns simpleui.render.oob)
 
-(defn assoc-attr [v k value]
+;; test this directly if publicised
+(defn- assoc-attr [v k value]
   (if (vector? v)
     (case (count v)
       0 v
