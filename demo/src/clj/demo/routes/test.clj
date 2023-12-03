@@ -1,4 +1,4 @@
-(ns demo.routes.progress-bar
+(ns demo.routes.test
   (:require
     [simpleui.core :as simpleui :refer [defcomponent make-routes defn-parse]]
     [demo.middleware.formats :refer [page]]))
@@ -23,7 +23,7 @@
 
 (defn routes []
   (make-routes
-    "/progress-bar"
+    "/test"
     (fn [req]
       start ; include in route expansion
       (page

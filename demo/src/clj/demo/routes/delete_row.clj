@@ -9,7 +9,7 @@
    {:name "Fuqua Tarkenton" :email "fuqua@tarkenton.org"}
    {:name "Kim Yee"	:email "kim@yee.org"}])
 
-(defcomponent ^:endpoint tr [{:keys [request-method]} i {:keys [name email]}]
+(defcomponent ^:endpoint tr [{:keys [request-method]} name email]
   (if (= :delete request-method)
     ""
     [:tr
@@ -28,4 +28,4 @@
         [:thead
           [:tr [:th "Name"] [:th "Email"] [:th "Status"] [:th]]]
         [:tbody {:hx-confirm "Are you sure?" :hx-target "closest tr" :hx-swap "outerHTML swap:0.5s"}
-        #_(simpleui.rt/map-indexed tr req data)]]))))
+        (simpleui.rt/map-indexed tr req data)]]))))

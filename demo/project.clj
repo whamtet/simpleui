@@ -29,7 +29,7 @@
                  [ring/ring-core "1.9.3"]
                  [ring/ring-defaults "0.3.2"]
                  [selmer "1.12.40"]
-                 [simpleui "1.4.9"]]
+                 [io.simpleui/simpleui "1.5.1"]]
 
   :min-lein-version "2.0.0"
 

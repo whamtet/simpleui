@@ -15,6 +15,7 @@
     [demo.routes.modal-bootstrap :as modal-bootstrap]
     [demo.routes.progress-bar :as progress-bar]
     [demo.routes.sortable :as sortable]
+    [demo.routes.test :as test]
     [demo.routes.value-select :as value-select]
     [reitit.ring :as ring]
     [ring.middleware.content-type :refer [wrap-content-type]]
@@ -43,7 +44,8 @@
        (modal-bootstrap/routes)
        (progress-bar/routes)
        (sortable/routes)
-       (value-select/routes)])
+       (value-select/routes)
+       (test/routes)])
     (ring/routes
       (ring/create-resource-handler
         {:path "/"})
