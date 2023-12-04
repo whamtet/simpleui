@@ -9,10 +9,10 @@
     [simpleui.response :as response]))
 
 (def parse-long #(if (string? %)
-                  (#?(:clj Long/parseLong :cljs js/Number) %)
+                  (#?(:clj Long/parseLong :cljs js/Number) (.trim %))
                   %))
 (def parse-double #(if (string? %)
-                    (#?(:clj Double/parseDouble :cljs js/Number) %)
+                    (#?(:clj Double/parseDouble :cljs js/Number) (.trim %))
                     %))
 (def parse-longs #(if (string? %)
                    [(parse-long %)]
@@ -22,13 +22,11 @@
                      (map parse-double %)))
 
 (def parse-long-option #(if (string? %)
-                  (when (-> % .trim not-empty)
-                    (#?(:clj Long/parseLong :cljs js/Number) %))
-                  %))
+                         (some-> % .trim not-empty #?(:clj Long/parseLong :cljs js/Number))
+                         %))
 (def parse-double-option #(if (string? %)
-                  (when (-> % .trim not-empty)
-                    (#?(:clj Double/parseDouble :cljs js/Number) %))
-                    %))
+                           (some-> % .trim not-empty #?(:clj Double/parseDouble :cljs js/Number))
+                           %))
 
 (def parse-array #(if (string? %) [%] %))
 (def parse-boolean
