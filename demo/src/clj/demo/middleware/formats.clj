@@ -30,8 +30,10 @@
          (sheet "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css"))]
       [:body
        (render/walk-attrs (last args))
-       [:script {:src "https://unpkg.com/htmx.org@1.2.0"}]
+       [:script {:src "/js/htmx.min.js"}]
        [:script {:src "/js/default.js"}]
+       (when (:notify opts)
+         [:script {:src "/js/htmx-notify.js"}])
        (when (:outer opts)
          [:script "htmx.config.defaultSwapStyle = 'outerHTML';"])
        (when (:zero-inner opts)

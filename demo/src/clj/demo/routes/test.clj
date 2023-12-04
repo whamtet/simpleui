@@ -3,23 +3,12 @@
     [simpleui.core :as simpleui :refer [defcomponent make-routes defn-parse]]
     [demo.middleware.formats :refer [page]]))
 
-(defn- progress [width]
-  [:div.progress
-   [:div#pb.progress-bar {:style (str "width:" width "%")}]])
-
-(defcomponent ^:endpoint start [req ^:double width]
-  (let [width (if width (-> width (+ (rand 30)) (min 100)) 0)]
-    (if (= width 100)
-      [:div {:hx-target "this"}
-       [:h3 "Complete"]
-       (progress 100)
-       [:button.btn {:hx-post "start"} "Restart"]]
-      [:div {:hx-target "this"
-             :hx-get "start"
-             :hx-trigger "load delay:600ms"
-             :hx-vals {:width width}}
-       [:h3 "Running"]
-       (progress width)])))
+(defcomponent ^:endpoint incrementer [req ^:long num]
+  (if num
+    (inc num)
+    [:div#incrementer
+     {:hx-post "incrementer"
+      :hx-vals {:num 0}} 0]))
 
 (defn routes []
   (make-routes
@@ -27,8 +16,7 @@
     (fn [req]
       start ; include in route expansion
       (page
-        :outer
-        [:div {:style "height: 200px"}
-          [:div {:hx-target "this"}
-            [:h3 "Start Progress"]
-            [:button.btn {:hx-post "start"} "Start Job"]]]))))
+        :zero-inner
+        :notify
+        [:div {:hx-ext "htmx-notify"}
+         (incrementer req)]))))
