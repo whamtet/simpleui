@@ -14,6 +14,7 @@
     "url": "https://github.com/whamtet/simpleui/issues"
   },
   "dependencies": {
+    "chai": "^4.3.10",
     "puppeteer": "^21.5.2"
   }
 }

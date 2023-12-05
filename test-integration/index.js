@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const {assert} = require('chai');
 
 (async () => {
   // Launch the browser and open a new blank page
@@ -9,6 +10,10 @@ const puppeteer = require('puppeteer');
 
   page.click('#incrementer');
   const result = await page.waitForSelector('#result');
-  console.log('result', result);
+  const innerHTML = await result.evaluate(e => e.innerHTML);
+
+  assert.equal(innerHTML, '1');
+
+  browser.close();
 
 })();
