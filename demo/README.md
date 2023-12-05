@@ -18,6 +18,12 @@ Visit http://localhost:3000 in the browser.  Connect a repl to the server
 
     lein repl :connect 7000
 
+## Running with tools.deps
+
+You may also run with newer Clojure tools.deps
+
+    clj -M:run
+
 ## License
 
 Copyright © 2021 Matthew Molloy

@@ -7,4 +7,8 @@ const puppeteer = require('puppeteer');
 
   await page.goto('http://localhost:3000/test/');
 
-})()
+  page.click('#incrementer');
+  const result = await page.waitForSelector('#result');
+  console.log('result', result);
+
+})();

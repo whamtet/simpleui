@@ -5,7 +5,7 @@
 
 (defcomponent ^:endpoint incrementer [req ^:long num]
   (if num
-    (inc num)
+    [:div#result (inc num)]
     [:div#incrementer
      {:hx-post "incrementer"
       :hx-vals {:num 0}} 0]))
@@ -14,9 +14,8 @@
   (make-routes
     "/test"
     (fn [req]
-      start ; include in route expansion
+      incrementer
       (page
         :zero-inner
-        :notify
         [:div {:hx-ext "htmx-notify"}
          (incrementer req)]))))

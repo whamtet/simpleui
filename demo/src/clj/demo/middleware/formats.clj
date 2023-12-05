@@ -32,8 +32,6 @@
        (render/walk-attrs (last args))
        [:script {:src "/js/htmx.min.js"}]
        [:script {:src "/js/default.js"}]
-       (when (:notify opts)
-         [:script {:src "/js/htmx-notify.js"}])
        (when (:outer opts)
          [:script "htmx.config.defaultSwapStyle = 'outerHTML';"])
        (when (:zero-inner opts)

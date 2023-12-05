@@ -1,0 +1,36 @@
+{:paths   ["src/clj"
+           "resources"]
+ :deps    {ch.qos.logback/logback-classic {:mvn/version "1.2.3"}
+           clojure.java-time/clojure.java-time {:mvn/version "0.3.2"}
+           cprop/cprop {:mvn/version "0.1.17"}
+           expound/expound {:mvn/version "0.8.9"}
+           funcool/struct {:mvn/version "1.4.0"}
+           json-html/json-html {:mvn/version "0.4.7"}
+           luminus-transit/luminus-transit {:mvn/version "0.1.2"}
+           luminus-undertow/luminus-undertow {:mvn/version "0.1.11"}
+           luminus/ring-ttl-session {:mvn/version "0.3.3"}
+           markdown-clj/markdown-clj {:mvn/version "1.10.5"}
+           metosin/muuntaja {:mvn/version "0.6.8"}
+           metosin/reitit {:mvn/version "0.5.13"}
+           metosin/ring-http-response {:mvn/version "0.9.2"}
+           mount/mount {:mvn/version "0.1.16"}
+           nrepl/nrepl {:mvn/version "0.8.3"}
+           org.clojure/clojure {:mvn/version "1.10.3"}
+           org.clojure/tools.cli {:mvn/version "1.0.206"}
+           org.clojure/tools.logging {:mvn/version "1.1.0"}
+           org.webjars.npm/bulma {:mvn/version "0.9.2"}
+           org.webjars.npm/material-icons {:mvn/version "0.3.1"}
+           org.webjars/webjars-locator {:mvn/version "0.40"}
+           org.webjars/webjars-locator-jboss-vfs {:mvn/version "0.1.0"}
+           ring-webjars/ring-webjars {:mvn/version "0.2.0"}
+           ring/ring-core {:mvn/version "1.9.3"}
+           ring/ring-defaults {:mvn/version "0.3.2"}
+           selmer/selmer {:mvn/version "1.12.40"}
+           io.simpleui/simpleui {:local/root ".."}}
+ :aliases {:run {:main-opts ["-m" "demo.core"]
+                 :jvm-opts ["-Dconf=dev-config.edn"]
+                 :extra-deps {pjstadig/humane-test-output {:mvn/version "0.11.0"}
+                              prone/prone {:mvn/version "2021-04-23"}
+                              ring/ring-devel {:mvn/version "1.9.3"}
+                              ring/ring-mock {:mvn/version "0.4.0"}}
+                 :extra-paths ["env/dev/clj" "env/dev/resources"]}}}
