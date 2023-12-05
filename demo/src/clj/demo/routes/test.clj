@@ -10,12 +10,23 @@
      {:hx-post "incrementer"
       :hx-vals {:num 0}} 0]))
 
+(defcomponent ^:endpoint subcomponent [req]
+  [:div {:id id :hx-post "subcomponent" :hx-include "#extra"}
+   [:input {:type "hidden" :name (path "extra") :value (value "extra")
+            :id (if top-level? "result2" "extra")}]
+   [:div#path-check (path ".")]
+   [:div#hash-check (hash ".")]])
+
+(defcomponent component [req]
+  (subcomponent req))
+
 (defn routes []
   (make-routes
     "/test"
     (fn [req]
       incrementer
       (page
-        :zero-inner
-        [:div {:hx-ext "htmx-notify"}
-         (incrementer req)]))))
+        :zero-outer
+        [:div
+         (incrementer req)
+         (component req)]))))
