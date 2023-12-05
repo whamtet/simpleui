@@ -272,6 +272,21 @@ SimpleUI makes it possible to build dynamic forms, for details please see [advan
 lein auto test
 ```
 
+Integration tests are run with puppeteer against the [demo](demo) subproject.
+
+```clojure
+cd demo
+clj -M:run
+```
+
+In a separate tab
+
+```clojure
+cd test-integration
+npm i
+node index.js
+```
+
 ## License
 
 Copyright © 2023 Matthew Molloy
