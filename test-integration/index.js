@@ -16,15 +16,23 @@ const {assert} = require('chai');
 
   // path tests
   const innerHTML = selector => page.$eval(selector, e => e.innerHTML);
+  const value = selector => page.$eval(selector, e => e.value);
 
-  assert.equal(await innerHTML('#path-check'), 'component_subcomponent');
-  assert.equal(await innerHTML('#hash-check'), '#component_subcomponent');
+  assert.equal(await innerHTML('#i-check'), '0');
+  assert.equal(await innerHTML('#index-check'), '0');
+  assert.equal(await innerHTML('#path-check'), 'component_0_subcomponent');
+  assert.equal(await innerHTML('#hash-check'), '#component_0_subcomponent');
+  assert.equal(await value('#extra'), 'Matt');
 
-  await page.$eval('#extra', e => e.value = 'hello');
-  page.click('#component_subcomponent');
+  page.click('#component_0_subcomponent');
 
-  const result2 = await page.waitForSelector('#result2');
-  assert.equal(await result2.evaluate(e => e.value), 'hello');
+  await page.waitForSelector('#result2');
+  assert.equal(await value('#result2'), 'Matt');
+
+  // command tests
+  page.click('#command-test');
+  await page.waitForSelector('#result3');
+  assert.equal(await innerHTML('#result3'), 'fuck');
 
   console.log('all tests passed');
 
