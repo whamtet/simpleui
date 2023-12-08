@@ -39,7 +39,7 @@ make repl
 
 ```clojure
 (kit/sync-modules)
-(kit/install-module :kit/ctmx)
+(kit/install-module :kit/simpleui)
 ```
 
 Quit the process, `make repl` then
