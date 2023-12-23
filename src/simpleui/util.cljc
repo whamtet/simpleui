@@ -11,3 +11,14 @@
    (into {}
          (for [[k v] m :when (f v)]
            [k v]))))
+
+(defn max-by [f [x & xs]]
+  (first
+   (reduce
+    (fn [[x1 y1] x2]
+      (let [y2 (f x2)]
+        (if (pos? (compare y1 y2))
+          [x1 y1]
+          [x2 y2])))
+    [x (f x)]
+    xs)))

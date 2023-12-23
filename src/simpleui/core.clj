@@ -139,6 +139,12 @@
      ~args
      ~@body))
 
+(defmacro defui [name args & body]
+  `(defn
+    ~(vary-meta name assoc :syms (get-syms body) :ui true)
+    ~args
+    ~@body))
+
 (defn- mapmerge [f s]
   (apply merge (map f s)))
 
@@ -175,7 +181,7 @@
      sym
      #{}))
   ([ns sym exclusions]
-   (when-let [{:keys [ns ns-name name syms endpoint] :as m} (ns-resolve ns sym)]
+   (when-let [{:keys [ns ns-name name syms endpoint]} (ns-resolve ns sym)]
      (let [exclusions (conj exclusions name)
            mappings (->> syms
                          (remove exclusions)
@@ -183,6 +189,39 @@
        (if endpoint
          (assoc mappings name ns-name)
          mappings)))))
+
+(defn- full-symbol [ns-name name]
+  (symbol (str ns-name) (str name)))
+
+(defn extract-ui
+  ([syms]
+   (mapmerge
+    (fn [sym]
+     (extract-ui
+      (if env/*compiler* (ns-name *ns*) *ns*)
+      sym
+      #{}))
+    syms))
+  ([ns sym exclusions]
+   (when-let [{:keys [ns ns-name name syms ui arglists]} (ns-resolve ns sym)]
+     (let [exclusions (conj exclusions name)
+           mappings (->> syms
+                         (remove exclusions)
+                         (mapmerge #(extract-ui ns % exclusions)))]
+       (if ui
+         (assoc mappings
+                (full-symbol ns-name name)
+                (util/max-by count arglists))
+         mappings)))))
+
+(defmacro make-effects [broadcast-fn & starting-syms]
+  {:pre [(every? symbol? starting-syms)]}
+  (vec
+   (for [[f arglist] (extract-ui starting-syms)]
+     {:inputs (mapv keyword arglist)
+      :handler `(fn [{{:keys ~arglist} :inputs}]
+                 (~broadcast-fn
+                  (~f ~@arglist)))})))
 
 (defn extract-endpoints-root [f]
   (->> f
@@ -196,9 +235,6 @@
       (.replace "-" "_")
       (.replace "?" "_QMARK_")
       (.replace "!" "_BANG_")))
-
-(defn- full-symbol [ns-name name]
-  (symbol (str ns-name) (str name)))
 
 (defn extract-endpoints-all [f extra-args]
   (let [extra-args (zipmap (map keyword extra-args) extra-args)]
