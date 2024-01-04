@@ -15,5 +15,5 @@
 
 (defn assoc-oob [items]
   (concat
-    (->> items butlast (map #(assoc-attr % :hx-swap-oob true)))
+    (->> items butlast (map #(assoc-attr % :hx-swap-oob "true")))
     (take-last 1 items)))
