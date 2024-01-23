@@ -163,6 +163,7 @@ Casts available include the following
 - **^:boolean-true** True when `(not= argument "false")`
 - **^:edn** Reads string into edn
 - **^:keyword** Casts to keyword
+- **^:nullable** Ensures the strings "nil" and "null" are parsed as nil
 
 ### Additional Parameters
 

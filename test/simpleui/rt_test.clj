@@ -57,6 +57,9 @@
            (is (= {:a 3} (rt/parse-edn {:a 3})))
            (is (= nil (rt/parse-edn nil)))
            (is (thrown? RuntimeException (rt/parse-edn ""))))
+  (testing "nullable parse"
+           (is (= nil (rt/parse-nullable "null")))
+           (is (= nil (rt/parse-nullable "nil"))))
   (testing "keyword parse"
            (is (= :hi (rt/parse-kw "hi")))
            (is (= :hi (rt/parse-kw :hi)))

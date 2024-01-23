@@ -1,4 +1,4 @@
-(defproject io.simpleui/simpleui "1.5.3"
+(defproject io.simpleui/simpleui "1.5.4"
   :description "Backend helpers for htmx"
   :url "https://github.com/whamtet/simpleui"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"

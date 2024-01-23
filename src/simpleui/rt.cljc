@@ -27,6 +27,7 @@
 (def parse-double-option #(if (string? %)
                            (some-> % .trim not-empty #?(:clj Double/parseDouble :cljs js/Number))
                            %))
+(def parse-nullable #(when-not (#{"nil" "null"} %) %))
 
 (def parse-array #(if (string? %) [%] %))
 (def parse-boolean

@@ -18,6 +18,6 @@
                    [:div "should oob"]
                    [:div {:hx-post "my-endpoint"} "should also oob"]
                    [:div "should not oob"]))]
-             (is (= true (get-attr a :hx-swap-oob)))
-             (is (= true (get-attr b :hx-swap-oob)))
+             (is (= "true" (get-attr a :hx-swap-oob)))
+             (is (= "true" (get-attr b :hx-swap-oob)))
              (is (not (has-attr? c :hx-swap-oob))))))
