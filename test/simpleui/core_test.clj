@@ -71,3 +71,10 @@
               handler
               (mock/request :get "/base/b"))))))
 
+(defcomponent longer-component [req a b])
+
+(deftest apply-component-test
+  (testing "apply-component"
+    (simpleui/apply-component longer-component
+                              (mock/request :get "/")
+                              1)))

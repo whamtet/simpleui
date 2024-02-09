@@ -130,7 +130,8 @@
   (let [args (if (not-empty args)
                (update args 0 assoc-as)
                args)]
-    `(def ~(vary-meta name assoc :syms (get-syms body))
+    `(def ~(vary-meta name assoc :syms (get-syms body)
+                                 :arg-length (count args))
        ~(->> body
              expand-parser-hints
              (with-stack name args)
@@ -269,3 +270,9 @@
 
 (defmacro metas [& syms]
   (mapv (fn [sym] `(meta (var ~sym))) syms))
+
+(defmacro apply-component [f & args]
+  (let [{:keys [arg-length]} (-> f resolve meta)
+        small-call (conj args f)]
+    (take (inc arg-length)
+          (concat small-call (repeat nil)))))
