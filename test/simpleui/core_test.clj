@@ -71,13 +71,28 @@
               handler
               (mock/request :get "/base/b"))))))
 
-(defcomponent longer-component [req a b])
+(defcomponent longer-component [req a b]
+  [a b])
 
 (deftest apply-component-test
   (testing "apply-component"
-    (simpleui/apply-component longer-component
-                              (mock/request :get "/")
-                              1)))
+    (is
+     (= [1 nil]
+        (simpleui/apply-component longer-component
+                                  (mock/request :get "/")
+                                  1))))
+  (testing "apply-component-map"
+    (is
+     (= [1 2]
+        (simpleui/apply-component-map longer-component
+                                      {:a 1 :b 2}
+                                      (mock/request :get "/"))))
+    (is
+     (= [2 2]
+        (simpleui/apply-component-map longer-component
+                                      {:a 1 :b 2}
+                                      (mock/request :get "/")
+                                      2)))))
 
 (deftest defcheck
   (testing "defcheck"

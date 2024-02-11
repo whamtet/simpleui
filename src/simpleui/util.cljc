@@ -22,3 +22,6 @@
           [x2 y2])))
     [x (f x)]
     xs)))
+
+(defn restcat [a b]
+  (->> b (drop (count a)) (concat a)))

@@ -36,6 +36,9 @@
   (if (symbol? s)
     s
     (:as s)))
+(defn keyword-or-as [s]
+  (keyword
+   (symbol-or-as s)))
 (defn- assoc-as [m]
   (if (and (map? m) (-> m :as not))
     (assoc m :as (gensym))
@@ -131,7 +134,7 @@
                (update args 0 assoc-as)
                args)]
     `(def ~(vary-meta name assoc :syms (get-syms body)
-                                 :arg-length (count args))
+                                 :arglist (mapv keyword-or-as args))
        ~(->> body
              expand-parser-hints
              (with-stack name args)
@@ -283,7 +286,21 @@
   (mapv (fn [sym] `(meta (var ~sym))) syms))
 
 (defmacro apply-component [f & args]
-  (let [{:keys [arg-length]} (-> f resolve meta)
-        small-call (conj args f)]
-    (take (inc arg-length)
-          (concat small-call (repeat nil)))))
+  (->> f
+       resolve
+       meta
+       :arglist
+       (map (constantly nil))
+       (util/restcat args)
+       (concat [f])))
+
+(defmacro apply-component-map [f m & args]
+  (let [m-sym (gensym)]
+    `(let [~m-sym ~m]
+       ~(->> f
+             resolve
+             meta
+             :arglist
+             (map #(list % m-sym))
+             (util/restcat args)
+             (concat [f])))))
