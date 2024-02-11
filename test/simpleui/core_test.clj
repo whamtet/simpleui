@@ -78,3 +78,10 @@
     (simpleui/apply-component longer-component
                               (mock/request :get "/")
                               1)))
+
+(deftest defcheck
+  (testing "defcheck"
+    (is (simpleui/get? (mock/request :get "/")))
+    (is (simpleui/post? (mock/request :post "/")))
+    (is (not (simpleui/get? (mock/request :post "/"))))
+    (is (not (simpleui/post? (mock/request :get "/"))))))

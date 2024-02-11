@@ -268,6 +268,17 @@
          ~'delete? (= :delete ~'request-method)]
      ~@body))
 
+;; alternative approach
+(defmacro defcheck [sym]
+  (let [kw (->> sym str (re-find #"[a-z]+") keyword)]
+    `(defn ~sym [req#] (-> req# :request-method (= ~kw)))))
+
+(defcheck get?)
+(defcheck post?)
+(defcheck put?)
+(defcheck patch?)
+(defcheck delete?)
+
 (defmacro metas [& syms]
   (mapv (fn [sym] `(meta (var ~sym))) syms))
 
