@@ -23,5 +23,8 @@
     [x (f x)]
     xs)))
 
-(defn restcat [a b]
-  (->> b (drop (count a)) (concat a)))
+(defn restcat 
+  ([a b]
+    (->> b (drop (count a)) (concat a)))
+  ([a b & rest]
+   (reduce restcat (conj rest b a))))

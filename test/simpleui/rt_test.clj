@@ -59,7 +59,8 @@
            (is (thrown? RuntimeException (rt/parse-edn ""))))
   (testing "nullable parse"
            (is (= nil (rt/parse-nullable "null")))
-           (is (= nil (rt/parse-nullable "nil"))))
+           (is (= nil (rt/parse-nullable "nil")))
+           (is (= nil (rt/parse-nullable ""))))
   (testing "keyword parse"
            (is (= :hi (rt/parse-kw "hi")))
            (is (= :hi (rt/parse-kw :hi)))
