@@ -6,7 +6,7 @@
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [hiccup "2.0.0-alpha2"]
                  [org.clojure/clojurescript "1.10.773"]
-                 [macchiato/hiccups "0.4.1"]
+                 ;[macchiato/hiccups "0.4.1"]
                  [org.clojure/data.json "2.4.0"]
                  [metosin/reitit "0.5.11"]]
   :repositories [["clojars" {:url "https://clojars.org/repo/"

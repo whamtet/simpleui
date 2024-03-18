@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [ns-resolve])
   (:require
     [simpleui.walk :as walk]
-    [cljs.env :as env]
+    ;[cljs.env :as env]
     [simpleui.form :as form]
     [simpleui.render :as render]
     [simpleui.rt :as rt]
@@ -117,7 +117,7 @@
   (walk/prewalk expand-parser-hint x))
 
 (defn- cljs-quote [sym]
-  (if env/*compiler* sym `(quote ~sym)))
+  (if false #_env/*compiler* sym `(quote ~sym)))
 (defn get-syms [body]
   (->> body
        util/flatten-all
@@ -158,11 +158,8 @@
     (as-> (meta v) m
           (assoc m :ns-name (some-> m :ns ns-name)))))
 
-(defn namespaces []
-  (:cljs.analyzer/namespaces @env/*compiler*))
-
 (defn ns-resolve-cljs [ns sym]
-  (let [all-info (:cljs.analyzer/namespaces @env/*compiler*)
+  (let [all-info {} ;(:cljs.analyzer/namespaces @env/*compiler*)
         [prefix suffix] (.split (str sym) "/")
         sym-short (symbol (or suffix prefix))
         ns (if suffix
@@ -177,12 +174,12 @@
         :ns-name ns))))
 
 (defn ns-resolve [ns sym]
-  ((if env/*compiler* ns-resolve-cljs ns-resolve-clj) ns sym))
+  ((if false #_env/*compiler* ns-resolve-cljs ns-resolve-clj) ns sym))
 
 (defn extract-endpoints
   ([sym]
    (extract-endpoints
-     (if env/*compiler* (ns-name *ns*) *ns*)
+     (if false #_env/*compiler* (ns-name *ns*) *ns*)
      sym
      #{}))
   ([ns sym exclusions]
@@ -203,7 +200,7 @@
    (mapmerge
     (fn [sym]
      (extract-ui
-      (if env/*compiler* (ns-name *ns*) *ns*)
+      (if false #_env/*compiler* (ns-name *ns*) *ns*)
       sym
       #{}))
     syms))
