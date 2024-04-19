@@ -64,5 +64,8 @@
   (testing "keyword parse"
            (is (= :hi (rt/parse-kw "hi")))
            (is (= :hi (rt/parse-kw :hi)))
-           (is (= nil (rt/parse-kw nil)))))
+           (is (= nil (rt/parse-kw nil))))
+  (testing "trim parse"
+           (is (= "hi" (rt/parse-trim "hi ")))
+           (is (= nil (rt/parse-trim " ")))))
 

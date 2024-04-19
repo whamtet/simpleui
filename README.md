@@ -164,6 +164,7 @@ Casts available include the following
 - **^:edn** Reads string into edn
 - **^:keyword** Casts to keyword
 - **^:nullable** Ensures the strings "", "nil" and "null" are parsed as nil
+- **^:trim** Trims string and sets it to nil when empty
 
 ### Additional Parameters
 

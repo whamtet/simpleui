@@ -8,6 +8,9 @@
     [clojure.string :as string]
     [simpleui.response :as response]))
 
+(def parse-trim #(if (string? %)
+                   (-> % .trim not-empty)
+                   %))
 (def parse-long #(if (string? %)
                   (#?(:clj Long/parseLong :cljs js/Number) (.trim %))
                   %))

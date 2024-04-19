@@ -20,7 +20,8 @@
    :boolean-true `rt/parse-boolean-true
    :edn `rt/parse-edn
    :keyword `rt/parse-kw
-   :nullable `rt/parse-nullable})
+   :nullable `rt/parse-nullable
+   :trim `rt/parse-trim})
 
 (defn sym->f [sym]
   (when-let [meta (meta sym)]
