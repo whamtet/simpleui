@@ -6,7 +6,9 @@
   (testing "snippet render"
            (is (-> nil render/snippet-response :status (= 204)))
            (is (-> {:body "hi"} render/snippet-response :body (= "hi")))
-           (is (-> {:body [:div]} render/snippet-response :body (= "<div></div>")))
+           (is (-> {:body [:div]} render/snippet-response (= {:status 200
+                                                              :headers {"Content-Type" "text/html"}
+                                                              :body "<div></div>"})))
            (is (-> [:div {:_ ["hi" "there"]
                           :class ["class1" "class2"]
                           :style {:border "1px solid black"}

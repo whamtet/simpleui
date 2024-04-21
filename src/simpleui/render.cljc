@@ -67,9 +67,15 @@
           (and config/render-oob? (list? s)) oob/assoc-oob
           (coll? s) html))
 
+(defn- render-map [m]
+  (-> {:status 200
+       :headers {"Content-Type" "text/html"}}
+      (merge m)
+      (update :body html-safe)))
+
 (defn snippet-response [body]
   (cond
     (nil? body) response/no-content
-    (map? body) (update body :body html-safe)
+    (map? body) (render-map body)
     (and config/render-oob? (list? body)) (-> body oob/assoc-oob html response/html-response)
     :else (-> body html response/html-response)))
