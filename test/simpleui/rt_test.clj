@@ -12,7 +12,8 @@
            (is (= 1 (rt/parse-long-option "1 ")))
            (is (= 1 (rt/parse-long 1)))
            (is (nil? (rt/parse-long nil)))
-           (is (nil? (rt/parse-long-option ""))))
+           (is (nil? (rt/parse-long-option "")))
+           (is (nil? (rt/parse-long-option "null"))))
   (testing "double parse"
            (is (= 1.5 (rt/parse-double "1.5 ")))
            (is (= 1.5 (rt/parse-double 1.5)))
@@ -22,7 +23,8 @@
            (is (= 1.5 (rt/parse-double-option "1.5 ")))
            (is (= 1.5 (rt/parse-double-option 1.5)))
            (is (nil? (rt/parse-double-option nil)))
-           (is (nil? (rt/parse-double-option ""))))
+           (is (nil? (rt/parse-double-option "")))
+           (is (nil? (rt/parse-double-option "null"))))
   (testing "longs parse"
            (is (= [1] (rt/parse-longs "1 ")))
            (is (= [1] (rt/parse-longs [1])))

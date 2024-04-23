@@ -25,10 +25,12 @@
                      (map parse-double %)))
 
 (def parse-long-option #(if (string? %)
-                         (some-> % .trim not-empty #?(:clj Long/parseLong :cljs js/Number))
+                          (when-not (= "null" %)
+                           (some-> % .trim not-empty #?(:clj Long/parseLong :cljs js/Number)))
                          %))
 (def parse-double-option #(if (string? %)
-                           (some-> % .trim not-empty #?(:clj Double/parseDouble :cljs js/Number))
+                            (when-not (= "null" %)
+                             (some-> % .trim not-empty #?(:clj Double/parseDouble :cljs js/Number)))
                            %))
 (def parse-nullable #(when-not (#{"nil" "null" ""} %) %))
 
