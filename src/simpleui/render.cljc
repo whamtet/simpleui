@@ -64,7 +64,7 @@
 
 (defn html-safe [s]
   (cond-> s
-          (and config/render-oob? (list? s)) oob/assoc-oob
+          (and config/render-oob? (seq? s)) oob/assoc-oob
           (coll? s) html))
 
 (defn- render-map [m]
@@ -77,5 +77,5 @@
   (cond
     (nil? body) response/no-content
     (map? body) (render-map body)
-    (and config/render-oob? (list? body)) (-> body oob/assoc-oob html response/html-response)
+    (and config/render-oob? (seq? body)) (-> body oob/assoc-oob html response/html-response)
     :else (-> body html response/html-response)))
