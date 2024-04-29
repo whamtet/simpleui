@@ -239,10 +239,10 @@
       (.replace "?" "_QMARK_")
       (.replace "!" "_BANG_")))
 
-(defn extract-endpoints-all [f extra-args]
+(defn- extract-endpoints-all [prefix f extra-args]
   (let [extra-args (zipmap (map keyword extra-args) extra-args)]
     (for [[name ns-name] (extract-endpoints-root f)]
-      [(str "/" name) `(fn [x#] (-> x# (merge ~extra-args) ~(full-symbol ns-name name) render/snippet-response))])))
+      [(str "/" name) `(fn [x#] (->> x# (merge ~extra-args) ~(full-symbol ns-name name) (render/snippet-response ~prefix)))])))
 
 (defn strip-slash [root]
   (if (.endsWith root "/")
@@ -254,10 +254,10 @@
     [short#
       ["" {:get rt/redirect}]
       ["/" {:get ~f}]
-      ~@(extract-endpoints-all f extra-args)]))
+      ~@(extract-endpoints-all "" f extra-args)]))
 
-(defmacro make-routes-simple [extra-args & starting-syms]
-  (vec (extract-endpoints-all starting-syms extra-args)))
+(defmacro make-routes-simple [prefix extra-args & starting-syms]
+  (vec (extract-endpoints-all prefix starting-syms extra-args)))
 
 (defmacro make-routes
   ([root f] (make-routes-fn root f []))

@@ -32,21 +32,24 @@
   c
   [:b (a req)])
 
+(defcomponent ^:endpoint prefix-component [req]
+  [:div {:hx-get "prefix-component"}])
+
 (def handler (simpleui/make-routes
               "/base"
               (fn [req]
                 (b req))))
 
-(def handler-simple (simpleui/make-routes-simple [] a))
+(def handler-simple (simpleui/make-routes-simple "http://prefix/" [] prefix-component))
 
 (deftest simple-handler-test
   (testing "simple handler works"
     (is
      (ok?
-      "<a></a>"
+      "<div hx-get=\"http://prefix/prefix-component\"></div>"
       (test-req
        handler-simple
-       (mock/request :get "/a"))))))
+       (mock/request :get "/prefix-component"))))))
 
 (deftest component-test
   (testing "redirects to slash ending"

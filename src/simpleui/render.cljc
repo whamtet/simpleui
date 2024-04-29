@@ -6,6 +6,7 @@
     [simpleui.config :as config]
     [simpleui.render.command :as command]
     [simpleui.render.oob :as oob]
+    [simpleui.render.prefix :as prefix]
     [simpleui.response :as response]
     #?(:clj [hiccup2.core :as hiccup2]
        :cljs [hiccups.runtime :as hiccupsrt])
@@ -48,34 +49,44 @@
         (if (and config/render-vals? (map? hx-vals))
           (->> hx-vals fmt-json (assoc s :hx-vals))
           s)))
-(defn render-commands [m]
+(defn- render-commands [m]
   (if config/render-commands?
     (command/assoc-commands m)
     m))
+(defn- prefix-verbs [prefix m]
+  (if (empty? prefix)
+    m
+    (prefix/prefix-verbs prefix m)))
 
-(defn walk-attrs [m]
-  (walk/postwalk #(if (map? %) (-> % render-commands walk-attr) %) m))
+(defn walk-attrs
+  ([m] (walk-attrs "" m))
+  ([prefix m]
+   (walk/postwalk #(if (map? %) (->> % render-commands (prefix-verbs prefix) walk-attr) %) m)))
 
-(defn html [s]
-  #?(:cljs (-> s walk-attrs hiccup/html)
+(defn html [prefix s]
+  #?(:cljs (->> s (walk-attrs prefix) hiccup/html)
      :clj (if config/render-safe?
-             (-> s walk-attrs hiccup2/html str)
-             (-> s walk-attrs hiccup/html))))
+             (->> s (walk-attrs prefix) hiccup2/html str)
+             (->> s (walk-attrs prefix) hiccup/html))))
 
-(defn html-safe [s]
-  (cond-> s
-          (and config/render-oob? (seq? s)) oob/assoc-oob
-          (coll? s) html))
+(defn- render-body [prefix s]
+  (cond->> s
+    (and config/render-oob? (seq? s)) oob/assoc-oob
+    (coll? s) (html prefix)
+    ;; else just let it pass through (body might be string, etc)
+    ))
 
-(defn- render-map [m]
+(defn- render-map [prefix m]
   (-> {:status 200
        :headers {"Content-Type" "text/html"}}
       (merge m)
-      (update :body html-safe)))
+      (update :body #(render-body prefix %))))
 
-(defn snippet-response [body]
-  (cond
-    (nil? body) response/no-content
-    (map? body) (render-map body)
-    (and config/render-oob? (seq? body)) (-> body oob/assoc-oob html response/html-response)
-    :else (-> body html response/html-response)))
+(defn snippet-response 
+  ([body] (snippet-response "" body))
+  ([prefix body]
+   (cond
+     (nil? body) response/no-content
+     (map? body) (render-map prefix body)
+     (and config/render-oob? (seq? body)) (->> body oob/assoc-oob (html prefix) response/html-response)
+     :else (->> body (html prefix) response/html-response))))
