@@ -37,6 +37,17 @@
               (fn [req]
                 (b req))))
 
+(def handler-simple (simpleui/make-routes-simple [] a))
+
+(deftest simple-handler-test
+  (testing "simple handler works"
+    (is
+     (ok?
+      "<a></a>"
+      (test-req
+       handler-simple
+       (mock/request :get "/a"))))))
+
 (deftest component-test
   (testing "redirects to slash ending"
            (is
