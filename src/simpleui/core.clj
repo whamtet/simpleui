@@ -257,7 +257,9 @@
       ~@(extract-endpoints-all "" f extra-args)]))
 
 (defmacro make-routes-simple [prefix extra-args & starting-syms]
-  (vec (extract-endpoints-all prefix starting-syms extra-args)))
+  `(do
+     ~(vec starting-syms) ;; just to ensure they exist!
+     ~(vec (extract-endpoints-all prefix starting-syms extra-args))))
 
 (defmacro make-routes
   ([root f] (make-routes-fn root f []))
