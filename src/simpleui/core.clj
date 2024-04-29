@@ -256,18 +256,12 @@
       ["/" {:get ~f}]
       ~@(extract-endpoints-all f extra-args)]))
 
+(defmacro make-routes-simple [extra-args & starting-syms]
+  (vec (extract-endpoints-all starting-syms extra-args)))
+
 (defmacro make-routes
   ([root f] (make-routes-fn root f []))
   ([root extra-args f] (make-routes-fn root f extra-args)))
-
-(defmacro with-req [req & body]
-  `(let [{:keys [~'request-method ~'session ~'params]} ~req
-         ~'get? (= :get ~'request-method)
-         ~'post? (= :post ~'request-method)
-         ~'put? (= :put ~'request-method)
-         ~'patch? (= :patch ~'request-method)
-         ~'delete? (= :delete ~'request-method)]
-     ~@body))
 
 ;; alternative approach
 (defmacro defcheck [sym]
