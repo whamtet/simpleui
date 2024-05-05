@@ -165,6 +165,7 @@ Casts available include the following
 - **^:keyword** Casts to keyword
 - **^:nullable** Ensures the strings "", "nil" and "null" are parsed as nil
 - **^:trim** Trims string and sets it to nil when empty
+- **^:json** Parses json
 
 ### Additional Parameters
 

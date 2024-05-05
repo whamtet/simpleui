@@ -21,7 +21,8 @@
    :edn `rt/parse-edn
    :keyword `rt/parse-kw
    :nullable `rt/parse-nullable
-   :trim `rt/parse-trim})
+   :trim `rt/parse-trim
+   :json `rt/parse-json})
 
 (defn sym->f [sym]
   (when-let [meta (meta sym)]

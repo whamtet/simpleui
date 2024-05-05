@@ -5,6 +5,7 @@
     #?(:cljs simpleui.form) ;; to ensure deps are pulled
     #?(:cljs cljs.reader)
     #?(:cljs simpleui.render)
+    #?(:clj [clojure.data.json :as json])
     [clojure.string :as string]
     [simpleui.response :as response]))
 
@@ -33,6 +34,12 @@
                              (some-> % .trim not-empty #?(:clj Double/parseDouble :cljs js/Number)))
                            %))
 (def parse-nullable #(when-not (#{"nil" "null" ""} %) %))
+
+#?(:clj
+   (defn- read-str [s] (json/read-str s :key-fn keyword)))
+(def parse-json #(if (string? %)
+                   (#?(:clj read-str :cljs js/JSON.parse) %)
+                   %))
 
 (def parse-array #(if (string? %) [%] %))
 (def parse-boolean

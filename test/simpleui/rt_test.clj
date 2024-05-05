@@ -67,6 +67,9 @@
            (is (= :hi (rt/parse-kw "hi")))
            (is (= :hi (rt/parse-kw :hi)))
            (is (= nil (rt/parse-kw nil))))
+  (testing "json parse"
+           (is (= {:hi "there"} (rt/parse-json "{\"hi\":\"there\"}")))
+           (is (= nil (rt/parse-json nil))))
   (testing "trim parse"
            (is (= "hi" (rt/parse-trim "hi ")))
            (is (= nil (rt/parse-trim " ")))))
