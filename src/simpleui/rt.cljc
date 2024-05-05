@@ -35,8 +35,12 @@
                            %))
 (def parse-nullable #(when-not (#{"nil" "null" ""} %) %))
 
+#?(:clj (defn- key-fn [^String s]
+          (if (re-find #"^\d+$" s)
+            (Long/parseLong s)
+            (keyword s))))
 #?(:clj
-   (defn- read-str [s] (json/read-str s :key-fn keyword)))
+   (defn- read-str [s] (json/read-str s :key-fn key-fn)))
 (def parse-json #(if (string? %)
                    (#?(:clj read-str :cljs js/JSON.parse) %)
                    %))
