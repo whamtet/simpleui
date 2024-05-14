@@ -1,6 +1,6 @@
 (ns simpleui.core-test
   (:require [clojure.test :refer :all]
-            [simpleui.core :as simpleui :refer [defcomponent]]
+            [simpleui.core :as simpleui :refer [defcomponent with-commands]]
             reitit.ring
             [ring.mock.request :as mock]))
 
@@ -114,3 +114,14 @@
     (is (simpleui/post? (mock/request :post "/")))
     (is (not (simpleui/get? (mock/request :post "/"))))
     (is (not (simpleui/post? (mock/request :get "/"))))))
+
+(deftest with-commands-test
+  (testing "with-commands"
+    (let [req (mock/request :get "/")
+          command "make"]
+      (is (= [true false true false]
+             (with-commands req
+               [:div
+                [:div {:hx-get "bike:make"}]
+                [:div {:get-post "bike:break"}]]
+               [get? post? make? break?]))))))

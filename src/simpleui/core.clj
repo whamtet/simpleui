@@ -299,3 +299,24 @@
              (map #(list % m-sym))
              (util/restcat args)
              (concat [f])))))
+
+(defn- base-assignments [req]
+  (let [req (symbol-or-as req)]
+    {'get? ['get? `(-> ~req :request-method (= :get))]
+     'put? ['put? `(-> ~req :request-method (= :put))]
+     'patch? ['patch? `(-> ~req :request-method (= :patch))]
+     'post? ['post? `(-> ~req :request-method (= :post))]
+     'delete? ['delete? `(-> ~req :request-method (= :delete))]}))
+(defn- filter-symbol [s]
+  (when-let [command (and (string? s) (second (.split s ":")))]
+    (let [command-pred (symbol (str command "?"))
+          pred `(= ~'command ~command)]
+      [command-pred [command-pred pred]])))
+
+(defmacro with-commands [req & body]
+  (let [sym->assignment (->> body 
+                             (tree-seq coll? seq) 
+                             (map filter-symbol) 
+                             (into (base-assignments req)))]
+    `(let [~@(->> body (tree-seq coll? seq) distinct (mapcat sym->assignment))]
+       ~@body)))
