@@ -75,3 +75,19 @@
            (is (= "hi" (rt/parse-trim "hi ")))
            (is (= nil (rt/parse-trim " ")))))
 
+(deftest map-indexed-test
+  (testing "map-indexed"
+    (is (=
+         '({:a 1, :fixed true, :index 0, :i 0})
+         (rt/map-indexed :params
+                         {}
+                         [{:a 1}]
+                         {:fixed true}))))
+  (testing "map-indexedm"
+    (let [fixed true]
+      (is (=
+           '({:a 1, :fixed true, :index 0, :i 0})
+           (rt/map-indexedm :params
+                            {}
+                            [{:a 1}]
+                            fixed))))))

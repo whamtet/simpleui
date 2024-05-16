@@ -110,14 +110,23 @@
          (vec $)
          (path prefix $ p))))
 
-(defn- merge-params [req i x]
-  (update req :params merge x {:index i :i i}))
+(defn- merge-params [req i x extra]
+  (update req :params merge x extra {:index i :i i}))
 
-(defn map-indexed [f req s]
-  (clojure.core/map-indexed
+(defn map-indexed
+  ([f req s] (map-indexed f req s {}))
+  ([f req s extra]
+   (clojure.core/map-indexed
     (fn [i x]
-      (-> req (conj-stack i) (merge-params i x) f))
-    s))
+      (-> req (conj-stack i) (merge-params i x extra) f))
+    s)))
+
+(defmacro map-indexedm [f req s & syms]
+  `(map-indexed
+    ~f
+    ~req
+    ~s
+    ~(zipmap (map keyword syms) syms)))
 
 (defn redirect [req]
   (->> req
