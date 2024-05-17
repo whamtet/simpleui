@@ -35,6 +35,11 @@
                            %))
 (def parse-nullable #(when-not (#{"nil" "null" ""} %) %))
 
+(defn parse-prompt [req x]
+  (if (false? x)
+    false
+    (or x (get-in req [:headers "hx-prompt"]))))
+
 #?(:clj (defn- key-fn [^String s]
           (if (re-find #"^\d+$" s)
             (Long/parseLong s)

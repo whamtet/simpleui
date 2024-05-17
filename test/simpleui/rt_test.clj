@@ -73,7 +73,11 @@
            (is (= nil (rt/parse-json nil))))
   (testing "trim parse"
            (is (= "hi" (rt/parse-trim "hi ")))
-           (is (= nil (rt/parse-trim " ")))))
+           (is (= nil (rt/parse-trim " "))))
+  (testing "prompt parse"
+           (is (= false (rt/parse-prompt {} false)))
+           (is (= 1 (rt/parse-prompt {} 1)))
+           (is (= "hello" (rt/parse-prompt {:headers {"hx-prompt" "hello"}} nil)))))
 
 (deftest map-indexed-test
   (testing "map-indexed"

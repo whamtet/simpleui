@@ -26,10 +26,12 @@
 
 (defn sym->f [sym]
   (when-let [meta (meta sym)]
-    (some (fn [[k f]]
-            (when (meta k)
-              f))
-          parsers)))
+    (or 
+     (:prompt meta)
+     (some (fn [[k f]]
+             (when (meta k)
+               f))
+           parsers))))
 
 (defn dissoc-parsers [m]
   (apply vary-meta m dissoc (keys parsers)))
@@ -69,12 +71,15 @@
        ~(str symbol)
        ~(some-annotation arg))))
 
-(defn- parse-args [args expanded]
-  `(let [~@(for [sym (util/flatten-all args)
-                 :let [f (sym->f sym)]
-                 :when f
-                 x [sym `(~f ~sym)]]
-             x)]
+(defn- arg-pair [n]
+  (fn [sym]
+    (when-let [f (sym->f sym)]
+      [sym
+       (if (= :prompt f)
+         `(rt/prompt ~n ~sym)
+         `(~f ~sym))])))
+(defn- parse-args [n args expanded]
+  `(let [~@(->> args util/flatten-all (mapcat (arg-pair n)))]
      ~expanded))
 
 (defn- make-f [n args expanded]
@@ -97,7 +102,7 @@
             (this#
               req#
               ~@(map expand-params (rest args)))))
-         (~args ~(parse-args args expanded))))))
+         (~args ~(parse-args n args expanded))))))
 
 (defn- with-stack [n [req] body]
   (let [req (symbol-or-as req)]
@@ -126,10 +131,6 @@
        (filter symbol?)
        distinct
        (mapv cljs-quote)))
-
-(defmacro defn-parse [name args & body]
-  `(defn ~name ~args
-     ~(parse-args args `(do ~@body))))
 
 (defmacro defcomponent [name args & body]
   (let [args (if (not-empty args)
