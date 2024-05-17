@@ -71,13 +71,12 @@
        ~(str symbol)
        ~(some-annotation arg))))
 
-(defn- arg-pair [n]
-  (prn 'arg-pair n)
+(defn- arg-pair [r]
   (fn [sym]
     (when-let [f (sym->f sym)]
       [sym
        (if (= :prompt f)
-         `(rt/parse-prompt ~n ~sym)
+         `(rt/parse-prompt ~r ~sym)
          `(~f ~sym))])))
 (defn- parse-args [n args expanded]
   `(let [~@(->> args util/flatten-all (mapcat (arg-pair n)))]
@@ -103,7 +102,7 @@
             (this#
               req#
               ~@(map expand-params (rest args)))))
-         (~args ~(parse-args n args expanded))))))
+         (~args ~(parse-args r args expanded))))))
 
 (defn- with-stack [n [req] body]
   (let [req (symbol-or-as req)]
