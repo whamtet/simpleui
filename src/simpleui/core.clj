@@ -72,6 +72,7 @@
        ~(some-annotation arg))))
 
 (defn- arg-pair [n]
+  (prn 'arg-pair n)
   (fn [sym]
     (when-let [f (sym->f sym)]
       [sym
