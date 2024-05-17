@@ -27,7 +27,7 @@
 (defn sym->f [sym]
   (when-let [meta (meta sym)]
     (or 
-     (:prompt meta)
+     (when (:prompt meta) :prompt)
      (some (fn [[k f]]
              (when (meta k)
                f))
@@ -76,7 +76,7 @@
     (when-let [f (sym->f sym)]
       [sym
        (if (= :prompt f)
-         `(rt/prompt ~n ~sym)
+         `(rt/parse-prompt ~n ~sym)
          `(~f ~sym))])))
 (defn- parse-args [n args expanded]
   `(let [~@(->> args util/flatten-all (mapcat (arg-pair n)))]
