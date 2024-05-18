@@ -2,15 +2,12 @@
 
 ;; test this directly if publicised
 (defn- assoc-attr [v k value]
-  (if (vector? v)
-    (case (count v)
-      0 v
-      1 (conj v {k value})
-      (let [[tag attrs & rest] v]
-        (if (map? attrs)
-          (assoc-in v [1 k] value)
-          (vec
-            (list* tag {k value} attrs rest)))))
+  (if (and (vector? v) (not-empty v))
+    (let [[tag attrs & rest] v]
+      (cond
+        (= :script tag) v
+        (map? attrs) (assoc-in v [1 k] value)
+        :else (vec (list* tag {k value} attrs rest))))
     v))
 
 (defn assoc-oob [items]
