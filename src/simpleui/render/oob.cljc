@@ -5,8 +5,8 @@
   (if (and (vector? v) (not-empty v))
     (let [[tag attrs & rest] v]
       (cond
-        (= :script tag) v
-        (map? attrs) (assoc-in v [1 k] value)
+        (#{:script :link} tag) v
+        (map? attrs) (update-in v [1 k] #(or % value))
         :else (vec (list* tag {k value} attrs rest))))
     v))
 
