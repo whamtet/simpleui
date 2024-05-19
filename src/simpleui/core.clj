@@ -4,6 +4,7 @@
     [simpleui.walk :as walk]
     ;[cljs.env :as env]
     [simpleui.form :as form]
+    [simpleui.middleware :as middleware]
     [simpleui.render :as render]
     [simpleui.rt :as rt]
     [simpleui.util :as util]))
@@ -26,7 +27,7 @@
 
 (defn sym->f [sym]
   (when-let [meta (meta sym)]
-    (or 
+    (or
      (when (:prompt meta) :prompt)
      (some (fn [[k f]]
              (when (meta k)
@@ -261,7 +262,8 @@
 (defmacro make-routes-simple [prefix extra-args & starting-syms]
   `(do
      ~(vec starting-syms) ;; just to ensure they exist!
-     ~(vec (extract-endpoints-all prefix starting-syms extra-args))))
+     ["" {:middleware [middleware/wrap-src-params]}
+      ~(vec (extract-endpoints-all prefix starting-syms extra-args))]))
 
 (defmacro make-routes
   ([root f] (make-routes-fn root f []))
@@ -315,9 +317,9 @@
       [command-pred [command-pred pred]])))
 
 (defmacro with-commands [req & body]
-  (let [sym->assignment (->> body 
-                             (tree-seq coll? seq) 
-                             (map filter-symbol) 
+  (let [sym->assignment (->> body
+                             (tree-seq coll? seq)
+                             (map filter-symbol)
                              (into (base-assignments req)))]
     `(let [~@(->> body (tree-seq coll? seq) distinct (mapcat sym->assignment))]
        ~@body)))
