@@ -22,7 +22,8 @@
                    [:div {:hx-swap-oob "other"} "should leave oob untouched"]
                    link
                    script
-                   [:div "should not oob"]))]
+                   [:div "should not oob"]
+                   script))]
              (is (= "true" (get-attr a :hx-swap-oob)))
              (is (= "true" (get-attr b :hx-swap-oob)))
              (is (= "other" (get-attr c :hx-swap-oob)))
