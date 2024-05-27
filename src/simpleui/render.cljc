@@ -77,12 +77,15 @@
     ))
 
 (defn- render-map [prefix m]
-  (-> {:status 200
-       :headers {"Content-Type" "text/html"}}
-      (merge m)
-      (update :body #(render-body prefix %))))
+  (if (:body m)
+    (-> {:status 200
+         :headers {"Content-Type" "text/html"}}
+        (merge m)
+        (update :body #(render-body prefix %)))
+    ;; assume m is just a session
+    (assoc response/no-content :session m)))
 
-(defn snippet-response 
+(defn snippet-response
   ([body] (snippet-response "" body))
   ([prefix body]
    (cond

@@ -9,6 +9,10 @@
            (is (-> {:body [:div]} render/snippet-response (= {:status 200
                                                               :headers {"Content-Type" "text/html"}
                                                               :body "<div></div>"})))
+           (is (-> {:hi "there"} render/snippet-response (= {:status 204
+                                                             :headers {}
+                                                             :body ""
+                                                             :session {:hi "there"}})))
            (is (->> [:div {:hx-get "hi"}]
                     (render/snippet-response "http://prefix/")
                     :body
