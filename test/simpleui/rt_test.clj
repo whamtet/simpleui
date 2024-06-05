@@ -41,6 +41,10 @@
            (is (= ["hi"] (rt/parse-array "hi")))
            (is (= ["hi" "there"] (rt/parse-array ["hi" "there"])))
            (is (nil? (rt/parse-array nil))))
+  (testing "set parse"
+           (is (= #{"hi"} (rt/parse-set "hi")))
+           (is (= #{"hi" "there"} (rt/parse-set ["hi" "there"])))
+           (is (= #{} (rt/parse-set nil))))
   (testing "boolean parse"
            (is (= true (rt/parse-boolean "true")))
            (is (= true (rt/parse-boolean "on")))

@@ -51,6 +51,8 @@
                    %))
 
 (def parse-array #(if (string? %) [%] %))
+(def parse-set #(set (parse-array %)))
+
 (def parse-boolean
   #(case %
      true true

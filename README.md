@@ -159,6 +159,7 @@ Casts available include the following
 - **^:longs** Casts to array of longs
 - **^:doubles** Casts to array of doubles
 - **^:array** Puts into an array
+- **^:set** Puts into a set
 - **^:boolean** True when `(contains? #{"true" "on"} argument)`.  Useful with checkboxes.
 - **^:boolean-true** True when `(not= argument "false")`
 - **^:edn** Reads string into edn

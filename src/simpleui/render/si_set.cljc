@@ -34,12 +34,14 @@
 
 (defn- set-input [params]
   (fn [k]
-    [:input {:type "hidden"
-             :hx-swap-oob "true"
-             :name k
-             :id k
-             :class (get params :si-set-class)
-             :value (get params k)}]))
+    (if-let [class (get params :si-set-class)]
+      [:input {:type "hidden"
+               :hx-swap-oob "true"
+               :name k
+               :id k
+               :class class
+               :value (get params k)}]
+      (throw (Exception. "missing si-set-class")))))
 (defn- clear-div [k]
   [:div {:id k 
          :hx-swap-oob "true"

@@ -17,6 +17,7 @@
    :longs `rt/parse-longs
    :doubles `rt/parse-doubles
    :array `rt/parse-array
+   :set `rt/parse-set
    :boolean `rt/parse-boolean
    :boolean-true `rt/parse-boolean-true
    :edn `rt/parse-edn
