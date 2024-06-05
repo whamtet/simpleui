@@ -245,7 +245,7 @@
 (defn- extract-endpoints-all [prefix f extra-args]
   (let [extra-args (zipmap (map keyword extra-args) extra-args)]
     (for [[name ns-name] (extract-endpoints-root f)]
-      [(str "/" name) `(fn [x#] (->> x# (merge ~extra-args) ~(full-symbol ns-name name) (render/snippet-response ~prefix)))])))
+      [(str "/" name) `(fn [x#] (->> x# (merge ~extra-args) ~(full-symbol ns-name name) (render/snippet-response ~prefix x#)))])))
 
 (defn strip-slash [root]
   (if (.endsWith root "/")

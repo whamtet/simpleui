@@ -1,5 +1,12 @@
 (ns simpleui.render.command)
 
+(def hx-requests
+  [:hx-get
+   :hx-post
+   :hx-put
+   :hx-patch
+   :hx-delete])
+
 ;; when the hx-* endpoint is of the form endpoint:command
 ;; we shall split on the colon and add command to hx-vals
 
@@ -17,8 +24,4 @@
   (reduce
     assoc-command
     m
-    [:hx-get
-     :hx-post
-     :hx-put
-     :hx-patch
-     :hx-delete]))
+    hx-requests))

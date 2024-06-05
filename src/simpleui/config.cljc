@@ -11,6 +11,7 @@
 (def render-class? true)
 (def render-vals? true)
 (def render-commands? true)
+(def render-si-set? false)
 (def render-oob? false)
 (def render-safe? true)
 
@@ -29,6 +30,9 @@
 (defn set-render-commands! [s]
   #?(:clj (alter-var-root #'render-commands? (constantly s))
      :cljs (set! render-commands? s)))
+(defn set-render-si-set [s]
+  #?(:clj (alter-var-root #'render-si-set? (constantly s))
+     :cljs (set! render-si-set? s)))
 (defn set-render-oob [s]
   #?(:clj (alter-var-root #'render-oob? (constantly s))
      :cljs (set! render-oob? s)))
