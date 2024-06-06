@@ -7,7 +7,8 @@
     [simpleui.middleware :as middleware]
     [simpleui.render :as render]
     [simpleui.rt :as rt]
-    [simpleui.util :as util]))
+    [simpleui.util :as util]
+    [clojure.core :as c]))
 
 (def parsers
   {:long `rt/parse-long
@@ -134,7 +135,9 @@
        distinct
        (mapv cljs-quote)))
 
-(defmacro defcomponent [name args & body]
+(defmacro defcomponent
+  {:clj-kondo/lint-as 'clojure.core/defn}
+  [name args & body]
   (let [args (if (not-empty args)
                (update args 0 assoc-as)
                args)]
@@ -144,12 +147,16 @@
              expand-parser-hints
              (with-stack name args)
              (make-f name args)))))
-(defmacro defn-assets [name args & body]
+(defmacro defn-assets
+  {:clj-kondo/lint-as 'clojure.core/defn}
+  [name args & body]
   `(defn ~(vary-meta name assoc :syms (get-syms body))
      ~args
      ~@body))
 
-(defmacro defui [name args & body]
+(defmacro defui
+  {:clj-kondo/lint-as 'clojure.core/defn}
+  [name args & body]
   `(defn
     ~(vary-meta name assoc :syms (get-syms body) :ui true)
     ~args
@@ -271,7 +278,9 @@
   ([root extra-args f] (make-routes-fn root f extra-args)))
 
 ;; alternative approach
-(defmacro defcheck [sym]
+(defmacro defcheck
+  {:clj-kondo/lint-as 'clj-kondo.lint-as/def-catch-all}
+  [sym]
   (let [kw (->> sym str (re-find #"[a-z]+") keyword)]
     `(defn ~sym [req#] (-> req# :request-method (= ~kw)))))
 
@@ -317,7 +326,9 @@
           pred `(= ~'command ~command)]
       [command-pred [command-pred pred]])))
 
-(defmacro with-commands [req & body]
+(defmacro with-commands
+  {:clj-kondo/ignore [:unresolved-symbol]}
+  [req & body]
   (let [sym->assignment (->> body
                              (tree-seq coll? seq)
                              (map filter-symbol)
