@@ -24,6 +24,19 @@
       (dissoc :si-set :si-clear :si-set-class))
     m))
 
+(defn promote-set-form [[tag {:keys [si-set si-clear si-set-class] :as m} & rest :as v]]
+  (if (and
+       (keyword? tag)
+       (-> tag name (.startsWith "form"))
+       (or si-set si-clear))
+    [:form
+     (dissoc m :si-set :si-clear :si-set-class)
+     (when si-set [:input {:type "hidden" :name "si-set" :value (comma-join si-set)}])
+     (when si-clear [:input {:type "hidden" :name "si-clear" :value (comma-join si-clear)}])
+     (when si-set-class [:input {:type "hidden" :name "si-set-class" :value si-set-class}])
+     rest]
+    v))
+
 ;; response side
 
 (defn- safe-cat [a b c]

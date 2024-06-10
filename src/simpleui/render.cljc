@@ -58,6 +58,10 @@
   (if config/render-si-set?
     (si-set/promote-set m)
     m))
+(defn- render-si-set-form [m]
+  (if config/render-si-set?
+    (si-set/promote-set-form m)
+    m))
 (defn- prefix-verbs [prefix m]
   (if (empty? prefix)
     m
@@ -66,7 +70,12 @@
 (defn walk-attrs
   ([m] (walk-attrs "" m))
   ([prefix m]
-   (walk/postwalk #(if (map? %) (->> % render-commands render-si-set (prefix-verbs prefix) walk-attr) %) m)))
+   (walk/prewalk 
+    #(cond 
+       (vector? %) (render-si-set-form %)
+       (map? %) (->> % render-commands render-si-set (prefix-verbs prefix) walk-attr) 
+       :else %)
+    m)))
 
 (defn html [prefix s]
   #?(:cljs (->> s (walk-attrs prefix) hiccup/html)
