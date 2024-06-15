@@ -77,11 +77,13 @@
        :else %)
     m)))
 
-(defn html [prefix s]
-  #?(:cljs (->> s (walk-attrs prefix) hiccup/html)
-     :clj (if config/render-safe?
-             (->> s (walk-attrs prefix) hiccup2/html str)
-             (->> s (walk-attrs prefix) hiccup/html))))
+(defn html 
+  ([s] (html "" s))
+  ([prefix s]
+    #?(:cljs (->> s (walk-attrs prefix) hiccup/html)
+       :clj (if config/render-safe?
+               (->> s (walk-attrs prefix) hiccup2/html str)
+               (->> s (walk-attrs prefix) hiccup/html)))))
 
 (defn- render-body [prefix req s]
   (cond->> s
