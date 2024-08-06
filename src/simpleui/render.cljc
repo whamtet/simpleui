@@ -116,7 +116,7 @@
      (map? body) (render-map prefix req body)
      :else
      (cond->> body
-       (and config/render-oob? (seq? body)) oob/assoc-oob
+       (and config/render-oob? (not= (get-in req [:headers "skip-oob"]) "true") (seq? body)) oob/assoc-oob
        config/render-si-set? (si-set/concat-set-clear req)
        true (html prefix)
        true response/html-response))))
