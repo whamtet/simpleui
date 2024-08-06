@@ -10,6 +10,7 @@
 (def render-hs? true)
 (def render-class? true)
 (def render-vals? true)
+(def render-headers? true)
 (def render-commands? true)
 (def render-si-set? false)
 (def render-oob? false)
@@ -27,6 +28,9 @@
 (defn set-render-vals! [s]
   #?(:clj (alter-var-root #'render-vals? (constantly s))
      :cljs (set! render-vals? s)))
+(defn set-render-headers! [s]
+  #?(:clj (alter-var-root #'render-headers? (constantly s))
+     :cljs (set! render-headers? s)))
 (defn set-render-commands! [s]
   #?(:clj (alter-var-root #'render-commands? (constantly s))
      :cljs (set! render-commands? s)))
