@@ -90,7 +90,9 @@
 
 (defn- render-body [prefix req s]
   (cond->> s
-    (and config/render-oob? (seq? s)) oob/assoc-oob
+    (and config/render-oob? 
+         (not= (get-in req [:headers "skip-oob"]) "true")
+         (seq? s)) oob/assoc-oob
     config/render-si-set? (si-set/concat-set-clear req)
     (coll? s) (html prefix)
     ;; else just let it pass through (body might be string, etc)
