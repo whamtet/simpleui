@@ -6,7 +6,8 @@
 (defn- parse-search [s]
   (into {}
         (for [kv (.split s "&")]
-          (let [[k v] (.split kv "=")]
+          (let [[k v] (.split kv "=")
+                :when v]
             [(keyword k)
              (if (re-find #"^\d" v)
                (Long/parseLong v)
