@@ -1,4 +1,5 @@
 (ns simpleui.middleware
+    (:require [ring.util.response :refer [get-header]])
     (:import
       java.net.URL))
 
@@ -20,7 +21,7 @@
 
 (defn wrap-src-params [handler]
   (fn [req]
-    (->> (get-in req [:headers "hx-current-url"])
+    (->> (get-header req "hx-current-url")
          url->params
          (assoc req :src-params)
          handler)))
