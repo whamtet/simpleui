@@ -171,7 +171,7 @@ Casts available include the following
 
 ### Additional Parameters
 
-In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  To serialize the map as json in initial page renders, you should call `simpleui.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/ctmx-demo/blob/57f9b3c55c8088dc5136b10f5ce1d66e9f6bd152/src/clj/htmx/render.clj#L32)).
+In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  To serialize the map as json in initial page renders, you should call `simpleui.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/simpleui/blob/main/demo/src/clj/demo/middleware/formats.clj#L32)).
 
 ```clojure
 [:button.delete
@@ -196,22 +196,32 @@ Commands provide a shorthand to indicate custom actions.
 
 `command` will be bound to the value after the colon in any endpoints.
 
-### Action at a distance (hx-swap-oob)
+### top-level?
 
-Best to avoid, but sometimes too convenient to resist.  htmx provides the `hx-swap-oob` attribute for updating multiple dom elements within a single response.  In SimpleUI we must only provide the additional elements when htmx is updating, not in the initial render
+SimpleUI sets `top-level?` true when a component is being invoked as an endpoint.
+
+```clojure
+(defcomponent ^:endpoint my-component [req]
+  (if top-level?
+    [:div "This is an update"]
+    [:div "This is the original render"]))
+```
+
+### Updating multiple components
+
+When you return multiple components as a list, SimpleUI will set [hx-swap-oob](https://htmx.org/attributes/hx-swap-oob/) on all but the last.  Those elements will be swapped in by id at various points on the page.
 
 ```clojure
 (defcomponent my-component [req]
   (list
-    (when top-level?
-      [:div.side-element
-       {:id (path "path/to/side-element")
-        :hx-swap-oob "true"}
-        ...])
-    [:div.main-element {:id id} ...]))
+   ;; update these as well
+   [:div#title ...]
+   [:div#sidebar ...]
+   ;; main element
+   [:div.main-element {:id id} ...]))
 ```
 
-Be very careful to only include `hx-swap-oob` elements when `top-level?` is true.
+Be careful to only include `hx-swap-oob` elements when `top-level?` is true.
 
 ### Responses
 
@@ -222,7 +232,7 @@ By default SimpleUI expects components to return hiccup vectors which are render
 You may also return an explicit ring map if you wish.  A common use case is to refresh the page after an operation is complete
 
 ```clojure
-(defcomponent my-component [req]
+(defcomponent ^:endpoint my-component [req]
   (case (:request-method req)
     :post
     (do
@@ -232,6 +242,17 @@ You may also return an explicit ring map if you wish.  A common use case is to r
 ```
 
 `simpleui.response/hx-refresh` sets the "HX-Refresh" header to "true" and htmx will refresh the page.
+
+### Updating Session
+
+When a component returns a response map without a `body` key SimpleUI assumes it is a session update and wraps the response in **204 - No Content**.
+
+```clojure
+(defcomponent ^:endpoint my-component [req shopping-item]
+  (update session :cart conj shopping-item))
+```
+
+The response won't update anything on the page, but the session will be updated.
 
 ### Script Responses
 

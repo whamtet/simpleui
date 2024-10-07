@@ -27,7 +27,7 @@ We need to ascend two levels in the stack because the array index counts as one 
 
 ### Transforming parameters to JSON
 
-htmx submits all parameters as a flat map, however we can use the above `path` scheme to transform it into nested json for database access etc.  Simply call `simpleui.form/json-params`
+htmx submits all parameters as a flat map, however we can use the `path` components stack to transform it into nested json for database access etc.  Simply call `simpleui.form/json-params`
 
 ```clojure
 (json-params
@@ -60,3 +60,33 @@ Prebind can be applied in different ways
 
 For components with multiple arguments, prebind will not be applied when the multi-arg version is invoked.
 
+### si-set, si-clear
+
+SimpleUI contains complex state in forms.  On wizards and multistep forms these forms may disappear when we wish to retain the state.
+To handle this situation create a 'stack' of hidden elements on initial page render
+
+```clojure
+[:input#first-name {:type "hidden"}]
+[:input#second-name {:type "hidden"}]
+...
+```
+
+When you proceed from one form to the next you may push onto the stack
+
+```clojure
+[:button {:hx-post "next-step"
+          :si-set [:first-name :second-name]
+          :si-set-class "current-step"}]
+```
+
+`first-name` and `second-name` exist in the current step but not the next, we wish to retain the state.
+`si-set` will [oob-swap](https://htmx.org/attributes/hx-swap-oob/) `first-name` and `second-name` into the hidden `#first-name` and `#second-name` inputs
+and set their class to `current-step`.  If we wish to return to this step in the wizard pop `first-name` and `second-name` back off the stack.
+
+```clojure
+[:button {:hx-post "previous-step"
+          :hx-include ".current-step"
+          :si-clear [:first-name :second-name]}]
+```
+
+`hx-include` class selects the `first-name` and `second-name` fields when rendering `previous-step` and `si-clear` clears the stack.
