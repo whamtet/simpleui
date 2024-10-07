@@ -17,7 +17,7 @@ The core of SimpleUI is the `defcomponent` macro which expands to both:
 Getting started is easy with clojure tools and the excellent [kit](https://kit-clj.github.io) framework.
 
 ```bash
-clojure -Ttools install com.github.seancorfield/clj-new '{:git/tag "v1.2.381"}' :as new
+clojure -Ttools install com.github.seancorfield/clj-new '{:git/tag "v1.2.404"}' :as new
 clojure -Tnew create :template io.github.kit-clj :name yourname/guestbook
 cd guestbook
 make repl
@@ -45,28 +45,6 @@ Visit [localhost:3000](http://localhost:3000).  To reload changes
 {% include architecture.html %}
 
 SimpleUI uses Hypermedia as the Engine of Application State ([HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)), the web as it was originally supposed to be.  Application state is implicitly stored in the html itself, not in a separate javascript layer.  By extending the original html model instead of building a javascript layer over top, we get simplicity and **much** faster page load times.
-
-## Handling data flow
-
-{% include examples/data_flow.html %}
-
-{% include snippets/hello1.md %}
-
-SimpleUI maintains a call stack of nested components.  This makes it easy to label data without name clashes.  Try submitting the above form and then inspecting the browser network tab.
-
-![](network.png)
-
-`(path "first-name")` and `(path "last-name")` macroexpand to unique values which are automatically mapped back to the function arguments.  We can use the `form` component multiple times on the page without worrying about a name clash.
-
-If a component only exists once on a page you can use the above example without `path`
-.
-### Components in array
-
-To expand `(path "first-name")` and `(path "last-name")` consistently we must be careful with components inside arrays.  Use `simpleui.rt/map-indexed` to map values across an array.
-
-{% include examples/nesting_components.html %}
-
-{% include snippets/hello2.md %}
 
 ## Casting parameters
 
