@@ -5,6 +5,7 @@ Clojure backend for for [htmx](https://htmx.org/).  Previously known as ctmx.
 - [Rationale](#rationale)
 - [Getting started](#getting-started)
 - [Usage](#usage)
+  * [Authentication, IAM](#authentication-iam)
   * [component stack](#component-stack)
   * [ids and values](#ids-and-values)
   * [Component Arrays](#component-arrays)
@@ -93,6 +94,24 @@ To use our endpoint we call `make-routes`
 Here the only active element is the text input.  On the input's default action (blur) it will request to `/hello` and replace `#hello` with the server response.  We are using `hello` both as a function and an endpoint.  When called as an endpoint arguments are set based on the http parameter `my-name`.
 
 **The first argument to defcomponent is always the req object**
+
+### Authentication, IAM
+
+You may check a user's permissions inside the component, however for page level checks remember that `make-routes` is just generating reitit routes
+
+```clojure
+(make-routes
+  "/demo"
+  (fn [req] ...))
+
+;; returns
+;; ["/demo"
+;;   ["/my-component1" my-component1]
+;;   ["/my-component2" my-component2]
+;; ...]
+```
+
+You can attach page level checks using [standard Reitit techniques](https://github.com/metosin/reitit).
 
 ### component stack
 
