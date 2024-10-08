@@ -5,17 +5,19 @@ Clojure backend for for [htmx](https://htmx.org/).  Previously known as ctmx.
 - [Rationale](#rationale)
 - [Getting started](#getting-started)
 - [Usage](#usage)
-    * [component stack](#component-stack)
-    * [ids and values](#ids-and-values)
-    * [Component Arrays](#component-arrays)
-    * [Parameter Casting](#parameter-casting)
-    * [Additional Parameters](#additional-parameters)
-    * [Commands](#commands)
-    * [Action at a distance (hx-swap-oob)](#action-at-a-distance--hx-swap-oob-)
-    * [Responses](#responses)
-    * [Script Responses](#script-responses)
-    * [Hanging Components](#hanging-components)
-    * [Extra hints](#extra-hints)
+  * [component stack](#component-stack)
+  * [ids and values](#ids-and-values)
+  * [Component Arrays](#component-arrays)
+  * [Parameter Casting](#parameter-casting)
+  * [Additional Parameters](#additional-parameters)
+  * [Commands](#commands)
+  * [top-level?](#top-level)
+  * [Updating multiple components](#updating-multiple-components)
+  * [Responses](#responses)
+  * [Updating Session](#updating-session)
+  * [Script Responses](#script-responses)
+  * [Hanging Components](#hanging-components)
+  * [Extra hints](#extra-hints)
 - [Advanced Usage](#advanced-usage)
 - [Testing](#testing)
 - [License](#license)
@@ -315,7 +317,7 @@ node index.js
 
 ## License
 
-Copyright © 2023 Matthew Molloy
+Copyright © 2024 Matthew Molloy
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
