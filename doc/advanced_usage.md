@@ -8,7 +8,7 @@ SimpleUI retains a call stack of nested components.  This is used to set ids and
 
 ### ids and values
 
-In the basic example we use a fixed id `#hello`.  If a component exists multiple times you may set `id` automatically.
+In the basic example we used a fixed id `#hello`.  If a component exists multiple times you may set `id` automatically.
 
 ```clojure
 [:div.my-component {:id id} ...]
@@ -24,6 +24,17 @@ SimpleUI also provides optional `path` and `value` functions.
 These are unique for each instance of a component and make it easy to retain state over stateless http requests.
 
 **Note:** `path` and `value` only work when `id` is set at the top level of the component.  SimpleUI uses `id` to record the position of the component in the component stack.
+
+### Casting value
+
+You may parameter cast within the body of `defcomponent`
+
+```clojure
+[:div
+  (if ^:boolean (value "grumpy")
+    "Cheer up!"
+    "How are you?")]
+```
 
 ### Component Arrays
 

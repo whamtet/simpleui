@@ -131,15 +131,6 @@ htmx submits all parameters as strings.  It can be convenient to cast parameters
 (defcomponent my-component [req ^:long int-argument ^:boolean boolean-argument] ...)
 ```
 
-You may also cast within the body of `defcomponent`
-
-```clojure
-[:div
-  (if ^:boolean (value "grumpy")
-    "Cheer up!"
-    "How are you?")]
-```
-
 Casts available include the following
 
 - **^:long** Casts to long
@@ -162,7 +153,7 @@ Casts available include the following
 <!-- TOC --><a name="additional-parameters"></a>
 ### Additional Parameters
 
-In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  To serialize the map as json in initial page renders, you should call `simpleui.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/simpleui/blob/main/demo/src/clj/demo/middleware/formats.clj#L32)).
+In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  To serialize the map as json on initial render walk the body with `simpleui.render/walk-attrs` ([example](https://github.com/whamtet/simpleui/blob/main/demo/src/clj/demo/middleware/formats.clj#L32)).
 
 ```clojure
 [:button.delete
@@ -180,7 +171,8 @@ Commands provide a shorthand to indicate custom actions.
 (defcomponent ^:endpoint component [req command]
   (case command
     "print" (print req)
-    "save" (save req))
+    "save" (save req)
+    nil)
   [:div
     [:button {:hx-post "component:print"} "Print"]
     [:button {:hx-post "component:save"} "Save"]])
@@ -314,8 +306,7 @@ and set their class to `my-stack`.  If we wish to return to this step in the wiz
           :si-clear [:first-name :second-name]}]
 ```
 
-`hx-include` class selects the `first-name` and `second-name` fields when rendering `previous-step` and `si-clear` clears the stack.  
-It is important to clear the stack because multiple inputs with the same name become an array which you may not be expecting.
+`hx-include` class selects the `first-name` and `second-name` fields when rendering `previous-step` and `si-clear` clears the stack.  It is important to clear the stack because multiple inputs with the same name become an array which you may not be expecting.
 
 <!-- TOC --><a name="using-simpleui-from-a-cdn"></a>
 ### Using SimpleUI from a CDN
@@ -347,14 +338,12 @@ SimpleUI makes it possible to build dynamic forms, for details please see [advan
 <!-- TOC --><a name="pros-and-cons-of-simpleui"></a>
 ## Pros and Cons of SimpleUI
 
-SimpleUI offers two big advantages over JS-oriented frameworks.  You get about a 30% saving on development time due to the simplified architecture.
-No http client, routing library, state management complexity etc.  Even more importantly for users the bundle size is reduced 90 - 99%.  
-Initial page load is as little as 2kb, HTMX loads asyncronously while the user is absorbing page content.
 
-The limitation of both SimpleUI and HTMX occurs when there are complex dependencies between different parts of the page.  
-If a change in one element triggers updates in one or two others you can [swap in oob](#updating-multiple-components), once you do
-this too much you're loading half the page with every state change.  
-This is the same as bad old plain HTML and you should consider switching to a JS-oriented solution.
+SimpleUI offers two big advantages over JS-oriented frameworks.  You get about a 30% saving on development time due to the simplified architecture.
+No http client, routing library, state management complexity etc.  Even more importantly for users the bundle size is reduced 90 - 99%.  Initial page load is as little as 2kb, HTMX loads asyncronously while the user is absorbing page content.
+
+The limitation of both SimpleUI and HTMX occurs when there are complex dependencies between different parts of the page.  If a change in one element triggers updates in one or two others you can [swap in oob](#updating-multiple-components), but once you do
+this too much you're loading half the page with every state change.  This is the same as bad old plain HTML and you should consider switching to a JS-oriented solution.
 
 In practice this situation is rare for business apps and even games can be developed using SimpleUI (e.g. [War of the Ring](https://wotr.online)).
 
