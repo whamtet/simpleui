@@ -2,6 +2,47 @@
 
 The following covers more experimental use of SimpleUI in dynamic forms.  Dynamic forms are those which grow as you fill them out, a good example is the profile builder on LinkedIn.
 
+### Component stack
+
+SimpleUI retains a call stack of nested components.  This is used to set ids and values in the sections below.
+
+### ids and values
+
+In the basic example we use a fixed id `#hello`.  If a component exists multiple times you may set `id` automatically.
+
+```clojure
+[:div.my-component {:id id} ...]
+```
+
+SimpleUI also provides optional `path` and `value` functions.
+
+```clojure
+[:input {:type "text" :name (path "first-name") :value (value "first-name")}]
+[:input {:type "text" :name (path "last-name") :value (value "last-name")}]
+```
+
+These are unique for each instance of a component and make it easy to retain state over stateless http requests.
+
+**Note:** `path` and `value` only work when `id` is set at the top level of the component.  SimpleUI uses `id` to record the position of the component in the component stack.
+
+### Component Arrays
+
+If you are using the component stack on a page, you must invoke `simpleui.rt/map-indexed` instead of `clojure.core/map`.
+This is because the index of the array forms part of the component stack.
+
+```clojure
+(def data [{:first-name "Fred" :last-name "Smith"}
+           {:first-name "Ocean" :last-name "Leader"}])
+
+(defcomponent table-row [req index first-name last-name]
+  [:tr ...])
+
+...
+
+[:table
+  (rt/map-indexed table-row req data)]
+```
+
 ### relative paths
 
 `path` and `value` are set based on the position of each component on the stack.  It is sometimes useful to reference other components
@@ -59,34 +100,3 @@ Prebind can be applied in different ways
 - **^{:params-stack prebind}** prebind is applied to the **JSON Nested** params at the current point in the component stack.
 
 For components with multiple arguments, prebind will not be applied when the multi-arg version is invoked.
-
-### si-set, si-clear
-
-SimpleUI contains complex state in forms.  On wizards and multistep forms these forms may disappear when we wish to retain the state.
-To handle this situation create a 'stack' of hidden elements on initial page render
-
-```clojure
-[:input#first-name {:type "hidden"}]
-[:input#second-name {:type "hidden"}]
-...
-```
-
-When you proceed from one form to the next you may push onto the stack
-
-```clojure
-[:button {:hx-post "next-step"
-          :si-set [:first-name :second-name]
-          :si-set-class "current-step"}]
-```
-
-`first-name` and `second-name` exist in the current step but not the next, we wish to retain the state.
-`si-set` will [oob-swap](https://htmx.org/attributes/hx-swap-oob/) `first-name` and `second-name` into the hidden `#first-name` and `#second-name` inputs
-and set their class to `current-step`.  If we wish to return to this step in the wizard pop `first-name` and `second-name` back off the stack.
-
-```clojure
-[:button {:hx-post "previous-step"
-          :hx-include ".current-step"
-          :si-clear [:first-name :second-name]}]
-```
-
-`hx-include` class selects the `first-name` and `second-name` fields when rendering `previous-step` and `si-clear` clears the stack.

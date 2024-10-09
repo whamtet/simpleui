@@ -2,13 +2,12 @@
 
 Clojure backend for for [htmx](https://htmx.org/).  Previously known as ctmx.
 
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
 - [Rationale](#rationale)
 - [Getting started](#getting-started)
 - [Usage](#usage)
   * [Authentication, IAM](#authentication-iam)
-  * [component stack](#component-stack)
-  * [ids and values](#ids-and-values)
-  * [Component Arrays](#component-arrays)
   * [Parameter Casting](#parameter-casting)
   * [Additional Parameters](#additional-parameters)
   * [Commands](#commands)
@@ -17,24 +16,32 @@ Clojure backend for for [htmx](https://htmx.org/).  Previously known as ctmx.
   * [Responses](#responses)
   * [Updating Session](#updating-session)
   * [Script Responses](#script-responses)
+  * [Unsafe HTML](#unsafe-html)
   * [Hanging Components](#hanging-components)
+  * [si-set, si-clear](#si-set-si-clear)
+  * [Using SimpleUI from a CDN](#using-simpleui-from-a-cdn)
   * [Extra hints](#extra-hints)
 - [Advanced Usage](#advanced-usage)
+- [Pros and Cons of SimpleUI](#pros-and-cons-of-simpleui)
 - [Testing](#testing)
 - [License](#license)
 
+<!-- TOC end -->
+
+<!-- TOC --><a name="rationale"></a>
 ## Rationale
 
 [htmx](https://htmx.org/) enables web developers to create powerful webapps without writing any Javascript.  Whenever `hx-*` attributes are included in html the library will update the dom in response to user events.  The architecture is simpler and pages load more quickly than in Javascript-oriented webapps.
 
 SimpleUI is a backend accompaniment which makes htmx even easier to use.  It works in conjunction with [hiccup](https://weavejester.github.io/hiccup/) for rendering and [reitit](https://cljdoc.org/d/metosin/reitit/0.5.10/doc/introduction) for routing.
 
+<!-- TOC --><a name="getting-started"></a>
 ## Getting started
 
 Getting started is easy with clojure tools and the excellent [kit](https://kit-clj.github.io) framework.
 
 ```bash
-clojure -Ttools install com.github.seancorfield/clj-new '{:git/tag "v1.2.381"}' :as new
+clojure -Ttools install com.github.seancorfield/clj-new '{:git/tag "v1.2.404"}' :as new
 clojure -Tnew create :template io.github.kit-clj :name yourname/guestbook
 cd guestbook
 make repl
@@ -57,6 +64,7 @@ Visit [localhost:3000](http://localhost:3000).  To reload changes
 (reset)
 ```
 
+<!-- TOC --><a name="usage"></a>
 ## Usage
 
 First require the library
@@ -95,9 +103,10 @@ Here the only active element is the text input.  On the input's default action (
 
 **The first argument to defcomponent is always the req object**
 
+<!-- TOC --><a name="authentication-iam"></a>
 ### Authentication, IAM
 
-You may check a user's permissions inside the component, however for page level checks remember that `make-routes` is just generating reitit routes
+You may check a user's permissions inside the component, however for page level checks remember that `make-routes` is just generating reitit vectors
 
 ```clojure
 (make-routes
@@ -113,47 +122,7 @@ You may check a user's permissions inside the component, however for page level 
 
 You can attach page level checks using [standard Reitit techniques](https://github.com/metosin/reitit).
 
-### component stack
-
-SimpleUI retains a call stack of nested components.  This is used to set ids and values in the sections below.
-
-### ids and values
-
-In the above example we use a fixed id `#hello`.  If a component exists multiple times you may set `id` automatically.
-
-```clojure
-[:div.my-component {:id id} ...]
-```
-
-SimpleUI also provides optional `path` and `value` functions.
-
-```clojure
-[:input {:type "text" :name (path "first-name") :value (value "first-name")}]
-[:input {:type "text" :name (path "last-name") :value (value "last-name")}]
-```
-
-These are unique for each instance of a component and make it easy to retain state over stateless http requests.
-
-**Note:** `path` and `value` only work when `id` is set at the top level of the component.  SimpleUI uses `id` to record the position of the component in the component stack.
-
-### Component Arrays
-
-If you are using the component stack on a page, you must invoke `simpleui.rt/map-indexed` instead of `clojure.core/map`.
-This is because the index of the array forms part of the component stack.
-
-```clojure
-(def data [{:first-name "Fred" :last-name "Smith"}
-           {:first-name "Ocean" :last-name "Leader"}])
-
-(defcomponent table-row [req index first-name last-name]
-  [:tr ...])
-
-...
-
-[:table
-  (rt/map-indexed table-row req data)]
-```
-
+<!-- TOC --><a name="parameter-casting"></a>
 ### Parameter Casting
 
 htmx submits all parameters as strings.  It can be convenient to cast parameters to the required type
@@ -190,6 +159,7 @@ Casts available include the following
 - **^:json** Parses json
 - **^:prompt** Takes value from `hx-prompt` header
 
+<!-- TOC --><a name="additional-parameters"></a>
 ### Additional Parameters
 
 In most cases htmx will supply all required parameters.  If you need to include extra ones, set the `hx-vals` attribute.  To serialize the map as json in initial page renders, you should call `simpleui.render/walk-attrs` on your returned html body ([example](https://github.com/whamtet/simpleui/blob/main/demo/src/clj/demo/middleware/formats.clj#L32)).
@@ -201,6 +171,7 @@ In most cases htmx will supply all required parameters.  If you need to include 
    "Delete"]
 ```
 
+<!-- TOC --><a name="commands"></a>
 ### Commands
 
 Commands provide a shorthand to indicate custom actions.
@@ -217,6 +188,7 @@ Commands provide a shorthand to indicate custom actions.
 
 `command` will be bound to the value after the colon in any endpoints.
 
+<!-- TOC --><a name="top-level"></a>
 ### top-level?
 
 SimpleUI sets `top-level?` true when a component is being invoked as an endpoint.
@@ -228,6 +200,7 @@ SimpleUI sets `top-level?` true when a component is being invoked as an endpoint
     [:div "This is the original render"]))
 ```
 
+<!-- TOC --><a name="updating-multiple-components"></a>
 ### Updating multiple components
 
 When you return multiple components as a list, SimpleUI will set [hx-swap-oob](https://htmx.org/attributes/hx-swap-oob/) on all but the last.  Those elements will be swapped in by id at various points on the page.
@@ -244,6 +217,7 @@ When you return multiple components as a list, SimpleUI will set [hx-swap-oob](h
 
 Be careful to only include `hx-swap-oob` elements when `top-level?` is true.
 
+<!-- TOC --><a name="responses"></a>
 ### Responses
 
 By default SimpleUI expects components to return hiccup vectors which are rendered into html.
@@ -264,6 +238,7 @@ You may also return an explicit ring map if you wish.  A common use case is to r
 
 `simpleui.response/hx-refresh` sets the "HX-Refresh" header to "true" and htmx will refresh the page.
 
+<!-- TOC --><a name="updating-session"></a>
 ### Updating Session
 
 When a component returns a response map without a `body` key SimpleUI assumes it is a session update and wraps the response in **204 - No Content**.
@@ -275,6 +250,7 @@ When a component returns a response map without a `body` key SimpleUI assumes it
 
 The response won't update anything on the page, but the session will be updated.
 
+<!-- TOC --><a name="script-responses"></a>
 ### Script Responses
 
 htmx will execute any script tags you include.
@@ -285,6 +261,16 @@ htmx will execute any script tags you include.
 
 You can also mix scripts with visual content.
 
+<!-- TOC --><a name="unsafe-html"></a>
+### Unsafe HTML
+
+The default hiccup rendering mode blocks HTML strings from being inserted into the DOM.  If you need this disable render-safe
+
+```clojure
+(simpleui.config/set-render-safe false)
+```
+
+<!-- TOC --><a name="hanging-components"></a>
 ### Hanging Components
 
 If you don't include components in an initial render, reference them as symbols so they are still available as endpoints.
@@ -299,6 +285,50 @@ If you don't include components in an initial render, reference them as symbols 
               [:div#calendar ...])
 ```
 
+<!-- TOC --><a name="si-set-si-clear"></a>
+### si-set, si-clear
+
+SimpleUI contains complex state in forms.  On wizards and multistep forms some elements may disappear while we still wish to retain the state.
+To handle this situation create a 'stack' of hidden elements on initial page render
+
+```clojure
+[:input#first-name {:type "hidden"}]
+[:input#second-name {:type "hidden"}]
+...
+```
+
+When you proceed from one form to the next you may push onto the stack
+
+```clojure
+[:button {:hx-post "next-step"
+          :si-set [:first-name :second-name]
+          :si-set-class "my-stack"}]
+```
+
+`si-set` will [oob-swap](https://htmx.org/attributes/hx-swap-oob/) `first-name` and `second-name` into the hidden `#first-name` and `#second-name` inputs
+and set their class to `my-stack`.  If we wish to return to this step in the wizard pop `first-name` and `second-name` back off the stack.
+
+```clojure
+[:button {:hx-post "previous-step"
+          :hx-include ".my-stack"
+          :si-clear [:first-name :second-name]}]
+```
+
+`hx-include` class selects the `first-name` and `second-name` fields when rendering `previous-step` and `si-clear` clears the stack.  
+It is important to clear the stack because multiple inputs with the same name become an array which you may not be expecting.
+
+<!-- TOC --><a name="using-simpleui-from-a-cdn"></a>
+### Using SimpleUI from a CDN
+
+You will find that SimpleUI is already very fast and lightweight compared to JS-oriented frameworks, sometimes it is convenient to push that even further.
+You can bootstrap into SimpleUI from a CDN page by referencing HTMX and including a hidden element that triggers the backend.
+
+```html
+<div hx-get="https://my-backend.com" hx-trigger="load" />
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+```
+
+<!-- TOC --><a name="extra-hints"></a>
 ### Extra hints
 
 htmx does not include disabled fields when submitting requests.  If you wish to retain state in this case use the following pattern.
@@ -309,10 +339,26 @@ htmx does not include disabled fields when submitting requests.  If you wish to 
   [:input {:type "hidden" :name (path "input") :value (value "input")}])
 ```
 
+<!-- TOC --><a name="advanced-usage"></a>
 ## Advanced Usage
 
 SimpleUI makes it possible to build dynamic forms, for details please see [advanced usage](doc/advanced_usage.md).
 
+<!-- TOC --><a name="pros-and-cons-of-simpleui"></a>
+## Pros and Cons of SimpleUI
+
+SimpleUI offers two big advantages over JS-oriented frameworks.  You get about a 30% saving on development time due to the simplified architecture.
+No http client, routing library, state management complexity etc.  Even more importantly for users the bundle size is reduced 90 - 99%.  
+Initial page load is as little as 2kb, HTMX loads asyncronously while the user is absorbing page content.
+
+The limitation of both SimpleUI and HTMX occurs when there are complex dependencies between different parts of the page.  
+If a change in one element triggers updates in one or two others you can [swap in oob](#updating-multiple-components), once you do
+this too much you're loading half the page with every state change.  
+This is the same as bad old plain HTML and you should consider switching to a JS-oriented solution.
+
+In practice this situation is rare for business apps and even games can be developed using SimpleUI (e.g. [War of the Ring](https://wotr.online)).
+
+<!-- TOC --><a name="testing"></a>
 ## Testing
 
 ```clojure
@@ -334,6 +380,7 @@ npm i
 node index.js
 ```
 
+<!-- TOC --><a name="license"></a>
 ## License
 
 Copyright © 2024 Matthew Molloy
