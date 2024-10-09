@@ -71,16 +71,18 @@
     (prefix/prefix-verbs prefix m)))
 
 (defn walk-attrs
+  "Converts SimpleUI-specific hiccup into generic hiccup for rendering into html"
   ([m] (walk-attrs "" m))
   ([prefix m]
-   (walk/prewalk 
-    #(cond 
+   (walk/prewalk
+    #(cond
        (vector? %) (render-si-set-form %)
-       (map? %) (->> % render-commands render-si-set (prefix-verbs prefix) walk-attr) 
+       (map? %) (->> % render-commands render-si-set (prefix-verbs prefix) walk-attr)
        :else %)
     m)))
 
-(defn html 
+(defn html
+  "Renders SimpleUI-specific hiccup into html"
   ([s] (html "" s))
   ([prefix s]
     #?(:cljs (->> s (walk-attrs prefix) hiccup/html)
@@ -90,7 +92,7 @@
 
 (defn- render-body [prefix req s]
   (cond->> s
-    (and config/render-oob? 
+    (and config/render-oob?
          (not= (get-in req [:headers "skip-oob"]) "true")
          (seq? s)) oob/assoc-oob
     config/render-si-set? (si-set/concat-set-clear req)
@@ -108,6 +110,7 @@
     (assoc response/no-content :session m)))
 
 (defn snippet-response
+  "Converts SimpleUI component response into ring map."
   ([body] (snippet-response "" {} body))
   ([prefix body] (snippet-response prefix {} body))
   ([prefix req body]

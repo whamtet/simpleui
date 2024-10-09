@@ -18,7 +18,10 @@
     (parse-search query)
     {}))
 
-(defn wrap-src-params [handler]
+(defn wrap-src-params
+  "Middleware to put query params of calling page in :src-params.
+  Useful when the source page is on a cdn."
+  [handler]
   (fn [req]
     (->> (get-header req "hx-current-url")
          url->params

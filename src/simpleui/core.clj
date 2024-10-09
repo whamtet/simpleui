@@ -113,7 +113,6 @@
            ~'id (rt/path "" ~'stack ".")
            ~'path (partial rt/path "" ~'stack)
            ~'hash (partial rt/path "#" ~'stack)
-           ~'hash-find (partial rt/path-find "#" ~'stack)
            ~'value (fn [p#] (-> p# ~'path keyword ~'params))
            ~'self ~(name n)]
        ~@body)))
@@ -134,7 +133,9 @@
        distinct
        (mapv cljs-quote)))
 
-(defmacro defcomponent [name args & body]
+(defmacro defcomponent
+  "Defines a SimpleUI component."
+  [name args & body]
   (let [args (if (not-empty args)
                (update args 0 assoc-as)
                args)]

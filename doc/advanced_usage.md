@@ -8,7 +8,7 @@ SimpleUI retains a call stack of nested components.  This is used to set ids and
 
 ### ids and values
 
-In the basic example we used a fixed id `#hello`.  If a component exists multiple times you may set `id` automatically.
+In the introductory example we used a fixed id `#hello`.  If a component exists multiple times you may set `id` automatically.
 
 ```clojure
 [:div.my-component {:id id} ...]
@@ -25,9 +25,9 @@ These are unique for each instance of a component and make it easy to retain sta
 
 **Note:** `path` and `value` only work when `id` is set at the top level of the component.  SimpleUI uses `id` to record the position of the component in the component stack.
 
-### Casting value
+### Casting values
 
-You may parameter cast within the body of `defcomponent`
+You may [parameter cast](https://github.com/whamtet/simpleui?tab=readme-ov-file#parameter-casting) within the body of `defcomponent`
 
 ```clojure
 [:div
@@ -59,21 +59,21 @@ This is because the index of the array forms part of the component stack.
 `path` and `value` are set based on the position of each component on the stack.  It is sometimes useful to reference other components
 
 ```clojure
-(value "subcomponent/parameter") ;; naughty naughty!
-(value "../sibling-component/parameter")
+(value "subcomponent\\parameter") ;; naughty naughty!
+(value "..\\sibling-component\\parameter")
 ````
 
 Be careful when using `simpleui.rt/map-indexed`
 
 ```clojure
 ;; called from within array component
-(value "../../sibling-component/parameter")
+(value "..\\..\\sibling-component\\parameter")
 ```
 
 We need to ascend two levels in the stack because the array index counts as one level.  We can also use absolute paths for simple parameters not in the component stack.
 
 ```clojure
-(when (= (value "/parameter-without-path") "do")
+(when (= (value "\\parameter-without-path") "do")
   ...)
 ```
 
@@ -84,10 +84,10 @@ htmx submits all parameters as a flat map, however we can use the `path` compone
 ```clojure
 (json-params
   {:store-name "My Store"
-   :customers_0_first-name "Joe"
-   :customers_0_last-name "Smith"
-   :customers_1_first-name "Jane"
-   :customers_1_last-name "Doe"})
+   :0_customers_first-name "Joe"
+   :0_customers_last-name "Smith"
+   :1_customers_first-name "Jane"
+   :1_customers_last-name "Doe"})
 
 ;; {:store-name "My Store"
 ;;  :customers [{:first-name "Joe" :last-name "Smith"}

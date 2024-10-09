@@ -1,6 +1,6 @@
 # SimpleUI
 
-Clojure backend for for [htmx](https://htmx.org/).  Previously known as ctmx.
+Clojure backend for [htmx](https://htmx.org/).  Previously known as ctmx.
 
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 

@@ -8,7 +8,9 @@
    :headers {"Content-Type" "text/html"}
    :body body})
 
-(defn hx-redirect [redirect]
+(defn hx-redirect
+  "Like regular http 302 but redirects parent page when update is being made on a single component."
+  [redirect]
   {:status 200
    :headers {"HX-Redirect" redirect}
    :body ""})

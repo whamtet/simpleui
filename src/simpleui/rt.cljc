@@ -106,21 +106,20 @@
         (-> p (.split "\\\\") rest)
         (-> p (.split "\\\\") (concat-stack stack))))))
 
-(defn path-find
-  ([prefix stack find]
-   (path-find prefix stack find "."))
-  ([prefix stack find p]
-   (as-> stack $
-         (reverse $)
-         (drop-while #(not= find %) $)
-         (reverse $)
-         (vec $)
-         (path prefix $ p))))
-
 (defn- merge-params [req i x extra]
   (update req :params merge x extra {:index i :i i}))
 
 (defn map-indexed
+  "Similar to clojure.core/map-indexed but maintains the component stack correctly e.g. with component
+
+  (defcomponent user [req i first-name last-name] ...)
+
+  (map-indexed user
+    [{:first-name \"Fred\" :last-name \"Dagg\"}
+     {:first-name \"Sam\" :last-name \"Smith\"}])
+
+  Adds optional fixed params in extra.
+  "
   ([f req s] (map-indexed f req s {}))
   ([f req s extra]
    (clojure.core/map-indexed
@@ -128,14 +127,18 @@
       (-> req (conj-stack i) (merge-params i x extra) f))
     s)))
 
-(defmacro map-indexedm [f req s & syms]
+(defmacro map-indexedm
+  "Zips syms into extra then invokes map-indexed"
+  [f req s & syms]
   `(map-indexed
     ~f
     ~req
     ~s
     ~(zipmap (map keyword syms) syms)))
 
-(defn redirect [req]
+(defn redirect
+  "Redirects to ensure trailing slash"
+  [req]
   (->> req
        :query-string
        (str (:uri req) "/?")

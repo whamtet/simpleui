@@ -59,13 +59,14 @@
                :value (get params k)}]
       (throw (Exception. "missing si-set-class")))))
 (defn- clear-div [k]
-  [:div {:id k 
+  [:div {:id k
          :hx-swap-oob "true"
          :style "display: none"}])
 
 (defn concat-set-clear [{:keys [params]
                         {:keys [si-set si-clear]} :params} body]
   (if (or si-set si-clear)
+    ;; si-set, si-clear are comma seperated
     (safe-cat
      (map-comma (set-input params) si-set)
      (map-comma clear-div si-clear)
