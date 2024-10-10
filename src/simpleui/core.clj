@@ -26,7 +26,7 @@
    :trim `rt/parse-trim
    :json `rt/parse-json})
 
-(defn sym->f [sym]
+(defn- sym->f [sym]
   (when-let [meta (meta sym)]
     (or
      (when (:prompt meta) :prompt)
@@ -35,7 +35,9 @@
                f))
            parsers))))
 
-(defn dissoc-parsers [m]
+(defn- dissoc-parsers
+  "remove all parsers from metadata"
+  [m]
   (apply vary-meta m dissoc (keys parsers)))
 
 (defn symbol-or-as [s]
@@ -58,13 +60,17 @@
   (->> arg meta keys (some annotations)))
 
 (def ^:private prebind [:req :params :params-stack])
-(defn- some-prebind [sym]
+(defn- some-prebind
+  "returns [type f] where f is the user supplied prebind function"
+  [sym]
   (when-let [m (meta sym)]
     (some
       #(when-let [f (m %)] [% f])
       prebind)))
 
-(defn- expand-params [arg]
+(defn- expand-params
+  "Used for path, json-stack variables etc.  Called to convert 1-arg into multiarg"
+  [arg]
   (when-let [symbol (symbol-or-as arg)]
     `(rt/get-value
        ~'params
@@ -80,7 +86,9 @@
        (if (= :prompt f)
          `(rt/parse-prompt ~r ~sym)
          `(~f ~sym))])))
-(defn- parse-args [n args expanded]
+(defn- parse-args
+  "let function that parses args in multi-arg component"
+  [n args expanded]
   `(let [~@(->> args util/flatten-all (mapcat (arg-pair n)))]
      ~expanded))
 
@@ -88,7 +96,7 @@
   (let [prebind (some-prebind n)
         r (-> args (get 0) symbol-or-as)]
     (case (count args)
-      0 (throw (Exception. "zero args not supported"))
+      0 (throw (Exception. "Zero args not supported."))
       1
       (if prebind
         `(fn ~args
@@ -150,7 +158,9 @@
      ~args
      ~@body))
 
-(defmacro defui [name args & body]
+(defmacro defui
+  "Define experimental ui component for use with domino-clj"
+  [name args & body]
   `(defn
     ~(vary-meta name assoc :syms (get-syms body) :ui true)
     ~args
@@ -222,7 +232,9 @@
                 (util/max-by count arglists))
          mappings)))))
 
-(defmacro make-effects [broadcast-fn & starting-syms]
+(defmacro make-effects
+  "Experimental affects array for use with domino-clj"
+  [broadcast-fn & starting-syms]
   {:pre [(every? symbol? starting-syms)]}
   (vec
    (for [[f arglist] (extract-ui starting-syms)]
@@ -261,13 +273,17 @@
       ["/" {:get ~f}]
       ~@(extract-endpoints-all "" f extra-args)]))
 
-(defmacro make-routes-simple [prefix extra-args & starting-syms]
+(defmacro make-routes-simple
+  "A stripped version of make-routes to be used when initial page render is on a CDN (and accessed via cors)."
+  [prefix extra-args & starting-syms]
   `(do
      ~(vec starting-syms) ;; just to ensure they exist!
      ["" {:middleware [middleware/wrap-src-params]}
       ~(vec (extract-endpoints-all prefix starting-syms extra-args))]))
 
 (defmacro make-routes
+  "Generate reitit routes from function root which handles initial page render.  Returns a reitit vector.
+  extra-args is a list of local variables that will be associated into the request object when invoked as an endpoint."
   ([root f] (make-routes-fn root f []))
   ([root extra-args f] (make-routes-fn root f extra-args)))
 
@@ -285,7 +301,9 @@
 (defmacro metas [& syms]
   (mapv (fn [sym] `(meta (var ~sym))) syms))
 
-(defmacro apply-component [f & args]
+(defmacro apply-component
+  "Invoke a component with fewer than full args.  Remaining args will be bound to nil."
+  [f & args]
   (->> f
        resolve
        meta
@@ -294,13 +312,15 @@
        (util/restcat args)
        (concat [f])))
 
-(defmacro apply-component-map [f m & args]
+(defmacro apply-component-map
+  "Invoke a component with fewer than full args.  Remaining args will be bound to nil."
+  [f m & args]
   (let [m-sym (gensym)]
     `(let [~m-sym ~m]
        ~(->> f
              resolve
              meta
-             :arglist
+             :arglist ;; arglist is defined as keywords
              (map #(list % m-sym))
              (util/restcat args)
              (concat [f])))))
@@ -318,7 +338,10 @@
           pred `(= ~'command ~command)]
       [command-pred [command-pred pred]])))
 
-(defmacro with-commands [req & body]
+(defmacro with-commands
+  "Uses all strings of the form \"component:my-command\" in body to define predicates my-command?
+  my-command? is true when (= command \"my-command\").  Also defines post?, get? etc."
+  [req & body]
   (let [sym->assignment (->> body
                              (tree-seq coll? seq)
                              (map filter-symbol)
