@@ -38,6 +38,14 @@ SimpleUI is a backend accompaniment which makes htmx even easier to use.  It wor
 <!-- TOC --><a name="getting-started"></a>
 ## Getting started
 
+Add the following dependency to your `deps.edn` file:
+
+    io.simpleui/simpleui {:mvn/version "1.6.0"}
+
+Or to your Leiningen `project.clj` file:
+
+    [io.simpleui/simpleui "1.6.0"]
+
 Getting started is easy with clojure tools and the excellent [kit](https://kit-clj.github.io) framework.
 
 ```bash

@@ -26,7 +26,7 @@
            ring/ring-core {:mvn/version "1.9.3"}
            ring/ring-defaults {:mvn/version "0.3.2"}
            selmer/selmer {:mvn/version "1.12.40"}
-           io.simpleui/simpleui {:local/root ".."}}
+           io.simpleui/simpleui {:mvn/version "1.6.0"} #_{:local/root ".."}}
  :aliases {:run {:main-opts ["-m" "demo.core"]
                  :jvm-opts ["-Dconf=dev-config.edn"]
                  :extra-deps {pjstadig/humane-test-output {:mvn/version "0.11.0"}
