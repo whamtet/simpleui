@@ -251,7 +251,7 @@ htmx will execute any script tags you include.
 [:script "alert('Application successful')"]
 ```
 
-You can also mix scripts with visual content.
+You can also mix scripts with visual content.  Once you're inside Javascript you can invoke SimpleUI with the HTMX commands [ajax](https://htmx.org/api/#ajax) and [trigger](https://htmx.org/api/#trigger).
 
 <!-- TOC --><a name="unsafe-html"></a>
 ### Unsafe HTML

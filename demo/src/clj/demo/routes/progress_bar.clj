@@ -1,6 +1,6 @@
 (ns demo.routes.progress-bar
   (:require
-    [simpleui.core :as simpleui :refer [defcomponent make-routes defn-parse]]
+    [simpleui.core :as simpleui :refer [defcomponent make-routes]]
     [demo.middleware.formats :refer [page]]))
 
 (defn- progress [width]

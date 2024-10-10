@@ -1,6 +1,6 @@
 (ns demo.routes.value-select
   (:require
-    [simpleui.core :as simpleui :refer [defcomponent make-routes defn-parse]]
+    [simpleui.core :as simpleui :refer [defcomponent make-routes]]
     [demo.middleware.formats :refer [page]]))
 
 (def data

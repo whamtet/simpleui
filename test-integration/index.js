@@ -2,40 +2,46 @@ const puppeteer = require('puppeteer');
 const {assert} = require('chai');
 
 (async () => {
-  // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch({headless: false});
-  const page = await browser.newPage();
+  try {
 
-  await page.goto('http://localhost:3002/test/');
+    // Launch the browser and open a new blank page
+    const browser = await puppeteer.launch({headless: false});
+    const page = await browser.newPage();
 
-  // warmup test
+    await page.goto('http://localhost:3002/test/');
 
-  page.click('#incrementer');
-  const result = await page.waitForSelector('#result');
-  assert.equal(await result.evaluate(e => e.innerHTML), '1');
+    // warmup test
 
-  // path tests
-  const innerHTML = selector => page.$eval(selector, e => e.innerHTML);
-  const value = selector => page.$eval(selector, e => e.value);
+    page.click('#incrementer');
+    const result = await page.waitForSelector('#result');
+    assert.equal(await result.evaluate(e => e.innerHTML), '1');
 
-  assert.equal(await innerHTML('#i-check'), '0');
-  assert.equal(await innerHTML('#index-check'), '0');
-  assert.equal(await innerHTML('#path-check'), 'component_0_subcomponent');
-  assert.equal(await innerHTML('#hash-check'), '#component_0_subcomponent');
-  assert.equal(await value('#extra'), 'Matt');
+    // path tests
+    const innerHTML = selector => page.$eval(selector, e => e.innerHTML);
+    const value = selector => page.$eval(selector, e => e.value);
 
-  page.click('#component_0_subcomponent');
+    assert.equal(await innerHTML('#i-check'), '0');
+    assert.equal(await innerHTML('#index-check'), '0');
+    assert.equal(await innerHTML('#path-check'), 'component_0_subcomponent');
+    assert.equal(await innerHTML('#hash-check'), '#component_0_subcomponent');
+    assert.equal(await value('#extra'), 'Matt');
 
-  await page.waitForSelector('#result2');
-  assert.equal(await value('#result2'), 'Matt');
+    page.click('#component_0_subcomponent');
 
-  // command tests
-  page.click('#command-test');
-  await page.waitForSelector('#result3');
-  assert.equal(await innerHTML('#result3'), 'fuck');
+    await page.waitForSelector('#result2');
+    assert.equal(await value('#result2'), 'Matt');
 
-  console.log('all tests passed');
+    // command tests
+    page.click('#command-test');
+    await page.waitForSelector('#result3');
+    assert.equal(await innerHTML('#result3'), 'fuck');
 
-  browser.close();
+    console.log('all tests passed');
+
+    browser.close();
+
+  } catch (e) {
+    console.log(e);
+  }
 
 })();

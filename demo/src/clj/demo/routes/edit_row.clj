@@ -1,6 +1,6 @@
 (ns demo.routes.edit-row
   (:require
-    [simpleui.core :as simpleui :refer [defcomponent make-routes defn-parse]]
+    [simpleui.core :as simpleui :refer [defcomponent make-routes]]
     simpleui.rt
     [demo.middleware.formats :refer [page]]))
 

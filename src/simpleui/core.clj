@@ -348,3 +348,9 @@
                              (into (base-assignments req)))]
     `(let [~@(->> body (tree-seq coll? seq) distinct (mapcat sym->assignment))]
        ~@body)))
+
+(defmacro defn-parse
+  "Regular function with arguments that can be parsed same as defcomponent."
+  [name args & body]
+  `(defn ~name ~args
+    ~(parse-args name args `(do ~@body))))
