@@ -31,8 +31,8 @@ We create a pseudo function that also exposes an endpoint to update state.  This
 There is a natural synergy between UI updates and the stateless nature of http, each component's state is transmitted with each request.
 
 ```clojure
-(defcomponent ^:endpoint login-modal [req first-name last-name]
-  [:form {:hx-get "login-modal"}
+(defcomponent ^:endpoint register-modal [req first-name last-name]
+  [:form {:hx-get "register-modal"}
    [:input {:name "first-name" :value first-name}]
    [:input {:name "last-name" :value last-name}]
    [:span (format "Register as %s %s?" first-name last-name)]
