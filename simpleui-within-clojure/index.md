@@ -8,4 +8,6 @@ A key bottleneck in the growth of Clojure occurs when developers need to build a
 
 Another option is to write your frontend in Clojurescript.  There are well established frameworks available, such as [re-frame](https://github.com/Day8/re-frame), however payload size and page load times become difficult.  Production deployment of Clojurescript requires advanced compiler mode which often breaks things that aren't properly annotated.  Interfacing with non-Clojurescript frontend libraries can also be difficult.
 
+## There is a better way
+
 The lack of good UI solutions is a key factor deterring growth in Clojure, but there is a solution.  Clojure has lisp macros!  We don't have restrict ourselves the same way other programming languages do.  In doing so we can build more efficient and competitive solutions.  The Clojure community can continue to grow.
