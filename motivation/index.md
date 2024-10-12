@@ -28,7 +28,7 @@ We create a pseudo function that also exposes an endpoint to update state.  This
 * A backend API which is only used by a single frontend
 * Javascript compilation / minification.
 
-There is a natural synergy between UI updates and the stateless nature of http, all our state is transmitted with each request.
+There is a natural synergy between UI updates and the stateless nature of http, each component's state is transmitted with each request.
 
 ```clojure
 (defcomponent ^:endpoint login-modal [req first-name last-name]
