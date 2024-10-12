@@ -1,6 +1,6 @@
 ## Examples
 
-The following examples are taken from [htmx](https://htmx.org/examples).
+The following examples are taken from [htmx](https://htmx.org/examples).  The code is read only, but the demo is interactive.
 
 | Pattern        | 	Description           |
 | ------------- |:-------------:|

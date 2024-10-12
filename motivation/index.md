@@ -39,7 +39,7 @@ There is a natural synergy between UI updates and the stateless nature of http, 
    ...])
 ```
 
-This contrasts with JS-oriented webapps which have to bolt-on a lot of functionality already provided natively by the browser.  We get two big benefits.
+This contrasts with JS-oriented webapps which have to duplicate a lot of functionality already provided natively by the browser.  We get two big benefits.
 
 * 30 - 40% reduction in frontend development time.
 * 90 - 99% reduction in page load size.

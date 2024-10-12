@@ -1,6 +1,8 @@
-SimpleUI is an app development tool for fast product development and even faster page load times.  It uses [htmx](https://htmx.org/) on the frontend.
+SimpleUI is a web UI framework for fast product development and even faster page load times.  It uses [htmx](https://htmx.org/) on the frontend, the following examples are interactive.
 
 ## Basic example
+
+Try entering text below and clicking Submit.
 
 {% include snippets/hello0.md %}
 {% include examples/demo.html %}
