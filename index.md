@@ -50,18 +50,10 @@ SimpleUI uses Hypermedia as the Engine of Application State ([HATEOAS](https://e
 
 {% include examples/parameter_casting.html %}
 ---
+Click the above div to increment the counter.
 {% include snippets/hello3.md %}
 
 SimpleUI uses native html forms, so data is submitted as strings.  We can cast it as necessary.  Supported casts include **^:long**, **^:boolean** and **^:double**. See [documentation](https://github.com/whamtet/simpleui#parameter-casting) for details.
-
-We may also cast within the body of `defcomponent`.
-
-```clojure
-[:div
-  (if ^:boolean (value "grumpy")
-    "Cheer up!"
-    "How are you?")]
-```
 
 ## Further reading
 
