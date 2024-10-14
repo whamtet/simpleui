@@ -28,7 +28,7 @@ We create a pseudo function that also exposes an endpoint to update state.  This
 * A backend API which is only used by a single frontend
 * Javascript compilation / minification.
 
-## Looking at the big picture
+## Looking back at the big picture
 
 In the early days of web development there was a clear distinction between web pages and desktop apps.  Internet speeds were limited, and the browser was used to view mostly static content.
 
@@ -40,7 +40,7 @@ A key milestone in the development of the internet was the release of Gmail in 2
 
 For the first time users could draft and receive emails entirely within the browser, tasks that had previously required a standalone desktop application.  As an internet based company, Google invested heavily to keep users within the browser.  In particular they worked on a fast new browser called Chrome which brought significant performance gains.
 
-A key aspect of Chrome's performance was the execution of Javascript.  Javascript had been introduced into browsers all the way back in 1995, but it was initially intended as a lightweight scripting language.  Web developers included small snippets of Javascript in their web pages to display popup banners or show a live clock with moving second hands.  Chrome made Javascript into a proper powerhorse, fast enough that developers could write entire programs in it.  
+A key aspect of Chrome's performance was the execution of Javascript.  Javascript had been introduced into browsers all the way back in 1995, but it was initially intended as a lightweight scripting language.  Web developers included small snippets of Javascript in their web pages to display popup banners or show a live clock.  Chrome made Javascript into a proper powerhorse, fast enough that developers could write entire programs in it.  
 
 With this increasing performance came a shift in the architecture of web programs.  HTML began to take a backseat to Javascript.  This made sense at the time as HTML is mostly a static format.  If you want a fully dynamic, desktop-like application, Javascript is where you should focus your efforts.  The transition from HTML to Javascript reached a high watermark with the growth of Facebook's React library.
 
