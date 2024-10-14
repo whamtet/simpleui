@@ -34,7 +34,7 @@ In the early days of web development there was a clear distinction between web p
 
 ![Early Web](ie.jpg)
 
-A key milestone in the development of the internet was the release of Gmail in 2004.
+A key milestone in the development of the web was the release of Gmail in 2004.
 
 ![Gmail](Gmail_2004.png)
 
