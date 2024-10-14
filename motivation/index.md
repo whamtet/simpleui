@@ -42,7 +42,7 @@ For the first time users could draft and receive emails entirely within the brow
 
 A key aspect of Chrome's performance was the execution of Javascript.  Javascript had been introduced into browsers all the way back in 1995, but it was initially intended as a lightweight scripting language.  Web developers included small snippets of Javascript in their web pages to display popup banners or show a live clock with moving second hands.  Chrome made Javascript into a proper powerhorse, fast enough that developers could write entire programs in it.  
 
-With this increasing performance came a shift in the architecture of web programs.  HTML began to take a backseat to Javascript.  This made sense at the time as HTML is mostly a static format.  If you want a fully dynamic, desktop-like application, Javascript is where you should focus your efforts.  The transition from HTML to Javascript reached a high watermark with the growth of Facebook's react library.
+With this increasing performance came a shift in the architecture of web programs.  HTML began to take a backseat to Javascript.  This made sense at the time as HTML is mostly a static format.  If you want a fully dynamic, desktop-like application, Javascript is where you should focus your efforts.  The transition from HTML to Javascript reached a high watermark with the growth of Facebook's React library.
 
 ![Early React](early-react.png)
 
@@ -91,7 +91,7 @@ With HTMX syntax we can create desktop-like apps running in the browser that don
 
 ### Components, HTTP and functional programming fit naturally together
 
-This setup creates a synergy between components on the page, HTTP requests and functional programming.  Each UI component contains its own state which is updated through stateless HTTP requests.  The requests map naturally onto functional programming which is also stateless.  Unlike in other web frameworks there is a clear unity between the frontend and the back.
+`defcomponent` creates a synergy between components on the page, HTTP requests and functional programming.  Each UI component contains its own state which is updated through stateless HTTP requests.  The requests map naturally onto functional programming which is also stateless.  In contrast with other frameworks we retain a clear unity between the frontend and the back.  SimpleUI is also more conservative, hewing closer to the original model of the web.
 
 ## Benefits of SimpleUI
 
