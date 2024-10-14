@@ -46,7 +46,7 @@ With this increasing performance came a shift in the architecture of web program
 
 ![Early React](early-react.png)
 
-React actually included a pseudo-HTML syntax called JSX which entirely compiles into Javascript.  The transition from HTML to Javascript was complete.
+React actually included a HTML-like syntax called JSX which entirely compiles into Javascript.  The transition from HTML to Javascript was complete.
 
 ![JSX](jsx.png)
 
