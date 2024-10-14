@@ -93,7 +93,7 @@ With HTMX syntax we can create desktop-like apps running in the browser that don
 
 This setup creates a synergy between components on the page, HTTP requests and functional programming.  Each UI component contains its own state which is updated through stateless HTTP requests.  The requests map naturally onto functional programming which is also stateless.  Unlike in other web frameworks there is a clear unity between the frontend and the back.
 
-### Benefits of SimpleUI
+## Benefits of SimpleUI
 
 The practical benefits of the SimpleUI approach are
 
