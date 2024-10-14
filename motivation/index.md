@@ -24,11 +24,61 @@ We create a pseudo function that also exposes an endpoint to update state.  This
 
 * Frontend state management e.g. redux
 * Code to connect events to actions
-* A frontend client
+* A frontend http client
 * A backend API which is only used by a single frontend
 * Javascript compilation / minification.
 
-There is a natural synergy between UI updates and the stateless nature of http, each component's state is transmitted with each request.
+## Looking at the big picture
+
+In the early days of web development there was a clear distinction between web pages and desktop apps.  Internet speeds were limited, and the browser was used to view mostly static content.
+
+![Early Web](ie.jpg)
+
+A key milestone in the development of the internet was the release of Gmail in 2004.
+
+![Gmail](Gmail_2004.png)
+
+For the first time users could draft and receive emails entirely within the browser, tasks that had previously required a standalone desktop application.  As an internet based company, Google invested heavily to keep users within the browser.  In particular they worked on a fast new browser called Chrome which brought significant performance gains.
+
+A key aspect of Chrome's performance was the execution of Javascript.  Javascript had been introduced into browsers all the way back in 1995, but it was initially intended as a lightweight scripting language.  Web developers included small snippets of Javascript in their web pages to display popup banners or show a live clock with moving second hands.  Chrome made Javascript into a proper powerhorse, fast enough that developers could write entire programs in it.  
+
+With this increasing performance came a shift in the architecture of web programs.  HTML began to take a backseat to Javascript.  This made sense at the time as HTML is mostly a static format.  If you want a fully dynamic, desktop-like application, Javascript is where you should focus your efforts.  The transition from HTML to Javascript reached a high watermark with the growth of Facebook's react library.
+
+![Early React](early-react.png)
+
+React actually included a pseudo-HTML syntax called JSX which entirely compiles into Javascript.  The transition from HTML to Javascript was complete.
+
+![JSX](jsx.png)
+
+## The Internet grew... sort of
+
+While these changes were taking place the world's Telcos and Internet Service Providers exponentially grew the capacity of the physical internet.
+
+![Growth of Internet](bandwidth.png)
+
+Bandwidth on a high end connection in the US grew from 16 Mbps in 2008 to 1,120 Mbps in 2023 [(source)](https://www.nngroup.com/articles/law-of-bandwidth/).  Yet in spite of these improvements in physical capacity, user experience on the web did not improve.  The growth in network capacity was offset by page bloat.
+
+![Page bloat](bloat.png)
+
+Whereas previously browsers only had to load relatively simple documents, now a user had to download an entire mini-program on every single page and every single browser tab.  The good work of internet hardware engineers was being undone.  Not only was the internet experience painful for users, developing in it became frustrating as well.  Developers suffered from 'Framework Fatigue', the constant churn of new libraries and versions made keeping up difficult and tiring.  A lot of this pain is due to the misguided emphasis on Javascript.
+
+## There is a better way
+
+The root cause for the switch from HTML to Javascript is that by itself HTML cannot produce dynamic content.  However instead of turning to Javascript, we can instead create our own more powerful version of HTML.  The key is to recognize that HTML is a document level format.  We can query and submit pages, but we must do so one whole page at a time.  This is the distinguishing characteristic that makes HTML clunkier and less user-friendly than traditional desktop apps.
+
+### Local + Declarative
+
+Instead of submitting documents at the whole page level we break our page into subsections.  Each subsection is updated independently giving it a more desktop (or SPA) like feel.  Equally importantly we do not produce updates by writing explicit code.  Instead we annotate our HTML and the HTMX runtime figures out how to generate updates.  For example if we want an autosuggestion dropdown we simply set a delay on our typing events.
+
+```html
+<input name="query" hx-get="autosuggest" hx-trigger="keyup changed delay:1s">
+```
+
+We don't have to write any explicit code, HTMX figures out how to run updates.
+
+### SimpleUI makes HTMX Complete
+
+With HTMX syntax we can create desktop-like apps running in the browser that don't contain explicit Javascript.  What we still lack is a means to render our apps.  SimpleUI provides us with this means through the `defcomponent` macro.
 
 ```clojure
 (defcomponent ^:endpoint register-modal [req first-name last-name]
@@ -39,12 +89,22 @@ There is a natural synergy between UI updates and the stateless nature of http, 
    ...])
 ```
 
-This contrasts with JS-oriented webapps which have to duplicate a lot of functionality already provided natively by the browser.  We get two big benefits.
+### Components, HTTP and functional programming fit naturally together
+
+This setup creates a synergy between components on the page, HTTP requests and functional programming.  Each UI component contains its own state which is updated through stateless HTTP requests.  The requests map naturally onto functional programming which is also stateless.  Unlike in other web frameworks there is a clear unity between the frontend and the back.
+
+### Benefits of SimpleUI
+
+The practical benefits of the SimpleUI approach are
 
 * 30 - 40% reduction in frontend development time.
 * 90 - 99% reduction in page load size.
 
-The reduction in page load size is particularly important for respecting user experience and channelling prospects into a sales funnel.
+The reduction in development time arises because we produce our components declaratively rather than writing imperative code.  The reduction in page load size happens because the initial page render is just plain HTML.  In even a lightweight Javascript app page size typically exceeds 100kb and often runs into the MB range.  In a SimpleUI app we only have to load about _2kb_
+
+![Load size](load-size.png)
+
+The reduction in page load size is particularly important for respecting user experience and channelling prospects into a sales funnel. 
 
 ## Drawbacks
 
