@@ -380,7 +380,7 @@ node index.js
 
 ## Contributing
 
-We are looking for a SimpleUI 'killer app' to help grow the technology.  If you have an idea please contact the [main author](https://github.com/whatmet).
+We are looking for a SimpleUI 'killer app' to help grow the technology.  If you have an idea please contact the [main author](https://github.com/whamtet).
 
 <!-- TOC --><a name="license"></a>
 ## License
