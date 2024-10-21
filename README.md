@@ -24,6 +24,7 @@ Clojure backend for [htmx](https://htmx.org/).  Previously known as ctmx.
 - [Advanced Usage](#advanced-usage)
 - [Pros and Cons of SimpleUI](#pros-and-cons-of-simpleui)
 - [Testing](#testing)
+- [Contributing](#contributing)
 - [License](#license)
 
 <!-- TOC end -->
@@ -376,6 +377,10 @@ cd test-integration
 npm i
 node index.js
 ```
+
+## Contributing
+
+We are looking for a SimpleUI 'killer app' to help grow the technology.  If you have an idea please contact the [main author](https://github.com/whatmet).
 
 <!-- TOC --><a name="license"></a>
 ## License
