@@ -136,10 +136,15 @@
     ~s
     ~(zipmap (map keyword syms) syms)))
 
+(defn- https-server-name [{:keys [server-name]}]
+  (if (and server-name (not= "localhost" server-name))
+    (str "https://" server-name)
+    ""))
+
 (defn redirect
   "Redirects to ensure trailing slash"
   [req]
   (->> req
        :query-string
-       (str (:uri req) "/?")
+       (str (https-server-name req) (:uri req) "/?")
        response/redirect))
