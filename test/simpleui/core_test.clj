@@ -53,14 +53,23 @@
        handler-simple
        prefix-get)))))
 
+(def unslash-request (mock/request :get "/base"))
+
 (deftest component-test
-  (testing "redirects to slash ending"
+  (testing "redirects to slash ending without server-name"
            (is
             (redirect?
              "/base/?"
              (test-req
               handler
-              (mock/request :get "/base")))))
+              unslash-request))))
+  (testing "redirects to slash ending with server-name"
+           (is
+             (redirect?
+              "https://example.com/base/?"
+              (test-req
+               handler
+               (assoc unslash-request :server-name "example.com")))))
   (testing "initial render works"
            (is
             (= [:b [:a]]
