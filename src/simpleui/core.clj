@@ -313,7 +313,7 @@
        (concat [f])))
 
 (defmacro apply-component-map
-  "Invoke a component with fewer than full args.  Remaining args will be bound to nil."
+  "Invoke a component with fewer than full args.  Remaining args will be bound to values in m."
   [f m & args]
   (let [m-sym (gensym)]
     `(let [~m-sym ~m]
