@@ -13,8 +13,13 @@
              (Long/parseLong v)
              v)])))
 
+(defn- clean-chrome-protocol [s]
+  (if (.startsWith s "chrome-extension")
+    (str "http://" (.substring s 16))
+    s))
+
 (defn- url->params [^String s]
-  (if-let [query (some-> s URL. .getQuery)]
+  (if-let [query (some-> s clean-chrome-protocol URL. .getQuery)]
     (parse-search query)
     {}))
 
