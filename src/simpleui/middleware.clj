@@ -15,7 +15,7 @@
 
 (defn- clean-chrome-protocol [s]
   (if (.startsWith s "chrome-extension")
-    (str "http://" (.substring s 16))
+    (str "http" (.substring s 16))
     s))
 
 (defn- url->params [^String s]
