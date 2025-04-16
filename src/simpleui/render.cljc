@@ -36,7 +36,7 @@
   #?(:clj #(json/write-str % :key-fn write-key-fn)
      :cljs #(-> % (clj->js :keyword-fn write-key-fn) js/JSON.stringify)))
 
-(defn walk-attr [{:keys [_ style hx-vals hx-headers class] :as s}]
+(defn walk-attr [{:keys [_ style hx-vals hx-headers hx-request class] :as s}]
   (as-> s s
         (if (and config/render-hs? (vector? _))
           (->> _ (filter identity) (map name) (string/join " ") (assoc s :_))
@@ -49,6 +49,9 @@
           s)
         (if (and config/render-vals? (map? hx-vals))
           (->> hx-vals fmt-json (assoc s :hx-vals))
+          s)
+        (if (and config/render-hx-request? (map? hx-request))
+          (->> hx-request fmt-json (assoc s :hx-request))
           s)
         (if (and config/render-headers? (map? hx-headers))
           (->> hx-headers fmt-json (assoc s :hx-headers))

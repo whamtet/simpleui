@@ -13,6 +13,7 @@
 (def render-headers? true)
 (def render-commands? true)
 (def render-si-set? true) ;; currently permanent
+(def render-hx-request? true) ;; currently permanent
 (def render-oob? true)
 (def render-safe? true)
 
