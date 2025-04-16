@@ -275,11 +275,12 @@
 
 (defmacro make-routes-simple
   "A stripped version of make-routes to be used when initial page render is on a CDN (and accessed via cors)."
-  [prefix extra-args & starting-syms]
-  `(do
-     ~(vec starting-syms) ;; just to ensure they exist!
-     ["" {:middleware [middleware/wrap-src-params]}
-      ~(vec (extract-endpoints-all prefix starting-syms extra-args))]))
+  [prefix-arg extra-args & starting-syms]
+  (let [prefix (gensym)]
+    `(let [~prefix ~prefix-arg]
+       ~(vec starting-syms) ;; just to ensure they exist!
+       ["" {:middleware [middleware/wrap-src-params]}
+        ~(vec (extract-endpoints-all prefix starting-syms extra-args))])))
 
 (defmacro make-routes
   "Generate reitit routes from function root which handles initial page render.  Returns a reitit vector.
