@@ -81,6 +81,7 @@
   (testing "prompt parse"
            (is (= false (rt/parse-prompt {} false)))
            (is (= 1 (rt/parse-prompt {} 1)))
+           (is (= "hello" (rt/parse-prompt {:headers {"hx-prompt" "hello "}} nil)))
            (is (= "hello" (rt/parse-prompt {:headers {"hx-prompt" "hello"}} nil)))))
 
 (deftest map-indexed-test
