@@ -18,6 +18,13 @@
   (string/join "; "
                (for [[k v] style :when v]
                  (str (name k) ": " v))))
+(defn fmt-kv [m]
+  (->>
+   (for [[k v] m :when v]
+     (str (name k) ": " v))
+   (string/join ", ")
+   (format "{%s}")))
+
 (defn write-key-fn
   "Modified version of clojure.data.json/default-write-key-fn that serializes namespaced keys with their namespace. That is :foo/bar -> 'foo/bar'"
   [x]
@@ -36,7 +43,15 @@
   #?(:clj #(json/write-str % :key-fn write-key-fn)
      :cljs #(-> % (clj->js :keyword-fn write-key-fn) js/JSON.stringify)))
 
-(defn walk-attr [{:keys [_ style hx-vals hx-headers hx-request class] :as s}]
+(defn walk-attr [{:keys [_
+                         style
+                         hx-vals
+                         hx-headers
+                         hx-request
+                         data-signals
+                         data-class
+                         data-attr
+                         class] :as s}]
   (as-> s s
         (if (and config/render-hs? (vector? _))
           (->> _ (filter identity) (map name) (string/join " ") (assoc s :_))
@@ -47,8 +62,17 @@
         (if (and config/render-style? (map? style))
           (->> style fmt-style (assoc s :style))
           s)
+        (if (and config/render-kv? (map? data-class))
+          (->> data-class fmt-kv (assoc s :data-class))
+          s)
+        (if (and config/render-kv? (map? data-attr))
+          (->> data-attr fmt-kv (assoc s :data-attr))
+          s)
         (if (and config/render-vals? (map? hx-vals))
           (->> hx-vals fmt-json (assoc s :hx-vals))
+          s)
+        (if (and config/render-signals? (map? data-signals))
+          (->> data-signals fmt-json (assoc s :data-signals))
           s)
         (if (and config/render-hx-request? (map? hx-request))
           (->> hx-request fmt-json (assoc s :hx-request))
