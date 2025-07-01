@@ -1,5 +1,7 @@
 (ns simpleui.middleware
-  (:require [ring.util.response :refer [get-header]])
+  (:require 
+   [ring.util.response :refer [get-header]]
+   [clojure.data.json :as json])
   (:import java.net.URL))
 
 ;; todo: better parsing
