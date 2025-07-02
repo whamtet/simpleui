@@ -20,6 +20,10 @@
            (is (-> [:div {:_ ["hi" "there"]
                           :class ["class1" "class2"]
                           :style {:border "1px solid black"}
+                          ;; todo - need to check these are actually rendered properly
+                          ; :data-class {:hidden "$input == ''" :font-bold "$input == 1"}
+                          ; :data-attr {:disabled "$input == ''" :title "$input"}
+                          ; :data-signals {:input 1 :form {:input 2}}
                           :hx-vals {:hi "there"}}]
                    render/snippet-response
                    :body
