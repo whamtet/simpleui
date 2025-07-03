@@ -7,6 +7,8 @@
 
 (defn- join-lines [& lines]
   (string/join "\n" (filter identity lines)))
+(defn- join-lines2 [lines]
+  (string/join "\n" (filter identity lines)))
 
 (defn- select-attrs [[_ m]]
   (and (map? m) m))
@@ -18,12 +20,12 @@
 (defmulti render-sse (fn [_ v] (first v)))
 
 (defmethod render-sse :default [prefix v]
-  (let [{:keys [mergeMode userViewTransition]} (select-attrs v)]
+  (let [{:keys [mergeMode useViewTransition]} (select-attrs v)]
     (join-lines
       "event: datastar-merge-fragments"
      (when mergeMode
-       (str "data: mergeMode " mergeMode))
-     (when userViewTransition
+       (str "data: mergeMode " (name mergeMode)))
+     (when useViewTransition
        "data: useViewTransition true")
      (->> v dissoc-attrs (render/html prefix) (str "data: fragments ")))))
 
@@ -37,21 +39,21 @@
      (str "data: signals " (json/write-str c)))))
 
 (defmethod render-sse :remove-fragments [_ [_ & selectors]]
-  (join-lines
+  (join-lines2
    (conj
     (for [selector selectors]
       (str "data: selector " selector))
     "event: datastar-remove-fragments")))
 
 (defmethod render-sse :remove-signals [_ [_ & paths]]
-  (join-lines
+  (join-lines2
    (conj
     (for [path paths]
       (str "data: paths " path))
     "event: datastar-remove-signals")))
 
 (defmethod render-sse :script [_ [_ m & scripts]]
-  (join-lines
+  (join-lines2
    (concat
      ["event: datastar-execute-script"]
     (when (map? m)
