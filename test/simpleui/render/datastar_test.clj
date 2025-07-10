@@ -19,6 +19,18 @@
             (=
              "event: datastar-merge-fragments\ndata: fragments <div>hi</div>"
              (snippet-response [:div "hi"]))))
+  (testing "can render string"
+           (is
+            (= "event: datastar-merge-fragments\ndata: fragments hi"
+               (snippet-response "hi"))))
+  (testing "can render empty list"
+           (is
+            (= response/no-content
+             (datastar/snippet-response-datastar "prefix" ()))))
+  (testing "can render numbers"
+           (is
+            (= "event: datastar-merge-fragments\ndata: fragments 3"
+             (snippet-response 3))))
   (testing "seq render"
            (is
             (=

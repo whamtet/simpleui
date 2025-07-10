@@ -17,9 +17,9 @@
     (update v 1 dissoc :mergeMode :useViewTransition)
     v))
 
-(defmulti render-sse (fn [_ v] (first v)))
+(defmulti render-sse* (fn [_ v] (first v)))
 
-(defmethod render-sse :default [prefix v]
+(defmethod render-sse* :default [prefix v]
   (let [{:keys [mergeMode useViewTransition]} (select-attrs v)]
     (join-lines
       "event: datastar-merge-fragments"
@@ -29,7 +29,7 @@
        "data: useViewTransition true")
      (->> v dissoc-attrs (render/html prefix) (str "data: fragments ")))))
 
-(defmethod render-sse :merge-signals [_ [_ b c]]
+(defmethod render-sse* :merge-signals [_ [_ b c]]
   (join-lines
    "event: datastar-merge-signals"
    (if c
@@ -38,21 +38,21 @@
    (when c
      (str "data: signals " (json/write-str c)))))
 
-(defmethod render-sse :remove-fragments [_ [_ & selectors]]
+(defmethod render-sse* :remove-fragments [_ [_ & selectors]]
   (join-lines2
    (conj
     (for [selector selectors]
       (str "data: selector " selector))
     "event: datastar-remove-fragments")))
 
-(defmethod render-sse :remove-signals [_ [_ & paths]]
+(defmethod render-sse* :remove-signals [_ [_ & paths]]
   (join-lines2
    (conj
     (for [path paths]
       (str "data: paths " path))
     "event: datastar-remove-signals")))
 
-(defmethod render-sse :script [_ [_ m & scripts]]
+(defmethod render-sse* :script [_ [_ m & scripts]]
   (join-lines2
    (concat
      ["event: datastar-execute-script"]
@@ -67,6 +67,9 @@
           line (.split script "\n")]
       (str "data: script " line)))))
 
+(defn render-sse [prefix body]
+  (render-sse* prefix (if (seqable? body) body (str body))))
+
 (defn- sse-response [prefix body]
   (->> body
        (map #(render-sse prefix %))
@@ -77,6 +80,6 @@
   "Converts SimpleUI component response into datastar ring map."
   [prefix body]
   (cond
-    (nil? body) response/no-content
+    (and (seqable? body) (empty? body)) response/no-content
     (seq? body) (sse-response prefix body)
     :else (sse-response prefix (list body))))
