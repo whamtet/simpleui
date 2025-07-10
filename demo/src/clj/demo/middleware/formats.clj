@@ -18,12 +18,14 @@
 (defn- sheet [href]
   [:link {:rel "stylesheet" :href href}])
 
+(defn page-response [opts & content]
+  {:status 200
+   :headers {"Content-Type" "text/html"}
+   :body (page/html5 opts content)})
+
 (defn page [& args]
   (let [opts (set (butlast args))]
-    {:status 200
-     :headers {"content-type" "text/html"}
-     :body
-     (page/html5
+    (page-response
       [:head
        (sheet "/css/screen.css")
        (when (:bootstrap opts)
@@ -43,4 +45,12 @@
        (when (:sortable opts)
          [:script {:src "https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"}])
        (when (:sortable opts)
-         [:script {:src "/js/sortable.js"}])])}))
+         [:script {:src "/js/sortable.js"}])])))
+
+(defn page-datastar [& body]
+  (page-response
+   [:head
+    [:meta {:charset "UTF-8"}]
+    [:title "Datastar + Kit"]
+    [:script {:src "https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js" :type "module"}]]
+   [:body (render/walk-attrs body)]))

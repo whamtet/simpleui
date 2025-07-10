@@ -291,16 +291,20 @@
 (defmacro make-routes
   "Generate reitit routes from function root which handles initial page render.  Returns a reitit vector.
   extra-args is a list of local variables that will be associated into the request object when invoked as an endpoint."
+  ([f] (make-routes-fn "" f []))
   ([root f] (make-routes-fn root f []))
   ([root extra-args f] (make-routes-fn root f extra-args)))
 
-(defmacro make-routes-datastar
-  "Datastar version of make-routes"
-  [extra-args f]
+(defn make-routes-datastar-fn [extra-args f]
   `[""
     ["" {:get rt/redirect}]
     ["/" {:get ~f}]
     ~@(extract-endpoints-all-datastar "" f extra-args)])
+
+(defmacro make-routes-datastar
+  "Datastar version of make-routes"
+  ([f] (make-routes-datastar-fn [] f))
+  ([extra-args f] (make-routes-datastar-fn extra-args f)))
 
 ;; alternative approach
 (defmacro defcheck [sym]
