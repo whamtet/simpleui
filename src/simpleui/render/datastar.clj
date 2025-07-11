@@ -22,36 +22,37 @@
 (defmethod render-sse* :default [prefix v]
   (let [{:keys [mergeMode useViewTransition]} (select-attrs v)]
     (join-lines
-      "event: datastar-merge-fragments"
+      "event: datastar-patch-elements"
      (when mergeMode
        (str "data: mergeMode " (name mergeMode)))
      (when useViewTransition
        "data: useViewTransition true")
      (->> v dissoc-attrs (render/html prefix) (str "data: fragments ")))))
 
-(defmethod render-sse* :merge-signals [_ [_ b c]]
+(defmethod render-sse* :patch-signals [_ [_ b c]]
   (join-lines
-   "event: datastar-merge-signals"
+   "event: datastar-patch-signals"
    (if c
      (str "data: onlyIfMissing " b)
      (str "data: signals " (json/write-str b)))
    (when c
      (str "data: signals " (json/write-str c)))))
 
+#_
 (defmethod render-sse* :remove-fragments [_ [_ & selectors]]
   (join-lines2
    (conj
     (for [selector selectors]
       (str "data: selector " selector))
     "event: datastar-remove-fragments")))
-
+#_
 (defmethod render-sse* :remove-signals [_ [_ & paths]]
   (join-lines2
    (conj
     (for [path paths]
       (str "data: paths " path))
     "event: datastar-remove-signals")))
-
+#_
 (defmethod render-sse* :script [_ [_ m & scripts]]
   (join-lines2
    (concat
@@ -74,7 +75,7 @@
   (->> body
        (map #(render-sse prefix %))
        (string/join "\n")
-       response/html-response-datastar))
+       response/html-response))
 
 (defn snippet-response-datastar
   "Converts SimpleUI component response into datastar ring map."

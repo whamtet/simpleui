@@ -17,11 +17,11 @@
   (testing "plain render"
            (is
             (=
-             "event: datastar-merge-fragments\ndata: fragments <div>hi</div>"
+             "event: datastar-patch-elements\ndata: fragments <div>hi</div>"
              (snippet-response [:div "hi"]))))
   (testing "can render string"
            (is
-            (= "event: datastar-merge-fragments\ndata: fragments hi"
+            (= "event: datastar-patch-elements\ndata: fragments hi"
                (snippet-response "hi"))))
   (testing "can render empty list"
            (is
@@ -29,7 +29,7 @@
              (datastar/snippet-response-datastar "prefix" ()))))
   (testing "can render numbers"
            (is
-            (= "event: datastar-merge-fragments\ndata: fragments 3"
+            (= "event: datastar-patch-elements\ndata: fragments 3"
              (snippet-response 3))))
   (testing "seq render"
            (is
@@ -37,17 +37,17 @@
              (snippet-response
               (list
                [:div {:a "b" :mergeMode :append :useViewTransition true} "hi"]
-               [:merge-signals {:foo 1}]
-               [:merge-signals true {:foo 1}]
-               [:remove-fragments "#hi" "#there"]
-               [:remove-signals "foo.bar" "baz"]
-               [:script {:autoRemove true :type "module" :defer true} "console.log('hi')\nconsole.log('there')" "console.log('old')\nconsole.log('man')"]))
+               [:patch-signals {:foo 1}]
+               [:patch-signals true {:foo 1}]
+               #_[:remove-fragments "#hi" "#there"]
+               #_[:remove-signals "foo.bar" "baz"]
+               #_[:script {:autoRemove true :type "module" :defer true} "console.log('hi')\nconsole.log('there')" "console.log('old')\nconsole.log('man')"]))
              (string/join "\n"
                           [
-                            "event: datastar-merge-fragments\ndata: mergeMode append\ndata: useViewTransition true\ndata: fragments <div a=\"b\">hi</div>"
-                            "event: datastar-merge-signals\ndata: signals {\"foo\":1}"
-                            "event: datastar-merge-signals\ndata: onlyIfMissing true\ndata: signals {\"foo\":1}"
-                            "event: datastar-remove-fragments\ndata: selector #hi\ndata: selector #there"
-                            "event: datastar-remove-signals\ndata: paths foo.bar\ndata: paths baz"
-                            "event: datastar-execute-script\ndata: autoRemove true\ndata: attributes :type module\ndata: attributes :defer true\ndata: script console.log('hi')\ndata: script console.log('there')\ndata: script console.log('old')\ndata: script console.log('man')"
+                            "event: datastar-patch-elements\ndata: mergeMode append\ndata: useViewTransition true\ndata: fragments <div a=\"b\">hi</div>"
+                            "event: datastar-patch-signals\ndata: signals {\"foo\":1}"
+                            "event: datastar-patch-signals\ndata: onlyIfMissing true\ndata: signals {\"foo\":1}"
+                            ;"event: datastar-remove-fragments\ndata: selector #hi\ndata: selector #there"
+                            ;"event: datastar-remove-signals\ndata: paths foo.bar\ndata: paths baz"
+                            ;"event: datastar-execute-script\ndata: autoRemove true\ndata: attributes :type module\ndata: attributes :defer true\ndata: script console.log('hi')\ndata: script console.log('there')\ndata: script console.log('old')\ndata: script console.log('man')"
                            ])))))

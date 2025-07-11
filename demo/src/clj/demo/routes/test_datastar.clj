@@ -5,11 +5,11 @@
     [simpleui.rt :as rt]
     [demo.middleware.formats :refer [page-datastar]]))
 
-(defcomponent ^:endpoint subcomponent [req]
+(defcomponent ^:endpoint subcomponent [req num]
   (if top-level?
-    (prn (:params req))
-    [:div {:id id
-           :data-signals-foo 1
+    [:div {:id "xx"} (inc num)]
+    [:div {:id "xx"
+           :data-signals-num 1
            :data-on-click "@get('subcomponent')"} "hi"]))
 
 (defcomponent my-component [req]

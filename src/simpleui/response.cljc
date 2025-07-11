@@ -8,11 +8,6 @@
    :headers {"Content-Type" "text/html"}
    :body body})
 
-(defn html-response-datastar [body]
-  {:status 200
-   :headers {"Content-Type" "text/event-stream"}
-   :body body})
-
 (defn hx-redirect
   "Like regular http 302 but redirects parent page when update is being made on a single component."
   [redirect]
