@@ -385,7 +385,7 @@ We are looking for a SimpleUI 'killer app' to help grow the technology.  If you 
 <!-- TOC --><a name="license"></a>
 ## License
 
-Copyright © 2024 Matthew Molloy
+Copyright © 2025 Matthew Molloy
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at

@@ -38,7 +38,7 @@
 ;; wrap-datastar
 
 (defn- read-str [s]
-  (json/read-str s {:key-fn keyword}))
+  (json/read-str s :key-fn keyword))
 
 (defn- promote-datastar [params]
   (if-let [datastar (:datastar params)]
