@@ -52,5 +52,5 @@
    [:head
     [:meta {:charset "UTF-8"}]
     [:title "Datastar + Kit"]
-    [:script {:src "https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-RC.1/bundles/datastar.js" :type "module"}]]
+    [:script {:src "https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-RC.2/bundles/datastar.js" :type "module"}]]
    [:body (render/walk-attrs body)]))
