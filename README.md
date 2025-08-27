@@ -7,20 +7,21 @@ Clojure backend for [htmx](https://htmx.org/) and [datastar](https://data-star.d
 - [Rationale](#rationale)
 - [Getting started](#getting-started)
 - [Usage](#usage)
-  * [Authentication, IAM](#authentication-iam)
-  * [Parameter Casting](#parameter-casting)
-  * [Additional Parameters](#additional-parameters)
-  * [Commands](#commands)
-  * [top-level?](#top-level)
-  * [Updating multiple components](#updating-multiple-components)
-  * [Responses](#responses)
-  * [Updating Session](#updating-session)
-  * [Script Responses](#script-responses)
-  * [Unsafe HTML](#unsafe-html)
-  * [Hanging Components](#hanging-components)
-  * [si-set, si-clear](#si-set-si-clear)
-  * [Using SimpleUI from a CDN](#using-simpleui-from-a-cdn)
-  * [Extra hints](#extra-hints)
+   * [Authentication, IAM](#authentication-iam)
+   * [Parameter Casting](#parameter-casting)
+   * [Additional Parameters](#additional-parameters)
+   * [Commands](#commands)
+   * [top-level?](#top-level)
+   * [Updating multiple components](#updating-multiple-components)
+   * [Responses](#responses)
+   * [Updating Session](#updating-session)
+   * [Script Responses](#script-responses)
+   * [Unsafe HTML](#unsafe-html)
+   * [Hanging Components](#hanging-components)
+   * [si-set, si-clear](#si-set-si-clear)
+   * [Using SimpleUI from a CDN](#using-simpleui-from-a-cdn)
+   * [Extra hints](#extra-hints)
+- [Datastar!](#datastar)
 - [Advanced Usage](#advanced-usage)
 - [Pros and Cons of SimpleUI](#pros-and-cons-of-simpleui)
 - [Testing](#testing)
@@ -339,6 +340,7 @@ htmx does not include disabled fields when submitting requests.  If you wish to 
   [:input {:type "hidden" :name (path "input") :value (value "input")}])
 ```
 
+<!-- TOC --><a name="datastar"></a>
 ## Datastar!
 
 SimpleUI supports [datastar](https://data-star.dev) in addition to the HTMX default.  
@@ -399,6 +401,7 @@ npm i
 node index.js
 ```
 
+<!-- TOC --><a name="contributing"></a>
 ## Contributing
 
 We are looking for a SimpleUI 'killer app' to help grow the technology.  If you have an idea please contact the [main author](https://github.com/whamtet).
