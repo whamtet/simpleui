@@ -1,6 +1,6 @@
 # SimpleUI
 
-Clojure backend for [htmx](https://htmx.org/).  Previously known as ctmx.
+Clojure backend for [htmx](https://htmx.org/) and [datastar](https://data-star.dev).  Previously known as ctmx.
 
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
@@ -338,6 +338,27 @@ htmx does not include disabled fields when submitting requests.  If you wish to 
 (when disabled?
   [:input {:type "hidden" :name (path "input") :value (value "input")}])
 ```
+
+## Datastar!
+
+SimpleUI supports [datastar](https://data-star.dev) in addition to the HTMX default.  
+
+Datastar supports frontend reactivity and a (possibly?) improved API, but may come at the cost of API stability.
+To use datastar make two changes:
+
+```clojure
+(defn routes []
+  ["/test-datastar"
+   {:middleware [simpleui.middleware/wrap-datastar]}
+   (simpleui.core/make-routes-datastar
+    (fn [req]
+      (page-datastar
+       [:div
+        (my-component req)])))])
+```
+
+We just call `make-routes-datastar` instead of `make-routes`.  We also need `simpleui.middleware/wrap-datastar` to parse
+datastar's parameters correctly.
 
 <!-- TOC --><a name="advanced-usage"></a>
 ## Advanced Usage

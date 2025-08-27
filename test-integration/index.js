@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer');
 const {assert} = require('chai');
 
+const wait = timeout => new Promise(resolve => setTimeout(resolve, timeout));
+
 const simpleUITests = async page => {
   await page.goto('http://localhost:3002/test/');
 
@@ -35,31 +37,14 @@ const simpleUITests = async page => {
 const datastarTests = async page => {
   await page.goto('http://localhost:3002/test-datastar/');
 
-  // warmup test
+  const result = await page.waitForSelector('#counter');
+  assert.equal(await result.evaluate(e => e.innerHTML), 'You have clicked me 0 times.');
 
-  page.click('#incrementer');
-  const result = await page.waitForSelector('#result');
-  assert.equal(await result.evaluate(e => e.innerHTML), '1');
+  await result.click();
+  await wait(100);
 
-  // path tests
-  const innerHTML = selector => page.$eval(selector, e => e.innerHTML);
-  const value = selector => page.$eval(selector, e => e.value);
-
-  assert.equal(await innerHTML('#i-check'), '0');
-  assert.equal(await innerHTML('#index-check'), '0');
-  assert.equal(await innerHTML('#path-check'), 'component_0_subcomponent');
-  assert.equal(await innerHTML('#hash-check'), '#component_0_subcomponent');
-  assert.equal(await value('#extra'), 'Matt');
-
-  page.click('#component_0_subcomponent');
-
-  await page.waitForSelector('#result2');
-  assert.equal(await value('#result2'), 'Matt');
-
-  // command tests
-  page.click('#command-test');
-  await page.waitForSelector('#result3');
-  assert.equal(await innerHTML('#result3'), 'fuck');
+  const result2 = await page.waitForSelector('#counter');
+  assert.equal(await result2.evaluate(e => e.innerHTML), 'You have clicked me 1 times.');
 
 };
 
@@ -70,6 +55,7 @@ const datastarTests = async page => {
     const browser = await puppeteer.launch({headless: false});
     const page = await browser.newPage();
 
+    await simpleUITests(page);
     await datastarTests(page);
 
     console.log('all tests passed');

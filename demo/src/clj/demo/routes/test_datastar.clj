@@ -6,11 +6,11 @@
     [demo.middleware.formats :refer [page-datastar]]))
 
 (defcomponent ^:endpoint subcomponent [req num]
-  (if top-level?
-    [:div {:id "xx"} (inc num)]
-    [:div {:id "xx"
-           :data-signals-num 1
-           :data-on-click "@get('subcomponent')"} "hi"]))
+  (let [num (if num (inc num) 0)]
+    [:div {:id "counter"
+           :data-signals-num num
+           :data-on-click "@get('subcomponent')"}
+     (format "You have clicked me %s times." num)]))
 
 (defcomponent my-component [req]
   (subcomponent req))
