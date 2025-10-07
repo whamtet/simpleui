@@ -1,10 +1,12 @@
 (ns simpleui.render-test
   (:require [clojure.test :refer :all]
-            [simpleui.render :as render]))
+            [simpleui.render :as render]
+            [simpleui.response :as response]))
 
 (deftest snippet-render
   (testing "snippet render"
            (is (-> nil render/snippet-response :status (= 204)))
+           (is (-> :refresh render/snippet-response (= response/hx-refresh)))
            (is (-> {:body "hi"} render/snippet-response :body (= "hi")))
            (is (-> {:body [:div]} render/snippet-response (= {:status 200
                                                               :headers {"Content-Type" "text/html"}

@@ -143,6 +143,7 @@
   ([prefix req body]
    (cond
      (nil? body) response/no-content
+     (= :refresh body) response/hx-refresh
      (map? body) (render-map prefix req body)
      :else
      (cond->> body

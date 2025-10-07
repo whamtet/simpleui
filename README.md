@@ -225,6 +225,7 @@ Be careful to only include `hx-swap-oob` elements when `top-level?` is true.
 By default SimpleUI expects components to return hiccup vectors which are rendered into html.
 
 `nil` returns http **204 - No Content** and htmx will not update the dom.
+`:refresh` returns **200 - OK** with the `HX-Refresh` header set to `true` to refresh the page.
 
 You may also return an explicit ring map if you wish.  A common use case is to refresh the page after an operation is complete
 
