@@ -7,6 +7,7 @@
   (testing "snippet render"
            (is (-> nil render/snippet-response :status (= 204)))
            (is (-> :refresh render/snippet-response (= response/hx-refresh)))
+           (is (-> {:hx-redirect "/ok"} render/snippet-response (= (response/hx-redirect "/ok"))))
            (is (-> {:body "hi"} render/snippet-response :body (= "hi")))
            (is (-> {:body [:div]} render/snippet-response (= {:status 200
                                                               :headers {"Content-Type" "text/html"}

@@ -226,6 +226,7 @@ By default SimpleUI expects components to return hiccup vectors which are render
 
 `nil` returns http **204 - No Content** and htmx will not update the dom.
 `:refresh` returns **200 - OK** with the `HX-Refresh` header set to `true` to refresh the page.
+`{:hx-redirect "/ok"}` converts to `HX-Redirect`.
 
 You may also return an explicit ring map if you wish.  A common use case is to refresh the page after an operation is complete
 
