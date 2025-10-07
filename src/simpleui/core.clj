@@ -6,6 +6,7 @@
     [simpleui.form :as form]
     [simpleui.middleware :as middleware]
     [simpleui.render :as render]
+    [simpleui.render.datastar :as render.datastar]
     [simpleui.rt :as rt]
     [simpleui.util :as util]))
 
@@ -261,6 +262,11 @@
     (for [[name ns-name] (extract-endpoints-root f)]
       [(str "/" name) `(fn [x#] (->> x# (merge ~extra-args) ~(full-symbol ns-name name) (render/snippet-response ~prefix x#)))])))
 
+(defn- extract-endpoints-all-datastar [prefix f extra-args]
+  (let [extra-args (zipmap (map keyword extra-args) extra-args)]
+    (for [[name ns-name] (extract-endpoints-root f)]
+      [(str "/" name) `(fn [x#] (->> x# (merge ~extra-args) ~(full-symbol ns-name name) (render.datastar/snippet-response-datastar ~prefix)))])))
+
 (defn strip-slash [root]
   (if (.endsWith root "/")
     (.substring root 0 (dec (count root)))
@@ -285,8 +291,20 @@
 (defmacro make-routes
   "Generate reitit routes from function root which handles initial page render.  Returns a reitit vector.
   extra-args is a list of local variables that will be associated into the request object when invoked as an endpoint."
+  ([f] (make-routes-fn "" f []))
   ([root f] (make-routes-fn root f []))
   ([root extra-args f] (make-routes-fn root f extra-args)))
+
+(defn make-routes-datastar-fn [extra-args f]
+  `[""
+    ["" {:get rt/redirect}]
+    ["/" {:get ~f}]
+    ~@(extract-endpoints-all-datastar "" f extra-args)])
+
+(defmacro make-routes-datastar
+  "Datastar version of make-routes"
+  ([f] (make-routes-datastar-fn [] f))
+  ([extra-args f] (make-routes-datastar-fn extra-args f)))
 
 ;; alternative approach
 (defmacro defcheck [sym]

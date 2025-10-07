@@ -1,26 +1,27 @@
 # SimpleUI
 
-Clojure backend for [htmx](https://htmx.org/).  Previously known as ctmx.
+Clojure backend for [htmx](https://htmx.org/) and [datastar](https://data-star.dev).  Previously known as ctmx.
 
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
 - [Rationale](#rationale)
 - [Getting started](#getting-started)
 - [Usage](#usage)
-  * [Authentication, IAM](#authentication-iam)
-  * [Parameter Casting](#parameter-casting)
-  * [Additional Parameters](#additional-parameters)
-  * [Commands](#commands)
-  * [top-level?](#top-level)
-  * [Updating multiple components](#updating-multiple-components)
-  * [Responses](#responses)
-  * [Updating Session](#updating-session)
-  * [Script Responses](#script-responses)
-  * [Unsafe HTML](#unsafe-html)
-  * [Hanging Components](#hanging-components)
-  * [si-set, si-clear](#si-set-si-clear)
-  * [Using SimpleUI from a CDN](#using-simpleui-from-a-cdn)
-  * [Extra hints](#extra-hints)
+   * [Authentication, IAM](#authentication-iam)
+   * [Parameter Casting](#parameter-casting)
+   * [Additional Parameters](#additional-parameters)
+   * [Commands](#commands)
+   * [top-level?](#top-level)
+   * [Updating multiple components](#updating-multiple-components)
+   * [Responses](#responses)
+   * [Updating Session](#updating-session)
+   * [Script Responses](#script-responses)
+   * [Unsafe HTML](#unsafe-html)
+   * [Hanging Components](#hanging-components)
+   * [si-set, si-clear](#si-set-si-clear)
+   * [Using SimpleUI from a CDN](#using-simpleui-from-a-cdn)
+   * [Extra hints](#extra-hints)
+- [Datastar!](#datastar)
 - [Advanced Usage](#advanced-usage)
 - [Pros and Cons of SimpleUI](#pros-and-cons-of-simpleui)
 - [Testing](#testing)
@@ -225,6 +226,10 @@ By default SimpleUI expects components to return hiccup vectors which are render
 
 `nil` returns http **204 - No Content** and htmx will not update the dom.
 
+`:refresh` returns **200 - OK** with the `HX-Refresh` header set to `true` to refresh the page.
+
+`{:hx-redirect "/ok"}` converts to `HX-Redirect` with value `"/ok"`.
+
 You may also return an explicit ring map if you wish.  A common use case is to refresh the page after an operation is complete
 
 ```clojure
@@ -339,6 +344,28 @@ htmx does not include disabled fields when submitting requests.  If you wish to 
   [:input {:type "hidden" :name (path "input") :value (value "input")}])
 ```
 
+<!-- TOC --><a name="datastar"></a>
+## Datastar!
+
+SimpleUI supports [datastar](https://data-star.dev) in addition to the HTMX default.  
+
+Datastar supports frontend reactivity and a (possibly?) improved API, but may come at the cost of API stability.
+To use datastar make two changes:
+
+```clojure
+(defn routes []
+  ["/test-datastar"
+   {:middleware [simpleui.middleware/wrap-datastar]}
+   (simpleui.core/make-routes-datastar
+    (fn [req]
+      (page-datastar
+       [:div
+        (my-component req)])))])
+```
+
+We just call `make-routes-datastar` instead of `make-routes`.  We also need `simpleui.middleware/wrap-datastar` to parse
+datastar's parameters correctly.
+
 <!-- TOC --><a name="advanced-usage"></a>
 ## Advanced Usage
 
@@ -378,6 +405,7 @@ npm i
 node index.js
 ```
 
+<!-- TOC --><a name="contributing"></a>
 ## Contributing
 
 We are looking for a SimpleUI 'killer app' to help grow the technology.  If you have an idea please contact the [main author](https://github.com/whamtet).
@@ -385,7 +413,7 @@ We are looking for a SimpleUI 'killer app' to help grow the technology.  If you 
 <!-- TOC --><a name="license"></a>
 ## License
 
-Copyright © 2024 Matthew Molloy
+Copyright © 2025 Matthew Molloy
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at

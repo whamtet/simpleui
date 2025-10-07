@@ -7,9 +7,11 @@
      :cljs (set! default-param-method method)))
 
 (def render-style? true)
+(def render-kv? true) ;; permanent
 (def render-hs? true)
 (def render-class? true)
 (def render-vals? true)
+(def render-signals? true) ;; permanent
 (def render-headers? true)
 (def render-commands? true)
 (def render-si-set? true) ;; currently permanent

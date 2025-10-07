@@ -1,5 +1,7 @@
 (ns simpleui.middleware
-  (:require [ring.util.response :refer [get-header]])
+  (:require 
+   [ring.util.response :refer [get-header]]
+   [clojure.data.json :as json])
   (:import java.net.URL))
 
 ;; todo: better parsing
@@ -32,3 +34,26 @@
          url->params
          (assoc req :src-params)
          handler)))
+
+;; wrap-datastar
+
+(defn- read-str [s]
+  (json/read-str s :key-fn keyword))
+
+(defn- promote-datastar [params]
+  (if-let [datastar (:datastar params)]
+    (-> params
+        (dissoc :datastar)
+        (merge (read-str datastar)))
+    params))
+
+(defn wrap-datastar
+  "Middleware to handle the params that datastar sends"
+  [handler]
+  (fn [{:keys [params body-params] :as req}]
+    (-> req
+        (assoc :params
+               (if body-params
+                 (merge body-params params)
+                 (promote-datastar params)))
+        handler)))

@@ -10,3 +10,20 @@
      (-> req
          ((middleware/wrap-src-params :src-params))
          (= {:hi "there"})))))
+
+(def datastar-get {:params {:datastar "{\"input\":\"dd\"}"}})
+(def datastar-post {:body-params {:input "dd"}})
+
+(def expected-params {:input "dd"})
+
+(deftest datastar-test
+  (testing "get"
+    (is
+     (-> datastar-get
+         ((middleware/wrap-datastar :params))
+         (= expected-params))))
+  (testing "post"
+    (is
+     (-> datastar-post
+         ((middleware/wrap-datastar :params))
+         (= expected-params)))))
