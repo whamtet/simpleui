@@ -10,6 +10,7 @@
    (fn [req]
      (page
       :zero-outer
-      :non-minified
-      [:div
-       "ok"]))))
+      :offline
+      [:div {:hx-ext "hx-offline"}
+       [:div {:hx-get "https://www.google.com"}
+        "hi"]]))))

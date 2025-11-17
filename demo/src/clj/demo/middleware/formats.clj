@@ -46,6 +46,17 @@
          [:script {:src "https://unpkg.com/hyperscript.org@0.0.3"}])
        (when (:sortable opts)
          [:script {:src "https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"}])
+       (when (:offline opts)
+         [:script "htmx.defineExtension('hx-offline', {
+    onEvent: function (name, evt) {
+        if (name === 'htmx:beforeRequest') {
+            evt.detail.xhr.timeout = 100
+            evt.detail.xhr.ontimeout = () => {
+                console.log('timeout!');
+            }
+        }
+    }
+})"])
        (when (:sortable opts)
          [:script {:src "/js/sortable.js"}])])))
 
