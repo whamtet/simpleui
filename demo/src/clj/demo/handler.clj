@@ -17,6 +17,7 @@
     [demo.routes.sortable :as sortable]
     [demo.routes.test :as test]
     [demo.routes.test-datastar :as test-datastar]
+    [demo.routes.test-offline :as test-offline]
     [demo.routes.value-select :as value-select]
     [reitit.ring :as ring]
     [ring.middleware.content-type :refer [wrap-content-type]]
@@ -47,7 +48,8 @@
        (sortable/routes)
        (value-select/routes)
        (test/routes)
-       (test-datastar/routes)])
+       (test-datastar/routes)
+       (test-offline/routes)])
     (ring/routes
       (ring/create-resource-handler
         {:path "/"})

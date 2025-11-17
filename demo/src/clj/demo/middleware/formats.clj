@@ -32,7 +32,9 @@
          (sheet "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css"))]
       [:body
        (render/walk-attrs (last args))
-       [:script {:src "/js/htmx.min.js"}]
+       (if (:non-minified opts)
+         [:script {:src "https://cdn.jsdelivr.net/npm/htmx.org@1.9.2/dist/htmx.js"}]
+         [:script {:src "/js/htmx.min.js"}])
        [:script {:src "/js/default.js"}]
        (when (:outer opts)
          [:script "htmx.config.defaultSwapStyle = 'outerHTML';"])
