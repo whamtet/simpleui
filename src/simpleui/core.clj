@@ -365,7 +365,7 @@
                              (tree-seq coll? seq)
                              (map filter-symbol)
                              (into (base-assignments req)))]
-    `(let [~@(->> body (tree-seq coll? seq) distinct (mapcat sym->assignment))]
+    `(let [~@(->> body (tree-seq coll? seq) (mapcat sym->assignment) distinct)]
        ~@body)))
 
 (defmacro defn-parse
