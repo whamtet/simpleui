@@ -39,6 +39,7 @@
            (is (thrown? NumberFormatException (rt/parse-doubles ""))))
   (testing "array parse"
            (is (= ["hi"] (rt/parse-array "hi")))
+           (is (= [{}] (rt/parse-array {})))
            (is (= ["hi" "there"] (rt/parse-array ["hi" "there"])))
            (is (nil? (rt/parse-array nil))))
   (testing "set parse"

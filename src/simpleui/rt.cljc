@@ -50,7 +50,7 @@
                    (#?(:clj read-str :cljs js/JSON.parse) %)
                    %))
 
-(def parse-array #(if (string? %) [%] %))
+(def parse-array #(if (or (nil? %) (vector? %)) % [%]))
 (def parse-set #(set (parse-array %)))
 
 (def parse-boolean
