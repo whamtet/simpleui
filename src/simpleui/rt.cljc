@@ -9,6 +9,9 @@
     [clojure.string :as string]
     [simpleui.response :as response]))
 
+(def parse-date #(if (string? %)
+                   (read-string (format "#inst \"%s\"" %))
+                   %))
 (def parse-trim #(if (string? %)
                    (-> % .trim not-empty)
                    %))

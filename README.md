@@ -159,6 +159,7 @@ Casts available include the following
 - **^:trim** Trims string and sets it to nil when empty
 - **^:json** Parses json
 - **^:prompt** Takes value from `hx-prompt` header
+- **^:date** Parses dates of the form "2026-03-03T17:10:00.000-00:00"
 
 <!-- TOC --><a name="additional-parameters"></a>
 ### Additional Parameters
@@ -413,7 +414,7 @@ We are looking for a SimpleUI 'killer app' to help grow the technology.  If you 
 <!-- TOC --><a name="license"></a>
 ## License
 
-Copyright © 2025 Matthew Molloy
+Copyright © 2026 Matthew Molloy
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at

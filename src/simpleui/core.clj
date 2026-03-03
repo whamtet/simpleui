@@ -25,7 +25,8 @@
    :keyword `rt/parse-kw
    :nullable `rt/parse-nullable
    :trim `rt/parse-trim
-   :json `rt/parse-json})
+   :json `rt/parse-json
+   :date `rt/parse-date})
 
 (defn- sym->f [sym]
   (when-let [meta (meta sym)]

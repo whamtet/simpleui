@@ -2,6 +2,8 @@
   (:require [clojure.test :refer :all]
             [simpleui.rt :as rt]))
 
+(def test-date #inst "2026-03-03T17:10:00.000-00:00")
+
 (deftest parsing-test
   (testing "long parse"
            (is (= 1 (rt/parse-long "1 ")))
@@ -64,6 +66,10 @@
            (is (= {:a 3} (rt/parse-edn {:a 3})))
            (is (= nil (rt/parse-edn nil)))
            (is (thrown? RuntimeException (rt/parse-edn ""))))
+  (testing "date parse"
+           (is (= test-date (rt/parse-date "2026-03-03T17:10:00.000-00:00")))
+           (is (= nil (rt/parse-date nil)))
+           (is (= test-date (rt/parse-date test-date))))
   (testing "nullable parse"
            (is (= nil (rt/parse-nullable "null")))
            (is (= nil (rt/parse-nullable "nil")))
