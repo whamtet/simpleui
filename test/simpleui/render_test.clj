@@ -10,7 +10,8 @@
 (deftest snippet-render
   (testing "merges headers correctly"
            (is (-> {:body "hi"
-                    :headers {"HX-Retarget" "#flip"}}
+                    :headers {"HX-Retarget" "#flip"}
+                    :status 200}
                    render/snippet-response
                    :headers
                    (= test-headers))))

@@ -132,10 +132,10 @@
     (:hx-redirect m)
     (response/hx-redirect (:hx-redirect m))
     (:body m)
-    (as-> {:status 200
-           :headers {"Content-Type" "text/html"}} $
-          (merge-with merge $ m)
-          (update $ :body #(render-body prefix req %)))
+    (-> m
+        (update :body #(render-body prefix req %))
+        (update :status #(or % 200))
+        (update-in [:headers "Content-Type"] #(or % "text/html")))
     ;; assume m is just a session
     :else
     (assoc response/no-content :session m)))
