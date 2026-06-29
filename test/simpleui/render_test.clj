@@ -3,7 +3,17 @@
             [simpleui.render :as render]
             [simpleui.response :as response]))
 
+(def test-headers
+  {"HX-Retarget" "#flip"
+   "Content-Type" "text/html"})
+
 (deftest snippet-render
+  (testing "merges headers correctly"
+           (is (-> {:body "hi"
+                    :headers {"HX-Retarget" "#flip"}}
+                   render/snippet-response
+                   :headers
+                   (= test-headers))))
   (testing "snippet render"
            (is (-> nil render/snippet-response :status (= 204)))
            (is (-> :refresh render/snippet-response (= response/hx-refresh)))
