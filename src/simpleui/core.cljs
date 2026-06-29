@@ -109,10 +109,6 @@
 (defn expand-parser-hints [x]
   (walk/prewalk expand-parser-hint x))
 
-(defmacro defn-parse [name args & body]
-  `(defn ~name ~args
-     ~(parse-args args `(do ~@body))))
-
 (defmacro defcomponent [name args & body]
   (let [args (if (not-empty args)
                (update args 0 assoc-as)
